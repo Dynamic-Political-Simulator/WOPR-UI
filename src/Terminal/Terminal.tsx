@@ -23,6 +23,22 @@ export function Terminal() {
     500);
   }, []);
 
+  useEffect(() => {
+    async function fetchData(){
+      await fetch("https://localhost:44394/api/terminal/terminal", {
+        mode: "cors",
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+      })
+      .then((response) => response.json())
+      .then((response) => {
+        //put the response into the terminal
+      });
+    }
+  })
+
   const inputCommand = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 

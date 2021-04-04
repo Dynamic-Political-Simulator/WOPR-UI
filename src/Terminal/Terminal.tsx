@@ -1,11 +1,12 @@
 import { SSL_OP_EPHEMERAL_RSA } from "constants";
 import React, { useEffect, useState } from "react";
 import { Col, Container, Form, Input, Row } from "reactstrap";
+import {Redirect} from 'react-router-dom';
 
 export function Terminal() {
   const [rows, setRows] = useState<string[]>(["Welcome to WOPR"]);
 
-  const [commandInput, setCommandInput] = useState<string>(">");
+  const [commandInput, setCommandInput] = useState<string>("");
 
   //function inputCommand() {
     //if (commandInput !== undefined) {
@@ -24,17 +25,21 @@ export function Terminal() {
 
   const inputCommand = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    //@ts-ignore
-    var commandWithoutPrefix = commandInput.split(">")[1];
-    setRows(rows => [...rows, commandWithoutPrefix]);
-    setCommandInput(">");
+
+    if(commandInput == "popsim"){
+      window.location.assign("/popsim")
+    }
+    else if(commandInput.startsWith("login ")){
+      
+    }
+
+    setRows(rows => [...rows, commandInput]);
+    setCommandInput("")
   };
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
-    if(e.target.value.indexOf(">") === 0){
-      setCommandInput(e.target.value);
-    }    
+    setCommandInput(e.target.value);
   }
 
   return (
@@ -48,7 +53,8 @@ export function Terminal() {
           );
         })}
       </div>
-      <form className="ml-4 mt-2" onSubmit={inputCommand}>
+      <form className="ml-4 mt-2 d-inline-flex" onSubmit={inputCommand}>
+        <p className="bg-transparent text-success">{">"}</p>
         <input className="bg-transparent text-success" style={{border: "none"}} value={commandInput} onChange={handleOnChange} />
       </form>
     </>

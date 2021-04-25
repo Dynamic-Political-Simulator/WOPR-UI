@@ -1,55 +1,33 @@
-import { SSL_OP_EPHEMERAL_RSA } from "constants";
 import React, { useEffect, useState } from "react";
-import { Col, Container, Form, Input, Row } from "reactstrap";
-import {Redirect} from 'react-router-dom';
+import { Col, Row } from "reactstrap";
+import { TerminalCommand } from "./CommandService";
 
 export function Terminal() {
   const [rows, setRows] = useState<string[]>(["Welcome to WOPR"]);
 
   const [commandInput, setCommandInput] = useState<string>("");
-
-  //function inputCommand() {
-    //if (commandInput !== undefined) {
-      //@ts-ignore
-      //setRows(rows => [...rows, commandInput]);
-    //}
-  //}
-
   
-  useEffect(async() => {
+  useEffect(() => {
     setTimeout(() => {
       setRows(rows => [...rows, "System ready"]);
     },
     500);
   }, []);
 
-  useEffect(() => {
-    async function fetchData(){
-      await fetch("https://localhost:44394/api/terminal/terminal", {
-        mode: "cors",
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-      })
-      .then((response) => response.json())
-      .then((response) => {
-        //put the response into the terminal
-      });
-    }
-  })
-
-  const inputCommand = (e: React.FormEvent<HTMLFormElement>) => {
+  const inputCommand = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    setRows(rows => [...rows, commandInput]);
 
     if(commandInput == "popsim"){
       window.location.assign("/popsim")
     }
-    else if(commandInput.startsWith("login ")){
-      
+    else{
+      TerminalCommand(commandInput).then((response) => {
+        setRows(rows => [...rows, response]);
+      });
     }
 
-    setRows(rows => [...rows, commandInput]);
     setCommandInput("")
   };
 

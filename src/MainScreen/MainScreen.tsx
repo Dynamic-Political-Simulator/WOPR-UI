@@ -8,6 +8,8 @@ import {
   } from "react-router-dom";
 import PopsimMenu from '../Popsim/PopsimMenu';
 import Switch from 'react-bootstrap/esm/Switch';
+import { CharacterIndex } from '../Characters/CharacterIndex';
+import { CreateCharacter } from '../Characters/CreateCharacter';
 
 export function MainScreen() {
     return (
@@ -17,6 +19,12 @@ export function MainScreen() {
                 </Route>
                 <Route path="/popsim">
                     <PopsimMenu/>
+                </Route>
+                <Route path="/my-characters">
+                    <CharacterIndex/>
+                </Route>
+                <Route path="/create-character">
+                    <CreateCharacter/>
                 </Route>
         </Router>
     )

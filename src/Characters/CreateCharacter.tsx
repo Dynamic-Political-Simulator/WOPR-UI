@@ -10,7 +10,7 @@ export function CreateCharacter() {
 
     const [error, setError] = useState<string | undefined>(undefined);
 
-    const [data, setData] = useState<Species[]>();
+    const [data, setData] = useState<string[]>();
 
     const history = useHistory();
 
@@ -26,6 +26,9 @@ export function CreateCharacter() {
         fetch("https://localhost:44394/api/character/get-species", requestInit)
             .then((response) => response.json())
             .then((response) => setData(response));
+        
+        //@ts-ignore
+        setSpecies(data[0]);
     }, []);
 
     function handleClick() {

@@ -11,6 +11,7 @@ import Switch from 'react-bootstrap/esm/Switch';
 import { CharacterIndex } from '../Characters/CharacterIndex';
 import { CreateCharacter } from '../Characters/CreateCharacter';
 import { CharacterDetail } from '../Characters/CharacterDetail';
+import { EditCharacter } from '../Characters/EditCharacter';
 
 export function MainScreen() {
     return (
@@ -29,6 +30,9 @@ export function MainScreen() {
                 </Route>
                 <Route path="/character">
                     <CharacterDetail/>
+                </Route>
+                <Route path="/edit-character">
+                    <EditCharacter/>
                 </Route>
         </Router>
     )

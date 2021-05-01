@@ -2,7 +2,7 @@ import React from "react";
 import { useHistory } from "react-router-dom";
 import { Button, ListGroupItem } from "reactstrap";
 
-export interface Species{
+export interface Species {
     speciesId: string;
     speciesName: string;
 }

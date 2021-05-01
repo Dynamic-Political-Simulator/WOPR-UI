@@ -25,10 +25,13 @@ export function CreateCharacter() {
 
         fetch("https://localhost:44394/api/character/get-species", requestInit)
             .then((response) => response.json())
-            .then((response) => setData(response));
+            .then((response) => {
+                setData(response);
+                //@ts-ignore
+                setSpecies(response[0]);
+            });
         
-        //@ts-ignore
-        setSpecies(data[0]);
+       
     }, []);
 
     function handleClick() {

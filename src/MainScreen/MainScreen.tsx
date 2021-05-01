@@ -12,6 +12,7 @@ import { CharacterIndex } from '../Characters/CharacterIndex';
 import { CreateCharacter } from '../Characters/CreateCharacter';
 import { CharacterDetail } from '../Characters/CharacterDetail';
 import { EditCharacter } from '../Characters/EditCharacter';
+import { CharacterSearch } from '../Characters/CharacterSearch';
 
 export function MainScreen() {
     return (
@@ -33,6 +34,9 @@ export function MainScreen() {
                 </Route>
                 <Route path="/edit-character">
                     <EditCharacter/>
+                </Route>
+                <Route path="/character-search">
+                    <CharacterSearch/>
                 </Route>
         </Router>
     )

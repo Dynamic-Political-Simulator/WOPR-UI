@@ -20,7 +20,10 @@ export function CharacterIndex() {
 
         fetch("https://localhost:44394/api/character/my-characters", requestInit)
             .then((response) => response.json())
-            .then((response) => setData(response));
+            .then((response) => {
+                console.log(response);
+                setData(response);
+            });
     }, []);
 
     function handleClick() {

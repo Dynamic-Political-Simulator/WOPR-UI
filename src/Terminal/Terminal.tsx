@@ -22,6 +22,7 @@ export function Terminal() {
     if (isAdmin == undefined){
       var requestInit: RequestInit = {
         mode: "cors",
+        credentials: "include",
         method: "GET",
         headers: {
             "Content-Type": "application/json"

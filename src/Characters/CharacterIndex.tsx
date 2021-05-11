@@ -12,6 +12,7 @@ export function CharacterIndex() {
     useEffect(() => {
         var requestInit: RequestInit = {
             mode: "cors",
+            credentials: "include",
             method: "GET",
             headers: {
                 "Content-Type": "application/json"

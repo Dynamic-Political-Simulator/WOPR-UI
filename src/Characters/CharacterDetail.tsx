@@ -5,12 +5,21 @@ import { Button, Container, Jumbotron } from 'reactstrap';
 import { PlayerCharacter } from './PlayerCharacterListing';
 import { useCookies } from 'react-cookie';
 
-interface PlayerCharacterWithOwnership extends PlayerCharacter{
+interface PlayerCharacterDetail {
+    characterId: string;
+    characterName: string;
+    characterBio: string;
+
+    yearOfBirth: number;
+    yearOfDeath: number;
+    causeOfDeath: string;
+    
+    species: string;
     userOwnsCharacter: boolean;
 }
 
 export function CharacterDetail() {
-    const [data, setData] = useState<PlayerCharacterWithOwnership>();
+    const [data, setData] = useState<PlayerCharacterDetail>();
     const [cookies, setCookie] = useCookies();
 
     const location = useLocation();
@@ -23,6 +32,7 @@ export function CharacterDetail() {
     useEffect(() => {
         var requestInit: RequestInit = {
             mode: "cors",
+            credentials: "include",
             method: "GET",
             headers: {
                 "Content-Type": "application/json"
@@ -46,7 +56,7 @@ export function CharacterDetail() {
                 <h1>{data?.characterName}</h1>
                 <hr className="my-2"/>
 
-                <p>Species: {data?.species.speciesName}</p>
+                <p>Species: {data?.species}</p>
 
                 {data?.causeOfDeath == null ? 
                 <p>{data?.yearOfBirth} - Present</p> : 
@@ -57,7 +67,7 @@ export function CharacterDetail() {
 
                 <p>Bio: {data?.characterBio}</p>
                 
-                {data?.userOwnsCharacter == true || cookies.get("isAdmin") == true ? 
+                {data?.userOwnsCharacter == true || cookies["isAdmin"] === "true" ? 
                 <Button color="secondary" onClick={handleClick}>
                     Edit
                 </Button> 

@@ -13,6 +13,7 @@ import { CreateCharacter } from '../Characters/CreateCharacter';
 import { CharacterDetail } from '../Characters/CharacterDetail';
 import { EditCharacter } from '../Characters/EditCharacter';
 import { CharacterSearch } from '../Characters/CharacterSearch';
+import { AdminEditCharacter } from '../Characters/AdminEditCharacter';
 
 export function MainScreen() {
     return (
@@ -34,6 +35,9 @@ export function MainScreen() {
                 </Route>
                 <Route path="/edit-character">
                     <EditCharacter/>
+                </Route>
+                <Route path="/admin-edit-character">
+                    <AdminEditCharacter/>
                 </Route>
                 <Route path="/character-search">
                     <CharacterSearch/>

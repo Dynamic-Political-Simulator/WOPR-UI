@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import queryString from 'query-string'
 import { useHistory, useLocation } from 'react-router';
-import { Button, Container, Jumbotron } from 'reactstrap';
+import { Alert, Button, Container, Jumbotron, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
 import { PlayerCharacter } from './PlayerCharacterListing';
 import { useCookies } from 'react-cookie';
 
@@ -21,6 +21,11 @@ interface PlayerCharacterDetail {
 export function CharacterDetail() {
     const [data, setData] = useState<PlayerCharacterDetail>();
     const [cookies, setCookie] = useCookies();
+    const [error, setError] = useState<string | undefined>(undefined);
+
+    const [modal, setModal] = useState(false);
+
+    const toggle = () => setModal(!modal);
 
     const location = useLocation();
     const history = useHistory();
@@ -46,8 +51,33 @@ export function CharacterDetail() {
             });
     }, []);
 
-    function handleClick() {
+    function handleClickEdit() {
         history.push("edit-character?id=" + data?.characterId);
+    }
+
+    function handleClickAdminEdit() {
+        history.push("admin-edit-character?id=" + data?.characterId);
+    }
+
+    function handleClickDelete() {
+        var requestInit: RequestInit = {
+            mode: "cors",
+            credentials: "include",
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        };
+
+        fetch("https://localhost:44394/api/admin-character/delete-character?id=" + characterId, requestInit)
+            .then((response) => {
+                if (response.ok) {
+                    history.push("character-search");
+                }
+                else{
+                    setError("Something went wrong.");
+                }
+            });
     }
 
     return (
@@ -67,10 +97,35 @@ export function CharacterDetail() {
 
                 <p>Bio: {data?.characterBio}</p>
                 
-                {data?.userOwnsCharacter == true || cookies["isAdmin"] === "true" ? 
-                <Button color="secondary" onClick={handleClick}>
+                {data?.userOwnsCharacter == true ? 
+                <Button color="secondary" onClick={handleClickEdit}>
                     Edit
                 </Button> 
+                : null}
+                { cookies["isAdmin"] === "true" ?
+                <>
+                    <Button color="secondary" onClick={handleClickAdminEdit}>
+                        Admin Edit
+                    </Button>
+                    <Button color="danger" onClick={toggle}>
+                        Delete
+                    </Button> 
+                    <Modal isOpen={modal} toggle={toggle}>
+                        <ModalHeader toggle={toggle}>Are you sure you want to delete {data?.characterName}?</ModalHeader>
+                        <ModalBody>
+                            This action cannot be undone.
+                        </ModalBody>
+                        <ModalFooter>
+                            <Button color="danger" onClick={handleClickDelete}>Delete</Button>{' '}
+                            <Button color="secondary" onClick={toggle}>Cancel</Button>
+                        </ModalFooter>
+                    </Modal>
+                </>
+                : null}
+                {error != undefined ? 
+                    <Alert color="danger">
+                        {error}
+                    </Alert>
                 : null}
                 
             </Jumbotron>

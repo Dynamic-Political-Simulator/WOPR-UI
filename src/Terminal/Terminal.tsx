@@ -2,12 +2,15 @@ import React, { useEffect, useState } from "react";
 import { Col, Row } from "reactstrap";
 import { TerminalCommand } from "./CommandService";
 import { useCookies } from "react-cookie";
+import { useHistory } from "react-router-dom";
 
 export function Terminal() {
   const [rows, setRows] = useState<string[]>(["Welcome to WOPR"]);
 
   const [commandInput, setCommandInput] = useState<string>("");
   const [cookies, setCookie] = useCookies();
+
+  const history = useHistory();
   
   useEffect(() => {
     setTimeout(() => {
@@ -19,7 +22,7 @@ export function Terminal() {
   useEffect(() => {
     var isAdmin = cookies["isAdmin"]
 
-    if (isAdmin == undefined){
+    if (isAdmin === undefined){
       var requestInit: RequestInit = {
         mode: "cors",
         credentials: "include",
@@ -43,14 +46,18 @@ export function Terminal() {
 
     setRows(rows => [...rows, commandInput]);
 
-    if(commandInput == "popsim"){
-      window.location.assign("/popsim")
-    }
-    else{
-      TerminalCommand(commandInput).then((response) => {
+    TerminalCommand(commandInput)
+    .then((response) => response.text())
+    .then((response) => {
+      console.log(String(response));
+      if (String(response).startsWith("redirect-")){
+        let redirect = String(response).replace("redirect-", "");
+        history.push("/" + redirect);
+      }
+      else{
         setRows(rows => [...rows, response]);
-      });
-    }
+      }
+    });
 
     setCommandInput("")
   };

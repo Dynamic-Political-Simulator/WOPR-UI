@@ -17,6 +17,7 @@ export function CreateCharacter() {
     useEffect(() => {
         var requestInit: RequestInit = {
             mode: "cors",
+            credentials: "include",
             method: "GET",
             headers: {
                 "Content-Type": "application/json"
@@ -43,6 +44,7 @@ export function CreateCharacter() {
 
         var requestInit: RequestInit = {
             mode: "cors",
+            credentials: "include",
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

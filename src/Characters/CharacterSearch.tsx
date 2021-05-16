@@ -50,6 +50,7 @@ export function CharacterSearch(){
 
         var requestInit: RequestInit = {
             mode: "cors",
+            credentials: "include",
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -92,7 +93,7 @@ export function CharacterSearch(){
 
                 <ListGroup>
                     {data?.map((i) => (
-                        <PlayerCharacterListing 
+                        <PlayerCharacterListing key={i.characterId}
                             Character = {i}
                         />
                     ))}

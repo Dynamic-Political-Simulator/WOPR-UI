@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import queryString from 'query-string'
 import { useLocation } from 'react-router';
-import { Button, Container, Input, Jumbotron, Label } from 'reactstrap';
+import { Alert, Button, Container, Input, Jumbotron, Label } from 'reactstrap';
 import { PlayerCharacter } from './PlayerCharacterListing';
 import { useHistory } from 'react-router-dom';
 
@@ -21,6 +21,7 @@ export function EditCharacter() {
     useEffect(() => {
         var requestInit: RequestInit = {
             mode: "cors",
+            credentials: "include",
             method: "GET",
             headers: {
                 "Content-Type": "application/json"
@@ -34,7 +35,7 @@ export function EditCharacter() {
                 setBio(response.characterBio);
             });
 
-    }, []);
+    }, [characterId]);
 
     function handleClick() {
         var body = {
@@ -44,6 +45,7 @@ export function EditCharacter() {
 
         var requestInit: RequestInit = {
             mode: "cors",
+            credentials: "include",
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -63,6 +65,8 @@ export function EditCharacter() {
                 <hr className="my-2"/>
 
                 <p>Species: {data?.species.speciesName}</p>
+
+                {error === undefined ? null : <Alert color="danger">{error}</Alert>}
 
                 {data?.causeOfDeath == null ? 
                 <p>{data?.yearOfBirth} - Present</p> : 

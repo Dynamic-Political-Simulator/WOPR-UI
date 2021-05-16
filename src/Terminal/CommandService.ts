@@ -1,6 +1,7 @@
 export async function TerminalCommand(command: string) {
     var requestInit: RequestInit = {
       mode: "cors",
+      credentials: "include",
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -9,7 +10,7 @@ export async function TerminalCommand(command: string) {
     };  
   
     return fetch("https://localhost:44394/api/terminal/command", requestInit)
-      .then(responeHandler)
+      //.then(responeHandler)
       .then((responseString) => {      
         return responseString;
     });

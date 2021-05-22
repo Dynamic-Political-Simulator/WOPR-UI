@@ -21,8 +21,7 @@ interface props {
     Character: PlayerCharacter;
 }
 
-export function PlayerCharacterListing(props: props){
-
+export function PlayerCharacterListing(props: props) {
     const history = useHistory();
 
     function handleClick() {

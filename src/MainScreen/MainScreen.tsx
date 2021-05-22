@@ -14,6 +14,7 @@ import { CharacterDetail } from '../Characters/CharacterDetail';
 import { EditCharacter } from '../Characters/EditCharacter';
 import { CharacterSearch } from '../Characters/CharacterSearch';
 import { AdminEditCharacter } from '../Characters/AdminEditCharacter';
+import { StaffActionIndex } from '../StaffAction/StaffActionIndex';
 
 export function MainScreen() {
     return (
@@ -41,6 +42,9 @@ export function MainScreen() {
                 </Route>
                 <Route path="/character-search">
                     <CharacterSearch/>
+                </Route>
+                <Route path="/my-staff-actions">
+                    <StaffActionIndex/>
                 </Route>
         </Router>
     )

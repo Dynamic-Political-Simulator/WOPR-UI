@@ -4,7 +4,7 @@ import { Button, ListGroupItem } from 'reactstrap';
 
 export interface StaffActionSummary {
     staffActionId: string;
-    staffActionTitle: string;
+    title: string;
     addedPlayers: string[];
     assignedStaff: string[];
 }
@@ -22,7 +22,7 @@ export function StaffActionListing(props: props){
 
     return(
         <ListGroupItem>
-            <p>Title: {props.StaffAction.staffActionTitle}</p>
+            <p>Title: {props.StaffAction.title}</p>
             <p>Added players: {props.StaffAction.addedPlayers}</p>
             <p>Assigned staff: {props.StaffAction.assignedStaff}</p>
             <Button color="secondary" onClick={() => handleClick()}>

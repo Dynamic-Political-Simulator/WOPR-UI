@@ -18,7 +18,7 @@ export function StaffActionIndex(){
             }
         };
 
-        fetch("https://localhost:44394/api/character/my-characters", requestInit)
+        fetch("https://localhost:44394/api/staff-action/my-staff-actions", requestInit)
             .then((response) => response.json())
             .then((response) => {
                 console.log(response);

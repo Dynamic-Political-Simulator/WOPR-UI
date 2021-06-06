@@ -8,7 +8,6 @@ export function Terminal() {
   const [rows, setRows] = useState<string[]>(["Welcome to WOPR"]);
 
   const [commandInput, setCommandInput] = useState<string>("");
-  const [cookies, setCookie] = useCookies();
 
   const history = useHistory();
   
@@ -18,28 +17,6 @@ export function Terminal() {
     },
     500);
   }, []);
-
-  useEffect(() => {
-    var isAdmin = cookies["isAdmin"]
-
-    if (isAdmin === undefined){
-      var requestInit: RequestInit = {
-        mode: "cors",
-        credentials: "include",
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json"
-        }
-      };
-
-      fetch("https://localhost:44394/api/user/is-admin", requestInit)
-        .then((response) => response.json())
-        .then((response) => {
-            setCookie("isAdmin", response);
-        });
-    }
-
-  })
 
   const inputCommand = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

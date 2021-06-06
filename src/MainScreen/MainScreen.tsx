@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Terminal } from '../Terminal/Terminal';
 import {
     BrowserRouter as Router,
@@ -16,8 +16,33 @@ import { CharacterSearch } from '../Characters/CharacterSearch';
 import { AdminEditCharacter } from '../Characters/AdminEditCharacter';
 import { StaffActionIndex } from '../StaffAction/StaffActionIndex';
 import { CreateStaffAction } from '../StaffAction/CreateStaffAction';
+import { StaffActionDetail } from '../StaffAction/StaffActionDetail';
+import { useCookies } from 'react-cookie';
+import { StaffActionAddPlayer } from '../StaffAction/StaffActionAddPlayer';
 
 export function MainScreen() {
+    const [cookies, setCookie] = useCookies();
+
+    useEffect(() => {
+        var isAdmin = cookies["isAdmin"]
+    
+        if (isAdmin === undefined){
+            var requestInit: RequestInit = {
+                mode: "cors",
+                credentials: "include",
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            };
+    
+            fetch("https://localhost:44394/api/user/is-admin", requestInit)
+                .then((response) => response.json())
+                .then((response) => {
+                    setCookie("isAdmin", response);
+                });
+        }
+    });
     return (
         <Router>
                 <Route exact path="/">
@@ -49,6 +74,12 @@ export function MainScreen() {
                 </Route>
                 <Route path="/create-staff-action">
                     <CreateStaffAction/>
+                </Route>
+                <Route path="/staff-action">
+                    <StaffActionDetail/>
+                </Route>
+                <Route path="/staff-action-add">
+                    <StaffActionAddPlayer/>
                 </Route>
         </Router>
     )

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom';
-import { Button, ButtonGroup, Container, Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Input, Jumbotron, Label } from 'reactstrap';
+import { Button, ButtonGroup, Container, Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Input, Jumbotron, Label, ListGroup, ListGroupItem } from 'reactstrap';
 
-interface PlayerSearchReturn {
+export interface PlayerSearchReturn {
     discordUserId: string;
     discordUserName: string;
     isAdmin: boolean;
@@ -17,13 +17,9 @@ export function CreateStaffAction() {
 
     const [selectedPlayers, setSelectedPlayers] = useState<PlayerSearchReturn[]>([]);
 
-    const [dropdownOpen, setDropdownOpen] = useState(false);
-
     const [error, setError] = useState<string | undefined>(undefined);
 
     const history = useHistory();
-
-    const toggle = () => setDropdownOpen(prevState => !prevState);
 
     useEffect(() => {
         var requestInit: RequestInit = {
@@ -43,12 +39,14 @@ export function CreateStaffAction() {
     }, [searchTerm]);
 
     function addPlayerToSelectedPlayers(player: PlayerSearchReturn) {
-        setSelectedPlayers(prev => {
-            return [
-                ...prev,
-                player
-            ]
-        });
+        if (!selectedPlayers.includes(player)){
+            setSelectedPlayers(prev => {
+                return [
+                    ...prev,
+                    player
+                ]
+            });
+        }
     }
 
     function handleClick(){
@@ -109,16 +107,11 @@ export function CreateStaffAction() {
                     ))}
                 </ButtonGroup>
 
-                <Dropdown isOpen={dropdownOpen} toggle={toggle}>
-                    <DropdownToggle caret>
-                        Results
-                    </DropdownToggle>
-                    <DropdownMenu>
-                        {searchReturn?.map((player) => (
-                            <DropdownItem key={player.discordUserId} onClick={(e) => addPlayerToSelectedPlayers(player)}>{player.discordUserName}</DropdownItem>
-                        ))}
-                    </DropdownMenu>
-                </Dropdown>
+                <ListGroup>
+                    {searchReturn?.map((player) => (
+                        <ListGroupItem key={player.discordUserId} onClick={(e) => addPlayerToSelectedPlayers(player)}><Button>{player.discordUserName}</Button></ListGroupItem>
+                    ))}
+                </ListGroup>
 
                 <hr className="my-2" />
 

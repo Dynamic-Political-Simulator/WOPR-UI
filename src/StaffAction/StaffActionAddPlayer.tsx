@@ -122,9 +122,9 @@ export function StaffActionAddPlayer(){
             body: JSON.stringify(body)
         };
 
-        fetch("https://localhost:44394/api/staff-action/create-staff-action", requestInit)
+        fetch("https://localhost:44394/api/staff-action/add-players", requestInit)
             .catch(() => setError("Something went wrong, try again."))
-            .then(() => history.push("/my-staff-actions"));
+            .then(() => history.push("/staff-action?id=" + data?.staffActionId));
     }
     
     return(

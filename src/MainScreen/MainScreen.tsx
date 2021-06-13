@@ -6,7 +6,7 @@ import {
     Link,
     useHistory,
 } from "react-router-dom";
-import PopsimMenu from '../Popsim/PopsimMenu';
+import { PopsimMenu } from '../Popsim/PopsimMenu';
 import Switch from 'react-bootstrap/esm/Switch';
 import { CharacterIndex } from '../Characters/CharacterIndex';
 import { CreateCharacter } from '../Characters/CreateCharacter';
@@ -21,6 +21,9 @@ import { useCookies } from 'react-cookie';
 import { StaffActionAddPlayer } from '../StaffAction/StaffActionAddPlayer';
 import { checkAuth } from '../Auth/AuthService'
 import SaveUploader from '../SaveUploader/SaveUploader';
+import { PopsimAlignments } from '../Popsim/Alignments/PopsimAlignments';
+import { EditorSettings } from 'typescript';
+import { EditAlignment } from '../Popsim/Alignments/EditAlignment';
 
 export function MainScreen() {
     const [cookies, setCookie] = useCookies();
@@ -88,6 +91,12 @@ export function MainScreen() {
             </Route>
             <Route path="/upload-save">
                 <SaveUploader />
+            </Route>
+            <Route path="/alignments">
+                <PopsimAlignments/>
+            </Route>
+            <Route path="/edit-alignment">
+                <EditAlignment/>
             </Route>
         </Router>
     )

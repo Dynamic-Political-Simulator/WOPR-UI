@@ -3,13 +3,20 @@ import { Col, Row } from "reactstrap";
 import { TerminalCommand } from "./CommandService";
 import { useCookies } from "react-cookie";
 import { useHistory } from "react-router-dom";
+import { checkAuth } from "../Auth/AuthService";
 
 export function Terminal() {
   const [rows, setRows] = useState<string[]>(["Welcome to WOPR"]);
 
   const [commandInput, setCommandInput] = useState<string>("");
 
+  const [cookies, setCookie] = useCookies();
+
   const history = useHistory();
+
+  useEffect(() => {
+    checkAuth(cookies, setCookie);
+  }, []);
   
   useEffect(() => {
     setTimeout(() => {

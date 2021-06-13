@@ -41,6 +41,9 @@ export function MainScreen() {
                 .then((response) => response.json())
                 .then((response) => {
                     setCookie("isAdmin", response);
+                })
+                .catch(() => {
+                    window.location.href = "https://localhost:44394/api/auth/auth";
                 });
         }
     });

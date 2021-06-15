@@ -3,6 +3,7 @@ import { Col, Row } from "reactstrap";
 import { TerminalCommand } from "./CommandService";
 import { useCookies } from "react-cookie";
 import { useHistory } from "react-router-dom";
+import { checkAuth } from "../Auth/AuthService";
 import "./TerminalStyle.css";
 
 export function Terminal() {
@@ -32,9 +33,12 @@ export function Terminal() {
 
     const [processing, setProcessing] = useState<boolean>(true);
 
+    const [cookies, setCookie] = useCookies();
+
     const history = useHistory();
 
     useEffect(() => {
+        checkAuth(cookies, setCookie);
         setTimeout(() => {
             document.addEventListener("click", () => {
                 let element = document.getElementById("inputter")!;

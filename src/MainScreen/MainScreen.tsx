@@ -19,6 +19,7 @@ import { CreateStaffAction } from '../StaffAction/CreateStaffAction';
 import { StaffActionDetail } from '../StaffAction/StaffActionDetail';
 import { useCookies } from 'react-cookie';
 import { StaffActionAddPlayer } from '../StaffAction/StaffActionAddPlayer';
+import { checkAuth } from '../Auth/AuthService'
 import SaveUploader from '../SaveUploader/SaveUploader';
 
 export function MainScreen() {

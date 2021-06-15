@@ -1,0 +1,18 @@
+body {
+    --termColour: limegreen;
+}
+
+.terminal {
+    font-family: monospace, monospace; 
+    font-size: 12pt;
+    line-height: 1.2;
+    color: var(--termColour);
+}
+
+.terminal pre {
+    margin-bottom: 0;
+}
+
+#inputter {
+    color: var(--termColour);
+}

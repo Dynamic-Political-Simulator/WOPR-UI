@@ -22,10 +22,10 @@ export function Terminal() {
       ██████   ██████ ██     ██  ██
     */
     const [rows, setRows] = useState<string[]>([
-        "██  ██  ██ ██████ ██████ ██████",
+        "██      ██ ██████ ██████ ██████",
         "██  ██  ██ ██  ██ ██  ██ ██  ██",
         " ██ ██ ██  ██  ██ █████  ████",
-        "  ██████   ██████ ██     ██  ██",
+        "  ██  ██   ██████ ██     ██  ██",
         "Welcome to WOPR"
     ]);
 
@@ -86,6 +86,7 @@ export function Terminal() {
 
     return (
         <div className="terminal">
+
             <div id="history" className="mt-5" style={{
                 marginLeft: "0.75rem"
             }}>
@@ -124,6 +125,11 @@ export function Terminal() {
         /*
             ┌─[~][]
             └─▪
+        */
+        /*
+             <div id="termBg" />
+             <div id="termFg">
+             </div>
         */
     );
 }

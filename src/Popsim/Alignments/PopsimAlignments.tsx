@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
-import { Button, Container, Jumbotron, Table } from "reactstrap";
+import { Button, Container, Jumbotron, Modal, ModalBody, ModalFooter, ModalHeader, Table } from "reactstrap";
 
 export interface AlignmentOverview {
     alignmentId: string
@@ -17,8 +17,15 @@ export interface AlignmentOverview {
 	monoculturalismMulticulturalism: number
 }
 
+interface ModalDeleteData {
+    id: string
+    name: string
+}
+
 export function PopsimAlignments() {
     const [data, setData] = useState<AlignmentOverview[]|undefined>(undefined);
+    const [modal, setModal] = useState<boolean>(false);
+    const [modalData, setModalData] = useState<ModalDeleteData>();
 
     const history = useHistory();
 
@@ -32,7 +39,7 @@ export function PopsimAlignments() {
             }
         };
 
-        fetch("https://localhost:44394/api/popsim/alignment-overview", requestInit)
+        fetch("https://localhost:44394/api/alignment/alignment-overview", requestInit)
             .then((response) => response.json())
             .then((response) => setData(response));
     }, []);
@@ -41,10 +48,44 @@ export function PopsimAlignments() {
         history.push('edit-alignment?id=' + id);
     }
 
+    function handleDeleteClick(id:string, name: string){
+        setModalData({id: id, name: name})
+        setModal(true);
+    }
+
+    function handleDeleteConfirmClick(){
+        var requestInit: RequestInit = {
+            mode: "cors",
+            credentials: "include",
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        };
+
+        fetch("https://localhost:44394/api/alignment/delete-alignment?id=" + modalData?.id, requestInit)
+            .then(() => history.go(0));
+    }
+
+    function handleCreateClick(){
+        var requestInit: RequestInit = {
+            mode: "cors",
+            credentials: "include",
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        };
+
+        fetch("https://localhost:44394/api/popsim/create-alignment", requestInit)
+            .then(() => history.go(0));
+    }
+
     return (
-       // <Container>
+        <>
             <Jumbotron>
                 <h1>Alignments</h1>
+                <Button onClick={handleCreateClick}>Create Alignment</Button>
                 <hr className="my-2"/>
 
                 <Table striped>
@@ -76,11 +117,24 @@ export function PopsimAlignments() {
                                 <td>{a.progressivismTraditionalism}</td>
                                 <td>{a.monoculturalismMulticulturalism}</td>
                                 {a.alignmentName != "Apolitical" ? <td><Button onClick={() => handleEditClick(a.alignmentId)}>Edit</Button></td> : null }
+                                {a.alignmentName != "Apolitical" ? <td><Button color="danger" onClick={() => handleDeleteClick(a.alignmentId, a.alignmentName)}>Delete</Button></td> : null }
                             </tr>
                         ))}
                     </tbody>
                 </Table>
             </Jumbotron>
-        //</Container>
+            <Modal isOpen={modal}>
+                    <ModalHeader>
+                        Are you sure you want to delete {modalData?.name}?
+                    </ModalHeader>
+                    <ModalBody>
+                        This action is permanent and cannot be reversed.
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button color="danger" onClick={handleDeleteConfirmClick}>Delete</Button>{' '}
+                        <Button color="secondary" onClick={() => setModal(false)}>Cancel</Button>
+                    </ModalFooter>
+            </Modal>
+        </>
     )
 }

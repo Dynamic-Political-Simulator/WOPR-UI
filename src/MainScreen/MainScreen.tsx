@@ -24,6 +24,7 @@ import SaveUploader from '../SaveUploader/SaveUploader';
 import { PopsimAlignments } from '../Popsim/Alignments/PopsimAlignments';
 import { EditorSettings } from 'typescript';
 import { EditAlignment } from '../Popsim/Alignments/EditAlignment';
+import { CliqueIndex } from '../Popsim/Cliques/CliqueIndex';
 
 export function MainScreen() {
     const [cookies, setCookie] = useCookies();
@@ -97,6 +98,9 @@ export function MainScreen() {
             </Route>
             <Route path="/edit-alignment">
                 <EditAlignment/>
+            </Route>
+            <Route path="/my-cliques">
+                <CliqueIndex/>
             </Route>
         </Router>
     )

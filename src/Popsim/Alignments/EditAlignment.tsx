@@ -24,7 +24,7 @@ export function EditAlignment() {
             }
         };
 
-        fetch("https://localhost:44394/api/popsim/get-alignment?id=" + characterId, requestInit)
+        fetch("https://localhost:44394/api/alignment/get-alignment?id=" + characterId, requestInit)
             .then((response) => response.json())
             .then((response) => setData(response));
     }, []);
@@ -33,14 +33,14 @@ export function EditAlignment() {
         var requestInit: RequestInit = {
             mode: "cors",
             credentials: "include",
-            method: "GET",
+            method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(data)
         };
 
-        fetch("https://localhost:44394/api/popsim/save-alignment", requestInit)
+        fetch("https://localhost:44394/api/alignment/edit-alignment", requestInit)
             .then((response) => {
                 if (response.ok){
                     history.push("/alignments");

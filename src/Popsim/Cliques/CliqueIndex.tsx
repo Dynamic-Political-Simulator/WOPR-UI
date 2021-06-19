@@ -48,7 +48,7 @@ export function CliqueIndex() {
     }
 
     function handleCreateClick(){
-
+        history.push("/create-clique");
     }
 
     return(

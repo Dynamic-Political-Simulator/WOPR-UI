@@ -1,0 +1,49 @@
+.clock60 {
+    background-image: url("./images/doomsdayclock60.png");
+    position: absolute;
+    width: 1775px;
+    height: 782px;
+    top: calc(50vh - 391px);
+    left: calc(50vw - 887px);
+}
+.clock120 {
+    background-image: url("./images/doomsdayclock120.png");
+    position: absolute;
+    width: 1775px;
+    height: 782px;
+    top: calc(50vh - 391px);
+    left: calc(50vw - 887px);
+}
+.clock300 {
+    background-image: url("./images/doomsdayclock300.png");
+    position: absolute;
+    width: 1775px;
+    height: 782px;
+    top: calc(50vh - 391px);
+    left: calc(50vw - 887px);
+}
+.clock600 {
+    background-image: url("./images/doomsdayclock600.png");
+    position: absolute;
+    width: 1775px;
+    height: 782px;
+    top: calc(50vh - 391px);
+    left: calc(50vw - 887px);
+}
+.clock900 {
+    background-image: url("./images/doomsdayclock900.png");
+    position: absolute;
+    width: 1775px;
+    height: 782px;
+    top: calc(50vh - 391px);
+    left: calc(50vw - 887px);
+}
+
+.clockNull {
+    background-color: #00000000;
+    position: absolute;
+    width: 1775px;
+    height: 782px;
+    top: calc(50vh - 391px);
+    left: calc(50vw - 887px);
+}

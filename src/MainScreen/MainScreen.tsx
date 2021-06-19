@@ -21,6 +21,8 @@ import { useCookies } from 'react-cookie';
 import { StaffActionAddPlayer } from '../StaffAction/StaffActionAddPlayer';
 import { checkAuth } from '../Auth/AuthService'
 import SaveUploader from '../SaveUploader/SaveUploader';
+import { Clock } from '../TimeToMidnight/Clock';
+import ClockSetter from '../TimeToMidnight/ClockSetter';
 
 export function MainScreen() {
     const [cookies, setCookie] = useCookies();
@@ -88,6 +90,12 @@ export function MainScreen() {
             </Route>
             <Route path="/upload-save">
                 <SaveUploader />
+            </Route>
+            <Route path="/clock">
+                <Clock />
+            </Route>
+            <Route path="/set-clock">
+                <ClockSetter />
             </Route>
         </Router>
     )

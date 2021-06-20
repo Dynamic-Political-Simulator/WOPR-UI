@@ -1,19 +1,22 @@
 import { useEffect } from "react";
 import { useState } from "react";
 import queryString from 'query-string';
-import { Container, Jumbotron, Label, ListGroup, ListGroupItem } from "reactstrap";
+import { Button, Container, Jumbotron, Label, ListGroup, ListGroupItem } from "reactstrap";
+import { useLocation } from "react-router-dom";
 
-interface Clique {
+export interface Clique {
     cliqueName: string
     members: string[]
     officers: string[]
     alignments: string[]
     money: number
+    userIsOfficer: boolean
 }
 
 export function CliqueDetail(){
     const [data, setData] = useState<Clique>();
 
+    const location = useLocation();
     const values = queryString.parse(location.search)
 
     const cliqueId = values.id;
@@ -31,13 +34,17 @@ export function CliqueDetail(){
         fetch("https://localhost:44394/api/clique/get-clique?id=" + cliqueId, requestInit)
             .then((response) => response.json())
             .then((response) => setData(response));   
-    }, [])
+    }, []);
+
+    function handleManageClick(){
+        
+    }
 
     return (
         <>
         {data == undefined? <div>loading</div> : 
         <Container>
-            <Jumbotron>
+            <Jumbotron className="d-flex flex-column">
                 <h1>{data?.cliqueName}</h1>
                 <hr className="my-2"/>
                 <Label>Money: {data.money}</Label>
@@ -45,10 +52,17 @@ export function CliqueDetail(){
                 <ListGroup>
                     {data.officers.map((i) => <ListGroupItem key={i}>{i}</ListGroupItem>)}
                 </ListGroup>
-                <Label>members:</Label>
+                <Label>Members:</Label>
                 <ListGroup>
                     {data.members.map((i) => <ListGroupItem key={i}>{i}</ListGroupItem>)}
                 </ListGroup>
+                {data.userIsOfficer ? 
+                <>
+                    <hr className="my-2"/>
+                    <Button style={{width:'100px'}} onClick={handleManageClick}>Manage</Button>
+                </> 
+                : null}
+                
             </Jumbotron>
         </Container>
         }

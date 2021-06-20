@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
-import { Button, Container, Label, ListGroup, ListGroupItem } from "reactstrap";
+import { Button, Container, Jumbotron, Label, ListGroup, ListGroupItem } from "reactstrap";
 
 interface CliqueOverview {
     cliques: Clique[]
@@ -53,22 +53,38 @@ export function CliqueIndex() {
 
     return(
         <Container>
-            <Label>Your cliques</Label>
-            <ListGroup>
-                {data?.cliques.map((i) => <ListGroupItem key={i.id} onClick={() => handleCliqueClick(i.id)}>
-                    {i.name}
-                </ListGroupItem>)}
-            </ListGroup>
-            <hr className="my-2"/>
-            <Label>Your invites</Label>
-            <ListGroup>
-                {data?.cliqueInvites.map((i) => <ListGroupItem key={i.id} onClick={() => handleInviteClick(i.id)}>
-                    {i.name}
-                </ListGroupItem>)}
-            </ListGroup>
-            <Button onClick={handleCreateClick}>
-                Create Clique
-            </Button>
+            <Jumbotron>
+                <Label>Your cliques</Label>
+                {data?.cliques.length == 0 ? 
+                <ListGroup>
+                    <ListGroupItem>Not a member of any Cliques.</ListGroupItem>
+                </ListGroup>
+                : 
+                <ListGroup>
+                    {data?.cliques.map((i) => <ListGroupItem key={i.id} onClick={() => handleCliqueClick(i.id)}>
+                        {i.name}
+                    </ListGroupItem>)}
+                </ListGroup>
+                }
+                
+                <hr className="my-2"/>
+                <Label>Your invites</Label>
+                {data?.cliqueInvites.length == 0 ? 
+                <ListGroup>
+                    <ListGroupItem>No Clique invites.</ListGroupItem>
+                </ListGroup>
+                : 
+                <ListGroup>
+                    {data?.cliqueInvites.map((i) => <ListGroupItem key={i.id} onClick={() => handleInviteClick(i.id)}>
+                        {i.name}
+                    </ListGroupItem>)}
+                </ListGroup>
+                }
+                <hr className="my-2"/>
+                <Button onClick={handleCreateClick}>
+                    Create Clique
+                </Button>
+            </Jumbotron>
         </Container>
     )
 }

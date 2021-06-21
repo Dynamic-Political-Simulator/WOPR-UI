@@ -9,6 +9,8 @@ body {
     /* color: var(--termColour); */
     color: var(--termColour);
     text-shadow: 0 0 2px lime;
+    overflow-x: hidden; /* mfw scrollbar still appears despite nothing exceeding 100 vw; */
+    overflow-wrap: break-word;
 }
 
 /*
@@ -31,6 +33,8 @@ body {
 
 .terminal pre {
     margin-bottom: 0;
+    overflow: hidden;
+    white-space: pre-wrap;
 }
 
 #inputter {

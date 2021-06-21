@@ -23,6 +23,9 @@ import { checkAuth } from '../Auth/AuthService'
 import SaveUploader from '../SaveUploader/SaveUploader';
 import { Clock } from '../TimeToMidnight/Clock';
 import ClockSetter from '../TimeToMidnight/ClockSetter';
+import Map from "../Map/Map";
+import MapEdit from "../Map/MapEdit";
+import { MakePlanet } from "../Map/PlanetMaker";
 
 export function MainScreen() {
     const [cookies, setCookie] = useCookies();
@@ -96,6 +99,15 @@ export function MainScreen() {
             </Route>
             <Route path="/set-clock">
                 <ClockSetter />
+            </Route>
+            <Route path="/map">
+                <Map />
+            </Route>
+            <Route path="/map-edit">
+                <MapEdit />
+            </Route>
+            <Route path="/make-planet">
+                <MakePlanet />
             </Route>
         </Router>
     )

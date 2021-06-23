@@ -43,3 +43,45 @@
 #putContentHere {
     height: 90%
 }
+
+/* Planet Screen Stuff */
+
+.planetScreen {
+    font-family: monospace, monospace; 
+    font-size: large;
+    color: lime;
+    margin: 1%;
+}
+
+.planetTable input {
+    width: 100%;
+}
+
+.planetTable {
+    width: 35%;
+    table-layout: fixed;
+}
+
+.planetTable th {
+    border-right: 2px dotted lime;
+}
+
+.planetTable td {
+    border-right: 2px dotted lime;
+}
+
+.planetTable th:last-child {
+    border-right: none;
+}
+
+.planetTable td:last-child {
+    border-right: none;
+}
+
+.planetTable tr {
+    border-bottom: 2px dotted lime;
+}
+
+.planetTable tr:last-child {
+    border-bottom: none;
+}

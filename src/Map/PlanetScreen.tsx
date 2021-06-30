@@ -1,7 +1,7 @@
 import { render } from '@testing-library/react';
 import { Console, group } from 'console';
 import React, { useEffect, useState, useReducer } from 'react'
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { Button, Container, Input, Jumbotron, Label, ListGroup } from 'reactstrap';
 
 class PopEntry {
@@ -10,14 +10,71 @@ class PopEntry {
 }
 
 class GroupEntry {
-    name: string = "";
-    alignment: string = "";
-    modifier: string = "";
+    Name: string = "";
+    Modifier?: Map<string, string> = new Map<string, string>();
+    Size: string = "";
+
+    toSend(): GroupEntrySend {
+        let res = new GroupEntrySend();
+        res.Name = this.Name;
+        this.Modifier?.forEach((v, k, t) => {
+            res.Modifier?.set(k, parseInt(v));
+        });
+        res.Size = parseInt(this.Size);
+        return res;
+    }
 }
 
-class IndustryModifier {
-    name: string = "";
-    value: string = "";
+class GroupEntrySend {
+    Name: string = "";
+    Modifier?: Map<string, number> = new Map<string, number>();
+    Size: number = 0;
+
+    toLocal(): GroupEntry {
+        let res = new GroupEntry();
+        res.Name = this.Name;
+        this.Modifier?.forEach((v, k, t) => {
+            res.Modifier?.set(k, v.toString());
+        });
+        res.Size = this.Size.toString();
+        return res;
+    }
+}
+
+class IndustryEntry {
+    Name: string = "";
+    GDP: number = 0;
+    Modifier: string = "";
+
+    toSend(): IndustryEntrySend {
+        let res = new IndustryEntrySend();
+        res.Name = this.Name;
+        res.GDP = this.GDP;
+        res.Modifier = parseInt(this.Modifier);
+        return res;
+    }
+}
+
+class IndustryEntrySend {
+    Name: string = "";
+    GDP: number = 0;
+    Modifier: number = 0;
+
+    toLocal(): IndustryEntry {
+        let res = new IndustryEntry();
+        res.Name = this.Name;
+        res.GDP = this.GDP;
+        res.Modifier = this.Modifier?.toString();
+        return res;
+    }
+}
+
+class PlanetData {
+    Name: string = "";
+    Population: number = 0;
+    OfficeAlignments: string[] = [];
+    GroupEntries: GroupEntrySend[] = [];
+    IndustryEntries: IndustryEntrySend[] = [];
 }
 
 export function Planet() {
@@ -27,6 +84,7 @@ export function Planet() {
 
     const [, forceUpdate] = useReducer(x => x + 1, 0);
 
+    const [planetName, setPlanetName] = useState("Planet Name");
     const [population, setPopulation] = useState(420420420420);
     const [pops, setPops] = useState<PopEntry[]>([
         {
@@ -43,32 +101,8 @@ export function Planet() {
         "Reformist",
         "Ultrafederalist"
     ].reverse());
-    const [groups, setGroups] = useState<GroupEntry[]>([
-        {
-            name: "A",
-            alignment: "Conservative",
-            modifier: "70"
-        },
-        {
-            name: "B",
-            alignment: "Conservative",
-            modifier: "30"
-        }
-    ]);
-    const [industries, setIndustries] = useState<string[]>([
-        "Cum Factory",
-        "Korn"
-    ]);
-    const [industryModifiers, setIndustryMods] = useState<IndustryModifier[]>([
-        {
-            name: "A",
-            value: "70"
-        },
-        {
-            name: "B",
-            value: "30"
-        }
-    ]);
+    const [groups, setGroups] = useState<GroupEntry[]>([]);
+    const [industryModifiers, setIndustryMods] = useState<IndustryEntry[]>([]);
 
     const [data, setData] = useState<string[]>();
     const [alignmentData, setAlignmentData] = useState<string[]>([
@@ -77,6 +111,8 @@ export function Planet() {
         "Ultrafederalist",
         "Hardliner"
     ]);
+
+    const { name } = useParams<{ name: string }>();
 
     useEffect(() => {
         var requestInit: RequestInit = {
@@ -96,13 +132,53 @@ export function Planet() {
                 setSpecies(response[0]);
             });
 
+        var requestInit: RequestInit = {
+            mode: "cors",
+            credentials: "include",
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        };
 
+        fetch("https://localhost:44394/api/clique/get-alignments", requestInit)
+            .then((response) => response.json())
+            .then((response) => {
+                setData(response);
+                //@ts-ignore
+                setAlignmentData(response[0]);
+            });
+
+        var requestInit: RequestInit = {
+            mode: "cors",
+            credentials: "include",
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: name
+        };
+
+        fetch("https://localhost:44394/api/clique/get-planet", requestInit)
+            .then((response) => response.json())
+            .then((response) => {
+                let planet = response as PlanetData;
+                setPopulation(planet.Population);
+                setPlanetName(planet.Name);
+
+                setAlignments(planet.OfficeAlignments);
+
+                setGroups(planet.GroupEntries.map(x => x.toLocal()));
+                setIndustryMods(planet.IndustryEntries.map(x => x.toLocal()));
+            });
     }, []);
+
+    let gdpSum = industryModifiers.map(x => x.GDP).reduce((a, b) => a + b);
 
     if (!edit) {
         return (
             <div className="planetScreen">
-                <h1><b>Planet Name</b></h1>
+                <h1><b>{planetName}</b></h1>
                 <hr style={{
                     borderTop: "2px solid lime"
                 }} />
@@ -172,22 +248,49 @@ export function Planet() {
                                 Group
                     </th>
                             <th>
-                                Alignment
+                                Size
                     </th>
                         </tr>
                         {
                             groups.map((g) => (<tr>
                                 <td>
-                                    {g.name}
+                                    {g.Name}
                                 </td>
                                 <td>
-                                    {g.alignment}
+                                    {g.Size}
                                 </td>
                             </tr>))}
                     </tbody>
                 </table>
                 <br />
-                <b>Industries:</b> {industries.map((x) => x + (industries.indexOf(x) == industries.length - 1 ? "" : ", "))}
+                <table className="planetTable">
+                    <tbody>
+                        <tr>
+                            <th>
+                                Industry
+                    </th>
+                            <th>
+                                GDP
+                    </th>
+                            <th>
+                                % of Total
+                    </th>
+                        </tr>
+                        {industryModifiers?.map((spe) => (
+                            <tr key={spe.Name}>
+                                <td>
+                                    {spe.Name}
+                                </td>
+                                <td>
+                                    {spe.GDP}
+                                </td>
+                                <td>
+                                    {Math.floor((spe.GDP / gdpSum) * 100)}%
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
                 <br /><br />
                 <Button onClick={() => history.push("/map")}>Back</Button>&nbsp;<Button onClick={() => setEdit(true)}>Edit</Button>
             </div>
@@ -195,7 +298,7 @@ export function Planet() {
     } else {
         return (
             <div className="planetScreen">
-                <h1><b>Planet Name</b> <span style={{ color: "red" }}>(Edit Mode)</span></h1>
+                <h1><b>{planetName}</b> <span style={{ color: "red" }}>(Edit Mode)</span></h1>
                 <hr style={{
                     borderTop: "2px solid lime"
                 }} />
@@ -298,7 +401,7 @@ export function Planet() {
                                 Group
                     </th>
                             <th>
-                                Alignment
+                                Size
                     </th>
                             <th>
                                 Modifier
@@ -310,27 +413,29 @@ export function Planet() {
                                 <td>
                                     <Input
                                         type="text"
-                                        value={g.name}
+                                        value={g.Name}
                                         onChange={(e) => {
                                             let b = groups;
-                                            b[b.indexOf(g)].name = e.target.value;
+                                            b[b.indexOf(g)].Name = e.target.value;
                                             setGroups(b);
                                             forceUpdate(); // react sucks balls
                                         }}
                                     />
                                 </td>
                                 <td>
-                                    <Input type="select" value={g.alignment} onChange={(e) => {
-                                        let b = groups;
-                                        b[b.indexOf(g)].alignment = e.target.value;
-                                        setGroups(b);
-                                        forceUpdate(); // react sucks balls
-                                    }}>
-                                        {alignmentData?.map((a) => (<option>{a}</option>))}
-                                    </Input>
+                                    <Input
+                                        type="text"
+                                        value={g.Size}
+                                        onChange={(e) => {
+                                            let b = groups;
+                                            b[b.indexOf(g)].Size = e.target.value;
+                                            setGroups(b);
+                                            forceUpdate(); // react sucks balls
+                                        }}
+                                    />
                                 </td>
                                 <td>
-                                    <Input
+                                    {/*<Input
                                         type="text"
                                         value={g.modifier}
                                         onChange={(e) => {
@@ -339,7 +444,8 @@ export function Planet() {
                                             setGroups(b);
                                             forceUpdate(); // react sucks balls
                                         }}
-                                    />
+                                    />*/}
+                                    WIP
                                 </td>
                                 <td>
                                     <Button onClick={(e) => {
@@ -373,16 +479,15 @@ export function Planet() {
                     </tbody>
                 </table>
                 <br />
-                <b>Industries:</b> {industries.map((x) => x + (industries.indexOf(x) == industries.length - 1 ? "" : ", "))}
                 <br /><br />
                 <table className="planetTable">
                     <tbody>
                         <tr>
                             <th>
-                                Modifier Name
+                                Industry
                     </th>
                             <th>
-                                Value
+                                Modifier
                     </th>
                             <th></th>
                         </tr>
@@ -391,10 +496,10 @@ export function Planet() {
                                 <td>
                                     <Input
                                         type="text"
-                                        value={m.name}
+                                        value={m.Name}
                                         onChange={(e) => {
                                             let b = industryModifiers;
-                                            b[b.indexOf(m)].name = e.target.value;
+                                            b[b.indexOf(m)].Name = e.target.value;
                                             setIndustryMods(b);
                                             forceUpdate(); // react sucks balls
                                         }}
@@ -403,10 +508,10 @@ export function Planet() {
                                 <td>
                                     <Input
                                         type="text"
-                                        value={m.value}
+                                        value={m.Modifier}
                                         onChange={(e) => {
                                             let b = industryModifiers;
-                                            b[b.indexOf(m)].value = e.target.value;
+                                            b[b.indexOf(m)].Modifier = e.target.value;
                                             setIndustryMods(b);
                                             forceUpdate(); // react sucks balls
                                         }}
@@ -428,7 +533,7 @@ export function Planet() {
                                 <Button
                                     onClick={(e) => {
                                         let b = industryModifiers;
-                                        let x = new IndustryModifier();
+                                        let x = new IndustryEntry();
                                         b.push(x);
                                         setIndustryMods(b);
                                         forceUpdate();

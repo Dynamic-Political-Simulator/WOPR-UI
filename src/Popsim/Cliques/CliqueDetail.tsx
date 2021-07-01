@@ -2,12 +2,17 @@ import { useEffect } from "react";
 import { useState } from "react";
 import queryString from 'query-string';
 import { Button, Container, Jumbotron, Label, ListGroup, ListGroupItem } from "reactstrap";
-import { useLocation } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
+
+interface Member {
+    characterId: string;
+    characterName: string;
+}
 
 export interface Clique {
     cliqueName: string
-    members: string[]
-    officers: string[]
+    members: Member[]
+    officers: Member[]
     alignments: string[]
     money: number
     userIsOfficer: boolean
@@ -17,6 +22,7 @@ export function CliqueDetail(){
     const [data, setData] = useState<Clique>();
 
     const location = useLocation();
+    const history = useHistory();
     const values = queryString.parse(location.search)
 
     const cliqueId = values.id;
@@ -37,7 +43,7 @@ export function CliqueDetail(){
     }, []);
 
     function handleManageClick(){
-        
+        history.push("manage-clique?id=" + cliqueId);
     }
 
     return (
@@ -50,11 +56,11 @@ export function CliqueDetail(){
                 <Label>Money: {data.money}</Label>
                 <Label>Officers:</Label>
                 <ListGroup>
-                    {data.officers.map((i) => <ListGroupItem key={i}>{i}</ListGroupItem>)}
+                    {data.officers.map((i) => <ListGroupItem key={i.characterId}>{i.characterName}</ListGroupItem>)}
                 </ListGroup>
                 <Label>Members:</Label>
                 <ListGroup>
-                    {data.members.map((i) => <ListGroupItem key={i}>{i}</ListGroupItem>)}
+                    {data.members.map((i) => <ListGroupItem key={i.characterId}>{i.characterName}</ListGroupItem>)}
                 </ListGroup>
                 {data.userIsOfficer ? 
                 <>

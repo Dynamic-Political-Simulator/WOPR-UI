@@ -85,6 +85,26 @@ export function ManageClique(){
             .then(() => history.push("/clique?id=" + cliqueId));
     }
 
+    function handleKickClick(id: string){
+        var body = {
+            cliqueId: cliqueId,
+            characterId: id
+        }
+
+        var requestInit: RequestInit = {
+            mode: "cors",
+            credentials: "include",
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(body)
+        };
+
+        fetch("https://localhost:44394/api/clique/kick", requestInit)
+            .finally(() => history.go(0));
+    }
+
     useEffect(() => {
         var requestInit: RequestInit = {
             mode: "cors",
@@ -130,11 +150,17 @@ export function ManageClique(){
                     ))}
                 </ListGroup>
 
+                <Button color="secondary" onClick={handleClick}>
+                    Invite
+                </Button>
+
                 <hr className="my-2"/>
 
-                <Button color="secondary" onClick={handleClick}>
-                    Submit
-                </Button>
+                <ListGroup>
+                    {data.members.map((character) => (
+                        <ListGroupItem key={character.characterId}><Button color="danger" onClick={() => handleKickClick(character.characterId)}>Kick: {character.characterName}</Button></ListGroupItem>
+                    ))}
+                </ListGroup>
             </Jumbotron>
         </Container>
         }

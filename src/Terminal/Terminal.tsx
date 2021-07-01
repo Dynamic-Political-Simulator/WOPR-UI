@@ -15,10 +15,6 @@ export function Terminal() {
   const history = useHistory();
 
   useEffect(() => {
-    checkAuth(cookies, setCookie);
-  }, []);
-  
-  useEffect(() => {
     setTimeout(() => {
       setRows(rows => [...rows, "System ready"]);
     },

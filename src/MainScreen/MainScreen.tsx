@@ -28,6 +28,7 @@ import { CliqueIndex } from '../Popsim/Cliques/CliqueIndex';
 import { CreateClique } from '../Popsim/Cliques/CreateClique';
 import { CliqueDetail } from '../Popsim/Cliques/CliqueDetail';
 import { ManageClique } from '../Popsim/Cliques/ManageClique';
+import { PartyOverview } from '../Popsim/Party/PartyOverview';
 
 export function MainScreen() {
     const [cookies, setCookie] = useCookies();
@@ -113,6 +114,9 @@ export function MainScreen() {
             </Route>
             <Route path="/manage-clique">
                 <ManageClique/>
+            </Route>
+            <Route path="/party-overview">
+                <PartyOverview/>
             </Route>
         </Router>
     )

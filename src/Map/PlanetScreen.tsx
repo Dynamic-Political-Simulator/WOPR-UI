@@ -11,6 +11,7 @@ class PopEntry {
 
 class GroupEntry {
     Name: string = "";
+    CurrMod?: string = undefined;
     Modifier?: Map<string, string> = new Map<string, string>();
     Size: string = "";
 
@@ -30,13 +31,14 @@ class GroupEntrySend {
     Modifier?: Map<string, number> = new Map<string, number>();
     Size: number = 0;
 
-    toLocal(): GroupEntry {
+    toLocal(defalign: string): GroupEntry {
         let res = new GroupEntry();
         res.Name = this.Name;
         this.Modifier?.forEach((v, k, t) => {
             res.Modifier?.set(k, v.toString());
         });
         res.Size = this.Size.toString();
+        res.CurrMod = defalign;
         return res;
     }
 }
@@ -168,7 +170,7 @@ export function Planet() {
 
                 setAlignments(planet.OfficeAlignments);
 
-                setGroups(planet.GroupEntries.map(x => x.toLocal()));
+                setGroups(planet.GroupEntries.map(x => x.toLocal(alignmentData[0])));
                 setIndustryMods(planet.IndustryEntries.map(x => x.toLocal()));
             });
     }, []);
@@ -215,13 +217,14 @@ export function Planet() {
 
                         setAlignments(planet.OfficeAlignments);
 
-                        setGroups(planet.GroupEntries.map(x => x.toLocal()));
+                        setGroups(planet.GroupEntries.map(x => x.toLocal(alignmentData[0])));
                         setIndustryMods(planet.IndustryEntries.map(x => x.toLocal()));
                     });
             });
     }
 
-    let gdpSum = industryModifiers.map(x => x.GDP).reduce((a, b) => a + b);
+    let gdpSum = 0;
+    if (industryModifiers.length > 0) gdpSum = industryModifiers.map(x => x.GDP).reduce((a, b) => a + b);
 
     if (!edit) {
         return (
@@ -452,6 +455,9 @@ export function Planet() {
                                 Size
                     </th>
                             <th>
+                                Alignment
+                    </th>
+                            <th>
                                 Modifier
                     </th>
                             <th></th>
@@ -483,17 +489,31 @@ export function Planet() {
                                     />
                                 </td>
                                 <td>
-                                    {/*<Input
-                                        type="text"
-                                        value={g.modifier}
+                                    <Input
+                                        type="select"
+                                        value={g.CurrMod == undefined ? alignmentData[0] : g.CurrMod!}
                                         onChange={(e) => {
                                             let b = groups;
-                                            b[b.indexOf(g)].modifier = e.target.value;
+                                            b[b.indexOf(g)].CurrMod = e.target.value;
                                             setGroups(b);
                                             forceUpdate(); // react sucks balls
                                         }}
-                                    />*/}
-                                    WIP
+                                    >
+                                        {alignmentData?.map((a) => (<option>{a}</option>))}
+                                    </Input>
+                                </td>
+                                <td>
+                                    {<Input
+                                        type="text"
+                                        value={g.CurrMod != undefined ? g.Modifier?.has(g.CurrMod) ? g.Modifier?.get(g.CurrMod) : 0 : "undefined"}
+                                        disabled={g.CurrMod == undefined}
+                                        onChange={(e) => {
+                                            let b = groups;
+                                            b[b.indexOf(g)].Modifier?.set(g.CurrMod!, e.target.value);
+                                            setGroups(b);
+                                            forceUpdate(); // react sucks balls
+                                        }}
+                                    />}
                                 </td>
                                 <td>
                                     <Button onClick={(e) => {
@@ -512,10 +532,13 @@ export function Planet() {
                                     onClick={(e) => {
                                         let b = groups;
                                         let x = new GroupEntry();
+                                        x.CurrMod = alignmentData[0];
                                         b.push(x);
                                         setGroups(b);
                                         forceUpdate();
                                     }}>Add</Button>
+                            </td>
+                            <td>
                             </td>
                             <td>
                             </td>

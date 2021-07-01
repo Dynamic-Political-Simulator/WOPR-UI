@@ -159,7 +159,7 @@ export function Planet() {
             body: name
         };
 
-        fetch("https://localhost:44394/api/clique/get-planet", requestInit)
+        fetch("https://localhost:44394/api/map/get-planet", requestInit)
             .then((response) => response.json())
             .then((response) => {
                 let planet = response as PlanetData;
@@ -172,6 +172,54 @@ export function Planet() {
                 setIndustryMods(planet.IndustryEntries.map(x => x.toLocal()));
             });
     }, []);
+
+    function submitEdit() {
+        let planet = new PlanetData();
+        planet.Population = population;
+        planet.Name = planetName;
+
+        planet.OfficeAlignments = alignments;
+
+        planet.GroupEntries = groups.map(x => x.toSend());
+        planet.IndustryEntries = industryModifiers.map(x => x.toSend());
+
+        var requestInit: RequestInit = {
+            mode: "cors",
+            credentials: "include",
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(planet)
+        };
+
+        fetch("https://localhost:44394/api/map/edit-planet", requestInit)
+            .then((response) => response.json())
+            .then((response) => {
+                var requestInit: RequestInit = {
+                    mode: "cors",
+                    credentials: "include",
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: name
+                };
+
+                fetch("https://localhost:44394/api/map/get-planet", requestInit)
+                    .then((response) => response.json())
+                    .then((response) => {
+                        let planet = response as PlanetData;
+                        setPopulation(planet.Population);
+                        setPlanetName(planet.Name);
+
+                        setAlignments(planet.OfficeAlignments);
+
+                        setGroups(planet.GroupEntries.map(x => x.toLocal()));
+                        setIndustryMods(planet.IndustryEntries.map(x => x.toLocal()));
+                    });
+            });
+    }
 
     let gdpSum = industryModifiers.map(x => x.GDP).reduce((a, b) => a + b);
 
@@ -549,6 +597,7 @@ export function Planet() {
                 <br /><br />
                 <Button onClick={() => {
                     // Run a thing that saves everything and sends it to the server
+                    submitEdit();
                     setEdit(false);
                 }}>Save</Button>
             </div>

@@ -72,11 +72,11 @@ class IndustryEntrySend {
 }
 
 class PlanetData {
-    Name: string = "";
-    Population: number = 0;
-    OfficeAlignments: string[] = [];
-    GroupEntries: GroupEntrySend[] = [];
-    IndustryEntries: IndustryEntrySend[] = [];
+    name: string = "";
+    population: number = 0;
+    officeAlignments: string[] = [];
+    groupEntries: GroupEntrySend[] = [];
+    industryEntries: IndustryEntrySend[] = [];
 }
 
 export function Planet() {
@@ -117,6 +117,7 @@ export function Planet() {
     const { name } = useParams<{ name: string }>();
 
     useEffect(() => {
+        console.log(name);
         var requestInit: RequestInit = {
             mode: "cors",
             credentials: "include",
@@ -131,7 +132,7 @@ export function Planet() {
             .then((response) => {
                 setData(response);
                 //@ts-ignore
-                setSpecies(response[0]);
+                setSpecies(response);
             });
 
         var requestInit: RequestInit = {
@@ -148,42 +149,42 @@ export function Planet() {
             .then((response) => {
                 setData(response);
                 //@ts-ignore
-                setAlignmentData(response[0]);
+                setAlignmentData(response);
+                console.table(alignmentData);
             });
 
         var requestInit: RequestInit = {
             mode: "cors",
             credentials: "include",
-            method: "POST",
+            method: "GET",
             headers: {
                 "Content-Type": "application/json"
-            },
-            body: name
+            }
         };
 
-        fetch("https://localhost:44394/api/map/get-planet", requestInit)
+        fetch("https://localhost:44394/api/map/get-planet?name=" + name, requestInit)
             .then((response) => response.json())
             .then((response) => {
                 let planet = response as PlanetData;
-                setPopulation(planet.Population);
-                setPlanetName(planet.Name);
+                setPopulation(planet.population);
+                setPlanetName(planet.name);
 
-                setAlignments(planet.OfficeAlignments);
+                setAlignments(planet.officeAlignments);
 
-                setGroups(planet.GroupEntries.map(x => x.toLocal(alignmentData[0])));
-                setIndustryMods(planet.IndustryEntries.map(x => x.toLocal()));
+                setGroups(planet.groupEntries.map(x => x.toLocal(alignmentData[0])));
+                setIndustryMods(planet.industryEntries.map(x => x.toLocal()));
             });
     }, []);
 
     function submitEdit() {
         let planet = new PlanetData();
-        planet.Population = population;
-        planet.Name = planetName;
+        planet.population = population;
+        planet.name = planetName;
 
-        planet.OfficeAlignments = alignments;
+        planet.officeAlignments = alignments;
 
-        planet.GroupEntries = groups.map(x => x.toSend());
-        planet.IndustryEntries = industryModifiers.map(x => x.toSend());
+        planet.groupEntries = groups.map(x => x.toSend());
+        planet.industryEntries = industryModifiers.map(x => x.toSend());
 
         var requestInit: RequestInit = {
             mode: "cors",
@@ -212,13 +213,13 @@ export function Planet() {
                     .then((response) => response.json())
                     .then((response) => {
                         let planet = response as PlanetData;
-                        setPopulation(planet.Population);
-                        setPlanetName(planet.Name);
+                        setPopulation(planet.population);
+                        setPlanetName(planet.name);
 
-                        setAlignments(planet.OfficeAlignments);
+                        setAlignments(planet.officeAlignments);
 
-                        setGroups(planet.GroupEntries.map(x => x.toLocal(alignmentData[0])));
-                        setIndustryMods(planet.IndustryEntries.map(x => x.toLocal()));
+                        setGroups(planet.groupEntries.map(x => x.toLocal(alignmentData[0])));
+                        setIndustryMods(planet.industryEntries.map(x => x.toLocal()));
                     });
             });
     }

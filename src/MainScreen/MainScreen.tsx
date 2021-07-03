@@ -110,7 +110,7 @@ export function MainScreen() {
             <Route path="/make-planet">
                 <MakePlanet />
             </Route>
-            <Route path="/planet">
+            <Route path="/planet/:name">
                 <Planet />
             </Route>
         </Router>

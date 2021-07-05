@@ -60,6 +60,7 @@
 .planetTable {
     width: 35%;
     table-layout: fixed;
+    word-wrap: break-word;
 }
 
 .planetTable th {
@@ -84,4 +85,11 @@
 
 .planetTable tr:last-child {
     border-bottom: none;
+}
+
+.planetScreen .btn {
+    background-color: #00000000 !important;
+    color: lime !important;
+    border: 2px outset lime !important;
+    font-family: monospace monospace !important;
 }

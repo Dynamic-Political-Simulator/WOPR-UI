@@ -1,12 +1,13 @@
 import { render } from '@testing-library/react';
 import { Console, group } from 'console';
+import { stringify } from 'query-string';
 import React, { useEffect, useState, useReducer } from 'react'
 import { useHistory, useParams } from 'react-router-dom';
 import { Button, Container, Input, Jumbotron, Label, ListGroup } from 'reactstrap';
 
 class PopEntry {
-    species: string = "";
-    amount: string = "0";
+    name: string = "";
+    amount: number = 0;
 }
 
 class GroupEntry {
@@ -17,27 +18,30 @@ class GroupEntry {
 
     toSend(): GroupEntrySend {
         let res = new GroupEntrySend();
-        res.Name = this.Name;
+        res.name = this.Name;
         this.Modifier?.forEach((v, k, t) => {
-            res.Modifier?.set(k, parseInt(v));
+            res.modifier![k] = parseInt(v);
         });
-        res.Size = parseInt(this.Size);
+        res.size = parseInt(this.Size);
         return res;
     }
 }
 
 class GroupEntrySend {
-    Name: string = "";
-    Modifier?: Map<string, number> = new Map<string, number>();
-    Size: number = 0;
+    name: string = "";
+    modifier?: { [id: string]: number } = {};
+    size: number = 0;
 
-    toLocal(defalign: string): GroupEntry {
+    constructor() { }
+
+    static toLocal(og: GroupEntrySend, defalign: string): GroupEntry {
         let res = new GroupEntry();
-        res.Name = this.Name;
-        this.Modifier?.forEach((v, k, t) => {
-            res.Modifier?.set(k, v.toString());
-        });
-        res.Size = this.Size.toString();
+        res.Name = og.name;
+        for (let tmp in og.modifier!) {
+            console.log(tmp);
+            res.Modifier?.set(tmp, og.modifier![tmp].toString());
+        }
+        res.Size = og.size.toString();
         res.CurrMod = defalign;
         return res;
     }
@@ -50,23 +54,23 @@ class IndustryEntry {
 
     toSend(): IndustryEntrySend {
         let res = new IndustryEntrySend();
-        res.Name = this.Name;
-        res.GDP = this.GDP;
-        res.Modifier = parseInt(this.Modifier);
+        res.name = this.Name;
+        res.gdp = this.GDP;
+        res.modifier = parseInt(this.Modifier);
         return res;
     }
 }
 
 class IndustryEntrySend {
-    Name: string = "";
-    GDP: number = 0;
-    Modifier: number = 0;
+    name: string = "";
+    gdp: number = 0;
+    modifier: number = 0;
 
-    toLocal(): IndustryEntry {
+    static toLocal(og: IndustryEntrySend): IndustryEntry {
         let res = new IndustryEntry();
-        res.Name = this.Name;
-        res.GDP = this.GDP;
-        res.Modifier = this.Modifier?.toString();
+        res.Name = og.name;
+        res.GDP = og.gdp;
+        res.Modifier = og.modifier?.toString();
         return res;
     }
 }
@@ -77,12 +81,20 @@ class PlanetData {
     officeAlignments: string[] = [];
     groupEntries: GroupEntrySend[] = [];
     industryEntries: IndustryEntrySend[] = [];
+    species: PopEntry[] = [];
+}
+
+enum STATE {
+    Loading,
+    Loaded,
+    Errored
 }
 
 export function Planet() {
     const history = useHistory();
     const [edit, setEdit] = useState(false);
-    const [species, setSpecies] = useState<string>();
+    const [state, setState] = useState(STATE.Loading);
+    const [expanded, setExpanded] = useState(false);
 
     const [, forceUpdate] = useReducer(x => x + 1, 0);
 
@@ -90,12 +102,12 @@ export function Planet() {
     const [population, setPopulation] = useState(420420420420);
     const [pops, setPops] = useState<PopEntry[]>([
         {
-            species: "Human",
-            amount: "70"
+            name: "Human",
+            amount: 70
         },
         {
-            species: "Liaran",
-            amount: "30"
+            name: "Liaran",
+            amount: 30
         }
     ]);
     const [alignments, setAlignments] = useState<string[]>([
@@ -116,25 +128,33 @@ export function Planet() {
 
     const { name } = useParams<{ name: string }>();
 
-    useEffect(() => {
-        console.log(name);
-        var requestInit: RequestInit = {
-            mode: "cors",
-            credentials: "include",
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json"
+    function beautifyOutputEntry(name: string): string {
+        if (name === "pmcs") return "PMCs" // special case since it's an abbreviation
+        return name.split("_").map(x => x[0].toUpperCase() + x.substring(1)).join(" ");
+    }
+
+    function intToString(num: number) {
+        if (num < 1000) {
+            return num;
+        }
+        var si = [
+            { v: 1E3, s: "K" },
+            { v: 1E6, s: "M" },
+            { v: 1E9, s: "B" },
+            { v: 1E12, s: "T" },
+            { v: 1E15, s: "P" },
+            { v: 1E18, s: "E" }
+        ];
+        var i;
+        for (i = si.length - 1; i > 0; i--) {
+            if (num >= si[i].v) {
+                break;
             }
-        };
+        }
+        return (num / si[i].v).toFixed(2).replace(/\.0+$|(\.[0-9]*[1-9])0+$/, "$1") + si[i].s;
+    }
 
-        fetch("https://localhost:44394/api/character/get-species", requestInit)
-            .then((response) => response.json())
-            .then((response) => {
-                setData(response);
-                //@ts-ignore
-                setSpecies(response);
-            });
-
+    useEffect(() => {
         var requestInit: RequestInit = {
             mode: "cors",
             credentials: "include",
@@ -149,30 +169,37 @@ export function Planet() {
             .then((response) => {
                 setData(response);
                 //@ts-ignore
+                let alignmento: string[] = response;
                 setAlignmentData(response);
                 console.table(alignmentData);
-            });
 
-        var requestInit: RequestInit = {
-            mode: "cors",
-            credentials: "include",
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json"
-            }
-        };
+                var requestInit: RequestInit = {
+                    mode: "cors",
+                    credentials: "include",
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                };
 
-        fetch("https://localhost:44394/api/map/get-planet?name=" + name, requestInit)
-            .then((response) => response.json())
-            .then((response) => {
-                let planet = response as PlanetData;
-                setPopulation(planet.population);
-                setPlanetName(planet.name);
+                fetch("https://localhost:44394/api/map/get-planet?name=" + name, requestInit)
+                    .then((response) => response.json())
+                    .then((response) => {
+                        try {
+                            let planet: PlanetData = response;
+                            setPopulation(planet.population);
+                            setPlanetName(planet.name);
 
-                setAlignments(planet.officeAlignments);
+                            setAlignments(planet.officeAlignments);
 
-                setGroups(planet.groupEntries.map(x => x.toLocal(alignmentData[0])));
-                setIndustryMods(planet.industryEntries.map(x => x.toLocal()));
+                            setGroups(planet.groupEntries.map((x: GroupEntrySend) => GroupEntrySend.toLocal(x, alignmento[0])));
+                            setIndustryMods(planet.industryEntries.map((x: IndustryEntrySend) => IndustryEntrySend.toLocal(x)));
+                            setPops(planet.species);
+                            setState(STATE.Loaded);
+                        } catch {
+                            setState(STATE.Errored);
+                        }
+                    });
             });
     }, []);
 
@@ -212,16 +239,41 @@ export function Planet() {
                 fetch("https://localhost:44394/api/map/get-planet", requestInit)
                     .then((response) => response.json())
                     .then((response) => {
-                        let planet = response as PlanetData;
+                        let planet: PlanetData = response;
                         setPopulation(planet.population);
                         setPlanetName(planet.name);
 
                         setAlignments(planet.officeAlignments);
 
-                        setGroups(planet.groupEntries.map(x => x.toLocal(alignmentData[0])));
-                        setIndustryMods(planet.industryEntries.map(x => x.toLocal()));
+                        setGroups(planet.groupEntries.map((x: GroupEntrySend) => GroupEntrySend.toLocal(x, alignmentData[0])));
+                        setIndustryMods(planet.industryEntries.map((x: IndustryEntrySend) => IndustryEntrySend.toLocal(x)));
+                        setPops(planet.species);
                     });
             });
+    }
+
+    if (state == STATE.Loading) {
+        return (
+            <div className="planetScreen">
+                <h1><b>{name}</b></h1>
+                <hr style={{
+                    borderTop: "2px solid lime"
+                }} />
+                Loading...
+            </div>
+        )
+    }
+
+    if (state == STATE.Errored) {
+        return (
+            <div className="planetScreen">
+                <h1><b>{name}</b></h1>
+                <hr style={{
+                    borderTop: "2px solid lime"
+                }} />
+                Invalid planet. If you are absolutely certain you entered it correctly, please tell staff.
+            </div>
+        )
     }
 
     let gdpSum = 0;
@@ -234,7 +286,7 @@ export function Planet() {
                 <hr style={{
                     borderTop: "2px solid lime"
                 }} />
-                <b>Population:</b> <span>{population.toLocaleString()}</span><br /><br />
+                <b>Population:</b> <span>{intToString(population)}</span><br /><br />
                 <table className="planetTable">
                     <tbody>
                         <tr>
@@ -246,9 +298,9 @@ export function Planet() {
                     </th>
                         </tr>
                         {pops?.map((spe) => (
-                            <tr key={spe.species}>
+                            <tr key={spe.name}>
                                 <td>
-                                    {spe.species}
+                                    {spe.name}
                                 </td>
                                 <td>
                                     {spe.amount}%
@@ -328,21 +380,22 @@ export function Planet() {
                                 % of Total
                     </th>
                         </tr>
-                        {industryModifiers?.map((spe) => (
+                        {industryModifiers?.sort((a, b) => a.GDP - b.GDP).map((spe) => (
                             <tr key={spe.Name}>
                                 <td>
-                                    {spe.Name}
+                                    {beautifyOutputEntry(spe.Name)}
                                 </td>
                                 <td>
-                                    {spe.GDP}
+                                    {intToString(spe.GDP)}
                                 </td>
                                 <td>
                                     {Math.floor((spe.GDP / gdpSum) * 100)}%
                                 </td>
                             </tr>
-                        ))}
+                        )).reverse().slice(0, !expanded ? 10 : undefined)}
                     </tbody>
                 </table>
+                <Button onClick={() => setExpanded(!expanded)}>{!expanded ? "Expand" : "Collapse"}</Button>
                 <br /><br />
                 <Button onClick={() => history.push("/map")}>Back</Button>&nbsp;<Button onClick={() => setEdit(true)}>Edit</Button>
             </div>
@@ -366,9 +419,9 @@ export function Planet() {
                     </th>
                         </tr>
                         {pops?.map((spe) => (
-                            <tr key={spe.species}>
+                            <tr key={spe.name}>
                                 <td>
-                                    {spe.species}
+                                    {spe.name}
                                 </td>
                                 <td>
                                     {spe.amount}%
@@ -561,10 +614,9 @@ export function Planet() {
                             <th>
                                 Modifier
                     </th>
-                            <th></th>
                         </tr>
                         {
-                            industryModifiers.map((m) => (<tr>
+                            industryModifiers.sort((a, b) => a.GDP - b.GDP).reverse().map((m) => (<tr>
                                 <td>
                                     <Input
                                         type="text"
@@ -589,33 +641,7 @@ export function Planet() {
                                         }}
                                     />
                                 </td>
-                                <td>
-                                    <Button onClick={(e) => {
-                                        let b = industryModifiers;
-                                        let ind = b.indexOf(m);
-                                        if (ind > -1)
-                                            b.splice(ind, 1);
-                                        setIndustryMods(b);
-                                        forceUpdate();
-                                    }}>Remove</Button>
-                                </td>
                             </tr>))}
-                        <tr>
-                            <td>
-                                <Button
-                                    onClick={(e) => {
-                                        let b = industryModifiers;
-                                        let x = new IndustryEntry();
-                                        b.push(x);
-                                        setIndustryMods(b);
-                                        forceUpdate();
-                                    }}>Add</Button>
-                            </td>
-                            <td>
-                            </td>
-                            <td>
-                            </td>
-                        </tr>
                     </tbody>
                 </table>
                 <br /><br />

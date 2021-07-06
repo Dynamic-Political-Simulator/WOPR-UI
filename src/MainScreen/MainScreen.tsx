@@ -33,7 +33,10 @@ export function MainScreen() {
     const [cookies, setCookie] = useCookies();
 
     useEffect(() => {
-        var isAdmin = cookies["isAdmin"]
+        var isAdmin = cookies["isAdmin"];
+        let presetName = cookies["presetName"];
+        let fgColour = cookies["fg"];
+        let bgColour = cookies["bg"];
 
         if (isAdmin === undefined) {
             var requestInit: RequestInit = {
@@ -53,6 +56,16 @@ export function MainScreen() {
                 .catch(() => {
                     window.location.href = "https://localhost:44394/api/auth/auth";
                 });
+        }
+
+        if (presetName === undefined || fgColour === undefined || bgColour === undefined) {
+            setCookie("presetName", "Default");
+            setCookie("fg", "#00FF00");
+            setCookie("bg", "#28a745");
+        } else {
+            let r: HTMLElement = document.querySelector(':root')!;
+            r.style.setProperty("--colour", fgColour);
+            r.style.setProperty("--darkColour", bgColour);
         }
     });
     return (

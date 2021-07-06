@@ -1,14 +1,10 @@
-body {
-    --termColour: #33FF33;
-}
-
 .terminal {
     font-family: monospace, monospace; 
     font-size: 12pt;
     line-height: 1.2;
     /* color: var(--termColour); */
-    color: var(--termColour);
-    text-shadow: 0 0 2px lime;
+    color: var(--colour);
+    text-shadow: 0 0 2px var(--colour);
     overflow-x: hidden; /* mfw scrollbar still appears despite nothing exceeding 100 vw; */
     overflow-wrap: break-word;
 }
@@ -38,8 +34,8 @@ body {
 }
 
 #inputter {
-    color: var(--termColour);
-    text-shadow: 0 0 4px lime;
+    color: var(--colour);
+    text-shadow: 0 0 4px var(--colour);
     margin-top: 0;
     margin-left: 0;
 }

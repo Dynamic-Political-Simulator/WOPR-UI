@@ -25,8 +25,9 @@ import { Clock } from '../TimeToMidnight/Clock';
 import ClockSetter from '../TimeToMidnight/ClockSetter';
 import Map from "../Map/Map";
 import MapEdit from "../Map/MapEdit";
-import { MakePlanet } from "../Map/PlanetMaker";
+import { MakeDesc } from "../Map/PlanetMaker";
 import { Planet } from '../Map/PlanetScreen';
+import { Options } from '../Options/Options';
 
 export function MainScreen() {
     const [cookies, setCookie] = useCookies();
@@ -107,11 +108,14 @@ export function MainScreen() {
             <Route path="/map-edit">
                 <MapEdit />
             </Route>
-            <Route path="/make-planet">
-                <MakePlanet />
+            <Route path="/planet-description">
+                <MakeDesc />
             </Route>
-            <Route path="/planet/:name">
+            <Route path="/planet">
                 <Planet />
+            </Route>
+            <Route path="/options">
+                <Options />
             </Route>
         </Router>
     )

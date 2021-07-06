@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom';
 import { Button, Container, Input, Jumbotron, Label, ListGroup } from 'reactstrap';
 
-export function MakePlanet() {
+export function MakeDesc() {
     const [name, setName] = useState<string>();
     const [desc, setDesc] = useState<string>();
 
@@ -24,7 +24,7 @@ export function MakePlanet() {
             body: JSON.stringify(body)
         };
 
-        fetch("https://localhost:44394/api/map/create-planet", requestInit)
+        fetch("https://localhost:44394/api/map/edit-planet-description", requestInit)
             .catch(() => setError("Something went wrong, try again."))
             .then(() => alert("done"))
     }
@@ -32,7 +32,7 @@ export function MakePlanet() {
     return (
         <Container>
             <Jumbotron>
-                <h1>VERY DEBUG TEST PLANET MAKER PLEASE IGNORE</h1>
+                <h1>Palnet Description Setter</h1>
 
                 <hr className="my-2" />
 

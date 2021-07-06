@@ -3,9 +3,10 @@ import ReactDOM from 'react-dom';
 import reportWebVitals from './reportWebVitals';
 import { MainScreen } from './MainScreen/MainScreen';
 import "bootstrap/dist/css/bootstrap.css";
+import "./Index.css";
 
 ReactDOM.render(
-  <MainScreen/>,
+  <MainScreen />,
   document.getElementById('root')
 );
 

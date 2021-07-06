@@ -1,9 +1,25 @@
 import { render } from '@testing-library/react';
 import { Console, group } from 'console';
-import { stringify } from 'query-string';
-import React, { useEffect, useState, useReducer } from 'react'
-import { useHistory, useParams } from 'react-router-dom';
+import queryString from 'query-string';
+import React, { useEffect, useState, useReducer, useRef, Ref } from 'react'
+import { useHistory, useLocation } from 'react-router-dom';
 import { Button, Container, Input, Jumbotron, Label, ListGroup } from 'reactstrap';
+import pattern1 from './Patterns/1.png';
+import pattern2 from './Patterns/2.png';
+import pattern3 from './Patterns/3.png';
+import pattern4 from './Patterns/4.png';
+import pattern5 from './Patterns/5.png';
+import pattern6 from './Patterns/6.png';
+import pattern7 from './Patterns/7.png';
+import pattern8 from './Patterns/8.png';
+import pattern9 from './Patterns/9.png';
+import pattern10 from './Patterns/10.png';
+import pattern11 from './Patterns/11.png';
+import pattern12 from './Patterns/12.png';
+import pattern13 from './Patterns/13.png';
+import pattern14 from './Patterns/14.png';
+import pattern15 from './Patterns/15.png';
+import pattern16 from './Patterns/16.png';
 
 class PopEntry {
     name: string = "";
@@ -92,9 +108,11 @@ enum STATE {
 
 export function Planet() {
     const history = useHistory();
+    const location = useLocation();
     const [edit, setEdit] = useState(false);
     const [state, setState] = useState(STATE.Loading);
     const [expanded, setExpanded] = useState(false);
+    const [coloured, setColoured] = useState("");
 
     const [, forceUpdate] = useReducer(x => x + 1, 0);
 
@@ -126,7 +144,9 @@ export function Planet() {
         "Hardliner"
     ]);
 
-    const { name } = useParams<{ name: string }>();
+    const name: string = queryString.parse(location.search).name as string;
+
+    const industryGDPChart = useRef<HTMLCanvasElement>(null);
 
     function beautifyOutputEntry(name: string): string {
         if (name === "pmcs") return "PMCs" // special case since it's an abbreviation
@@ -152,6 +172,133 @@ export function Planet() {
             }
         }
         return (num / si[i].v).toFixed(2).replace(/\.0+$|(\.[0-9]*[1-9])0+$/, "$1") + si[i].s;
+    }
+
+    function waitFor(conditionFunction: Function) {
+
+        function poll(resolve: Function) {
+            if (conditionFunction()) resolve();
+            else setTimeout(_ => poll(resolve), 400);
+        }
+
+        return new Promise<void>((resolve, reject) => poll(resolve));
+    }
+
+    function colorImage(dest: HTMLCanvasElement, color: string) {
+        let ctx = dest.getContext("2d")!;
+        ctx.fillStyle = color;
+        //ctx.globalCompositeOperation = "color";
+        ctx.fillRect(0, 0, dest.width, dest.height);
+        ctx.globalCompositeOperation = "source-over";
+        return dest;
+    }
+
+    function maskImage(dest: HTMLCanvasElement, source: CanvasImageSource) {
+        let ctx = dest.getContext("2d")!;
+        ctx.globalCompositeOperation = "destination-in";
+        ctx.drawImage(source, 0, 0);
+        ctx.globalCompositeOperation = "source-over";
+        return dest;
+    }
+
+    function doIndustryRender() {
+        if (state != STATE.Loaded) return;
+        if (industryGDPChart.current) {
+            const canvas = industryGDPChart.current;
+            const context = canvas.getContext('2d');
+
+            if (context) {
+                context.clearRect(0, 0, canvas.width, canvas.height);
+
+                // 10 values max
+                let colours: CanvasPattern[] = [];
+
+                let files: string[] = [
+                    pattern1,
+                    pattern2,
+                    pattern3,
+                    pattern4,
+                    pattern5,
+                    pattern6,
+                    pattern7,
+                    pattern8,
+                    pattern9,
+                    pattern10,
+                    pattern11,
+                    pattern12,
+                    pattern13,
+                    pattern14,
+                    pattern15,
+                    pattern16
+                ];
+
+                files.forEach((x) => {
+                    let img = new Image();
+                    img.src = x;
+                    img.onload = () => colours.push(context.createPattern(img, "repeat")!);
+                });
+
+                waitFor(() => colours.length == files.length).then(() => {
+                    let yp = canvas.height / 2;
+                    let radius = canvas.height / 2;
+                    let xp = radius;
+
+                    let startingPoint = 0;
+
+                    let industryTable = industryModifiers?.sort((a, b) => a.GDP - b.GDP).reverse().slice();
+                    let industryChartTable = industryTable.splice(0, colours.length - 1);
+                    if (industryTable.length > 0) {
+                        let others = new IndustryEntry();
+                        others.Name = "other";
+                        others.GDP = industryTable.map(x => x.GDP).reduce((a, b) => a + b)
+                        industryChartTable.push(others);
+                    }
+
+                    let total = 0;
+                    if (industryChartTable.length > 0) total = industryChartTable.map(x => x.GDP).reduce((a, b) => a + b);
+
+                    console.table(industryChartTable);
+                    console.table(industryModifiers);
+
+                    const column = 8;
+
+                    for (let i = 0; i < industryChartTable.length; i++) {
+                        let percent = (industryChartTable[i].GDP / total) * 100;
+
+                        let endPoint = startingPoint + (2 / 100 * percent);
+
+                        context.beginPath();
+
+                        context.fillStyle = colours[i];
+                        context.strokeStyle = "#00ff00";
+                        context.moveTo(xp, yp);
+                        context.arc(xp, yp, radius, startingPoint * Math.PI, endPoint * Math.PI);
+                        context.fill();
+                        context.stroke();
+
+                        startingPoint = endPoint;
+
+
+                        let offset = 2.2 * radius + 1.5 * radius * Math.floor((i / column));
+                        context.rect(offset, 0.1 * canvas.height * (i % column), 0.09 * canvas.height, 0.09 * canvas.height);
+                        context.fill();
+                        context.rect(offset, 0.1 * canvas.height * (i % column), 0.09 * canvas.height, 0.09 * canvas.height);
+                        context.stroke();
+                        context.fillStyle = "#00ff00";
+                        context.fillText(beautifyOutputEntry(industryChartTable[i].Name) + " (" + percent.toFixed(2) + "%)", offset + 0.1 * canvas.height, ((i % column + 1) * 0.1 * canvas.height - 0.01 * canvas.height));
+                    }
+
+                    const newClr = getComputedStyle(document.documentElement).getPropertyValue("--colour");
+                    setColoured(newClr);
+                    let fuck = new Image();
+                    fuck.src = canvas.toDataURL();
+                    fuck.onload = () => {
+                        colorImage(canvas, newClr);
+                        maskImage(canvas, fuck);
+                    }
+                });
+            }
+        }
     }
 
     useEffect(() => {
@@ -202,6 +349,16 @@ export function Planet() {
                     });
             });
     }, []);
+
+    useEffect(() => {
+        doIndustryRender();
+    }, [state]);
+
+    useEffect(() => {
+        if (coloured !== getComputedStyle(document.documentElement).getPropertyValue("--colour") && coloured !== "") {
+            doIndustryRender();
+        }
+    });
 
     function submitEdit() {
         let planet = new PlanetData();
@@ -257,7 +414,7 @@ export function Planet() {
             <div className="planetScreen">
                 <h1><b>{name}</b></h1>
                 <hr style={{
-                    borderTop: "2px solid lime"
+                    borderTop: "2px solid var(--colour)"
                 }} />
                 Loading...
             </div>
@@ -269,7 +426,7 @@ export function Planet() {
             <div className="planetScreen">
                 <h1><b>{name}</b></h1>
                 <hr style={{
-                    borderTop: "2px solid lime"
+                    borderTop: "2px solid var(--colour)"
                 }} />
                 Invalid planet. If you are absolutely certain you entered it correctly, please tell staff.
             </div>
@@ -284,7 +441,7 @@ export function Planet() {
             <div className="planetScreen">
                 <h1><b>{planetName}</b></h1>
                 <hr style={{
-                    borderTop: "2px solid lime"
+                    borderTop: "2px solid var(--colour)"
                 }} />
                 <b>Population:</b> <span>{intToString(population)}</span><br /><br />
                 <table className="planetTable">
@@ -389,13 +546,18 @@ export function Planet() {
                                     {intToString(spe.GDP)}
                                 </td>
                                 <td>
-                                    {Math.floor((spe.GDP / gdpSum) * 100)}%
+                                    {((spe.GDP / gdpSum) * 100).toFixed(2)}%
                                 </td>
                             </tr>
                         )).reverse().slice(0, !expanded ? 10 : undefined)}
                     </tbody>
                 </table>
                 <Button onClick={() => setExpanded(!expanded)}>{!expanded ? "Expand" : "Collapse"}</Button>
+                <br /><br />
+                <canvas
+                    height={Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0) * 0.35}
+                    width={Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0) * 0.7}
+                    ref={industryGDPChart} />
                 <br /><br />
                 <Button onClick={() => history.push("/map")}>Back</Button>&nbsp;<Button onClick={() => setEdit(true)}>Edit</Button>
             </div>
@@ -405,7 +567,7 @@ export function Planet() {
             <div className="planetScreen">
                 <h1><b>{planetName}</b> <span style={{ color: "red" }}>(Edit Mode)</span></h1>
                 <hr style={{
-                    borderTop: "2px solid lime"
+                    borderTop: "2px solid var(--colour)"
                 }} />
                 <b>Population:</b> <span>{population.toLocaleString()}</span><br /><br />
                 <table className="planetTable">

@@ -7,6 +7,67 @@
     background-color: #00000F;
 }
 
+.leaflet-control-zoom-in, .leaflet-control-zoom-out {
+    background-color: #000000AA !important;
+    color: var(--colour) !important;
+    border: 2px outset var(--colour) !important;
+    text-shadow: 0 0 2px var(--colour) !important;
+    box-shadow: 0 0 2px var(--colour) !important;
+}
+
+.leaflet-control-zoom-in.leaflet-disabled, .leaflet-control-zoom-out.leaflet-disabled {
+    background-color: #000000AA !important;
+    color: var(--darkColour) !important;
+    border: 2px outset var(--darkColour) !important;
+    text-shadow: 0 0 2px var(--darkColour) !important;
+    box-shadow: 0 0 2px var(--darkColour) !important;
+}
+
+.leaflet-control-attribution {
+    background-color: #000000AA !important;
+    color: var(--colour) !important;
+}
+
+.leaflet-control-attribution a {
+    color: var(--darkColour) !important;
+}
+
+.leaflet-popup-content-wrapper {
+    border-radius: 0 !important;
+    background-color: #00000099 !important;
+    color: var(--colour) !important;
+    border: 2px dotted var(--colour) !important;
+    border-collapse: collapse !important;
+}
+
+.leaflet-popup-content-wrapper a {
+    color: var(--darkColour) !important;
+}
+
+.leaflet-popup-close-button {
+    color: var(--darkColour) !important;
+}
+
+.leaflet-popup-tip {
+    background-color: #00000099 !important;
+    border: 2px dotted var(--colour) !important;
+    border-top: none !important;
+    border-collapse: collapse !important;
+}
+
+.leaflet-tooltip-left {
+    border-radius: 0 !important;
+    background-color: #000 !important;
+    color: var(--colour) !important;
+    border: 1px dotted var(--colour) !important;
+    border-collapse: collapse !important;
+}
+
+
+.leaflet-tooltip-left:before {
+    border-left-color: #000 !important;
+}
+
 #mapEditForm {
     position: absolute;
     z-index: 10000;
@@ -49,7 +110,7 @@
 .planetScreen {
     font-family: monospace, monospace; 
     font-size: large;
-    color: lime;
+    color: var(--colour);
     margin: 1%;
 }
 
@@ -64,11 +125,11 @@
 }
 
 .planetTable th {
-    border-right: 2px dotted lime;
+    border-right: 2px dotted var(--colour);
 }
 
 .planetTable td {
-    border-right: 2px dotted lime;
+    border-right: 2px dotted var(--colour);
 }
 
 .planetTable th:last-child {
@@ -80,7 +141,7 @@
 }
 
 .planetTable tr {
-    border-bottom: 2px dotted lime;
+    border-bottom: 2px dotted var(--colour);
 }
 
 .planetTable tr:last-child {
@@ -89,7 +150,7 @@
 
 .planetScreen .btn {
     background-color: #00000000 !important;
-    color: lime !important;
-    border: 2px outset lime !important;
+    color: var(--colour) !important;
+    border: 2px outset var(--colour) !important;
     font-family: monospace monospace !important;
 }

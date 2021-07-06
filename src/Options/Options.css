@@ -1,0 +1,93 @@
+.options {
+    height: 100vh;
+    width: 100vw;
+}
+.windowBar {
+	position: absolute;
+	top: 30%;
+	left: 35%;
+	height: 4%;
+	width: 30%;
+	outline: 10px solid var(--colour);
+	background-color: var(--colour);
+  	text-shadow: 0 0 10px black;
+	color: black;
+	box-shadow: 0 0 35px var(--colour);
+}
+
+.title {
+	position: relative;
+	top: 10%;
+  	font-family: monospace monospace;
+	font-size: 18pt;
+}
+
+.buttonRow {
+	position: relative;
+	left: 48%;
+	top: 10%;
+	text-shadow: 0 0 10px var(--colour);
+}
+
+.minimise {
+	width: 30px;
+	height: 30px;
+	color: var(--colour);
+	background-color: #000;
+	border: outset var(--colour) 4px;
+	text-align: center;
+}
+
+.popOut {
+	width: 30px;
+	height: 30px;
+	color: var(--colour);
+	background-color: #000;
+	border: outset var(--colour) 4px;
+	text-align: center;
+}
+
+.close {
+	width: 30px;
+	height: 30px;
+	color: var(--colour);
+	background-color: #000;
+	border: outset var(--colour) 4px;
+	text-align: center;
+}
+
+.container, .container2 {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin-top: -15vh;
+	margin-left: -15vw;
+	width: 30%;
+	height: 30%;
+	box-shadow: 0 0 50px var(--colour);
+	outline: 10px solid var(--colour);
+	text-align: center;
+	background: #000000;
+}
+
+
+.container button {
+	height: 10%;
+	width: 20%;
+	margin: 10px;
+	background: var(--colour);
+	border: outset var(--colour) 5px;
+	box-shadow: 0 0 4px var(--colour);
+  	text-shadow: 0 0 10px black;
+}
+
+.container button:disabled {
+	height: 10%;
+	width: 20%;
+	margin: 10px;
+	background: var(--darkColour);
+	border: outset var(--darkColour) 5px;
+	box-shadow: 0 0 4px var(--darkColour);
+	color: black;
+  	text-shadow: 0 0 10px black;
+}

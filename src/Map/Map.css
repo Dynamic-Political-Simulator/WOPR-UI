@@ -116,10 +116,32 @@
 
 .planetTable input {
     width: 100%;
+    background-color: transparent;
+    color: var(--colour);
+    border: none;
+}
+
+.planetTable input:focus {
+    background-color: transparent;
+    color: var(--colour);
+    border: none;
+}
+
+.planetTable select {
+    width: 100%;
+    background-color: transparent;
+    color: var(--colour);
+    border: 2px outset var(--colour);
+}
+
+.planetTable select:focus {
+    background-color: transparent;
+    color: var(--colour);
+    border: 2px outset var(--colour);
 }
 
 .planetTable {
-    width: 35%;
+    width: 40%;
     table-layout: fixed;
     word-wrap: break-word;
 }

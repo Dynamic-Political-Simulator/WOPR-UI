@@ -91,6 +91,11 @@ class IndustryEntrySend {
     }
 }
 
+class AlignmentPopularityEntry {
+    name: string = "";
+    popularity: number = 0;
+}
+
 class PlanetData {
     name: string = "";
     population: number = 0;
@@ -98,6 +103,7 @@ class PlanetData {
     groupEntries: GroupEntrySend[] = [];
     industryEntries: IndustryEntrySend[] = [];
     species: PopEntry[] = [];
+    popularityEntries: AlignmentPopularityEntry[] = [];
 }
 
 enum STATE {
@@ -113,6 +119,7 @@ export function Planet() {
     const [state, setState] = useState(STATE.Loading);
     const [expanded, setExpanded] = useState(false);
     const [coloured, setColoured] = useState("");
+    const [saving, setSaving] = useState(false);
 
     const [, forceUpdate] = useReducer(x => x + 1, 0);
 
@@ -143,10 +150,12 @@ export function Planet() {
         "Ultrafederalist",
         "Hardliner"
     ]);
+    const [alignmentPopularity, setAlignmentPopularity] = useState<AlignmentPopularityEntry[]>([]);
 
     const name: string = queryString.parse(location.search).name as string;
 
     const industryGDPChart = useRef<HTMLCanvasElement>(null);
+    const popsimAlignChart = useRef<HTMLCanvasElement>(null);
 
     function beautifyOutputEntry(name: string): string {
         if (name === "pmcs") return "PMCs" // special case since it's an abbreviation
@@ -245,7 +254,7 @@ export function Planet() {
 
                     let startingPoint = 0;
 
-                    let industryTable = industryModifiers?.sort((a, b) => a.GDP - b.GDP).reverse().slice();
+                    let industryTable = industryModifiers?.slice();
                     let industryChartTable = industryTable.splice(0, colours.length - 1);
                     if (industryTable.length > 0) {
                         let others = new IndustryEntry();
@@ -301,6 +310,103 @@ export function Planet() {
         }
     }
 
+    function doPopsimRender() {
+        if (state != STATE.Loaded) return;
+        if (popsimAlignChart.current) {
+            const canvas = popsimAlignChart.current;
+            const context = canvas.getContext('2d');
+
+            if (context) {
+                context.clearRect(0, 0, canvas.width, canvas.height);
+
+                // 10 values max
+                let colours: CanvasPattern[] = [];
+
+                let files: string[] = [
+                    pattern1,
+                    pattern2,
+                    pattern3,
+                    pattern4,
+                    pattern5,
+                    pattern6,
+                    pattern7,
+                    pattern8,
+                    pattern9,
+                    pattern10,
+                    pattern11,
+                    pattern12,
+                    pattern13,
+                    pattern14,
+                    pattern15,
+                    pattern16
+                ];
+
+                files.forEach((x) => {
+                    let img = new Image();
+                    img.src = x;
+                    img.onload = () => colours.push(context.createPattern(img, "repeat")!);
+                });
+
+                waitFor(() => colours.length == files.length).then(() => {
+                    let yp = canvas.height / 2;
+                    let radius = canvas.height / 2;
+                    let xp = radius;
+
+                    let startingPoint = 0;
+
+                    let popularityTable = alignmentPopularity?.sort((a, b) => a.popularity - b.popularity).reverse().slice();
+                    let popularityChartTable = popularityTable.splice(0, colours.length - 1);
+                    if (popularityTable.length > 0) {
+                        let others = new AlignmentPopularityEntry();
+                        others.name = "Other";
+                        others.popularity = popularityTable.map(x => x.popularity).reduce((a, b) => a + b)
+                        popularityChartTable.push(others);
+                    }
+
+                    let total = 0;
+                    if (popularityChartTable.length > 0) total = popularityChartTable.map(x => x.popularity).reduce((a, b) => a + b);
+
+                    const column = 8;
+
+                    for (let i = 0; i < popularityChartTable.length; i++) {
+                        let percent = (popularityChartTable[i].popularity / total) * 100;
+
+                        let endPoint = startingPoint + (2 / 100 * percent);
+
+                        context.beginPath();
+
+                        context.fillStyle = colours[i];
+                        context.strokeStyle = "#00ff00";
+                        context.moveTo(xp, yp);
+                        context.arc(xp, yp, radius, startingPoint * Math.PI, endPoint * Math.PI);
+                        context.fill();
+                        context.stroke();
+
+                        startingPoint = endPoint;
+
+
+                        let offset = 2.2 * radius + 1.5 * radius * Math.floor((i / column));
+                        context.rect(offset, 0.1 * canvas.height * (i % column), 0.09 * canvas.height, 0.09 * canvas.height);
+                        context.fill();
+                        context.rect(offset, 0.1 * canvas.height * (i % column), 0.09 * canvas.height, 0.09 * canvas.height);
+                        context.stroke();
+                        context.fillStyle = "#00ff00";
+                        context.fillText(beautifyOutputEntry(popularityChartTable[i].name) + " (" + percent.toFixed(2) + "%)", offset + 0.1 * canvas.height, ((i % column + 1) * 0.1 * canvas.height - 0.01 * canvas.height));
+                    }
+
+                    const newClr = getComputedStyle(document.documentElement).getPropertyValue("--colour");
+                    setColoured(newClr);
+                    let fuck = new Image();
+                    fuck.src = canvas.toDataURL();
+                    fuck.onload = () => {
+                        colorImage(canvas, newClr);
+                        maskImage(canvas, fuck);
+                    }
+                });
+            }
+        }
+    }
+
     useEffect(() => {
         var requestInit: RequestInit = {
             mode: "cors",
@@ -340,8 +446,9 @@ export function Planet() {
                             setAlignments(planet.officeAlignments);
 
                             setGroups(planet.groupEntries.map((x: GroupEntrySend) => GroupEntrySend.toLocal(x, alignmento[0])));
-                            setIndustryMods(planet.industryEntries.map((x: IndustryEntrySend) => IndustryEntrySend.toLocal(x)));
+                            setIndustryMods(planet.industryEntries.map((x: IndustryEntrySend) => IndustryEntrySend.toLocal(x)).sort((a, b) => a.GDP - b.GDP).reverse());
                             setPops(planet.species);
+                            setAlignmentPopularity(planet.popularityEntries);
                             setState(STATE.Loaded);
                         } catch {
                             setState(STATE.Errored);
@@ -352,15 +459,24 @@ export function Planet() {
 
     useEffect(() => {
         doIndustryRender();
+        doPopsimRender();
     }, [state]);
 
     useEffect(() => {
         if (coloured !== getComputedStyle(document.documentElement).getPropertyValue("--colour") && coloured !== "") {
             doIndustryRender();
+            doPopsimRender();
         }
     });
 
     function submitEdit() {
+        if (groups.map(x => parseFloat(x.Size)).reduce((a, b) => a + b) !== 100) {
+            let check = window.confirm("Planet Group sizes do not add up to 100%. This will result in problems! Are you sure you want to continue?");
+            if (!check) return;
+        }
+        setSaving(true);
+        setEdit(false);
+
         let planet = new PlanetData();
         planet.population = population;
         planet.name = planetName;
@@ -381,19 +497,19 @@ export function Planet() {
         };
 
         fetch("https://localhost:44394/api/map/edit-planet", requestInit)
-            .then((response) => response.json())
             .then((response) => {
+                setSaving(false);
+
                 var requestInit: RequestInit = {
                     mode: "cors",
                     credentials: "include",
-                    method: "POST",
+                    method: "GET",
                     headers: {
                         "Content-Type": "application/json"
-                    },
-                    body: name
+                    }
                 };
 
-                fetch("https://localhost:44394/api/map/get-planet", requestInit)
+                fetch("https://localhost:44394/api/map/get-planet?name=" + name, requestInit)
                     .then((response) => response.json())
                     .then((response) => {
                         try {
@@ -405,7 +521,12 @@ export function Planet() {
 
                             setGroups(planet.groupEntries.map((x: GroupEntrySend) => GroupEntrySend.toLocal(x, alignmentData[0])));
                             setIndustryMods(planet.industryEntries.map((x: IndustryEntrySend) => IndustryEntrySend.toLocal(x)));
+                            setPops(planet.species);
+                            setAlignmentPopularity(planet.popularityEntries);
                             setState(STATE.Loaded);
+                            forceUpdate();
+                            doIndustryRender();
+                            doPopsimRender();
                         } catch {
                             setState(STATE.Errored);
                         }
@@ -443,7 +564,7 @@ export function Planet() {
     if (!edit) {
         return (
             <div className="planetScreen">
-                <h1><b>{planetName}</b></h1>
+                <h1><b>{planetName}</b><span style={{ color: "blue" }}>{saving ? "(Saving...)" : ""}</span></h1>
                 <hr style={{
                     borderTop: "2px solid var(--colour)"
                 }} />
@@ -528,6 +649,11 @@ export function Planet() {
                     </tbody>
                 </table>
                 <br />
+                <canvas
+                    height={Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0) * 0.35}
+                    width={Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0) * 0.7}
+                    ref={popsimAlignChart} />
+                <br />
                 <table className="planetTable">
                     <tbody>
                         <tr>
@@ -541,7 +667,7 @@ export function Planet() {
                                 % of Total
                     </th>
                         </tr>
-                        {industryModifiers?.sort((a, b) => a.GDP - b.GDP).map((spe) => (
+                        {industryModifiers?.map((spe) => (
                             <tr key={spe.Name}>
                                 <td>
                                     {beautifyOutputEntry(spe.Name)}
@@ -553,7 +679,7 @@ export function Planet() {
                                     {((spe.GDP / gdpSum) * 100).toFixed(2)}%
                                 </td>
                             </tr>
-                        )).reverse().slice(0, !expanded ? 10 : undefined)}
+                        )).slice(0, !expanded ? 10 : undefined)}
                     </tbody>
                 </table>
                 <Button onClick={() => setExpanded(!expanded)}>{!expanded ? "Expand" : "Collapse"}</Button>
@@ -706,7 +832,8 @@ export function Planet() {
                                             setGroups(b);
                                             forceUpdate(); // react sucks balls
                                         }}
-                                    />%
+                                        className="percentInputThing"
+                                    />
                                 </td>
                                 <td>
                                     <Input
@@ -782,18 +909,9 @@ export function Planet() {
                     </th>
                         </tr>
                         {
-                            industryModifiers.sort((a, b) => a.GDP - b.GDP).reverse().map((m) => (<tr>
+                            industryModifiers.map((m) => (<tr>
                                 <td>
-                                    <Input
-                                        type="text"
-                                        value={m.Name}
-                                        onChange={(e) => {
-                                            let b = industryModifiers;
-                                            b[b.indexOf(m)].Name = e.target.value;
-                                            setIndustryMods(b);
-                                            forceUpdate(); // react sucks balls
-                                        }}
-                                    />
+                                    {m.Name}
                                 </td>
                                 <td>
                                     <Input
@@ -814,7 +932,6 @@ export function Planet() {
                 <Button onClick={() => {
                     // Run a thing that saves everything and sends it to the server
                     submitEdit();
-                    setEdit(false);
                 }}>Save</Button>
             </div>
         )

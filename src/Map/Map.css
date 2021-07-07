@@ -176,3 +176,52 @@
     border: 2px outset var(--colour) !important;
     font-family: monospace monospace !important;
 }
+
+/*Empire Screen Stuff */
+.empireScreen {
+    font-family: monospace, monospace; 
+    font-size: large;
+    color: var(--colour);
+    margin: 1%;
+}
+
+.empireTable input {
+    width: 100%;
+}
+
+.empireTable {
+    width: 35%;
+    table-layout: fixed;
+    word-wrap: break-word;
+}
+
+.empireTable th {
+    border-right: 2px dotted var(--colour);
+}
+
+.empireTable td {
+    border-right: 2px dotted var(--colour);
+}
+
+.empireTable th:last-child {
+    border-right: none;
+}
+
+.empireTable td:last-child {
+    border-right: none;
+}
+
+.empireTable tr {
+    border-bottom: 2px dotted var(--colour);
+}
+
+.empireTable tr:last-child {
+    border-bottom: none;
+}
+
+.empireScreen .btn {
+    background-color: #00000000 !important;
+    color: var(--colour) !important;
+    border: 2px outset var(--colour) !important;
+    font-family: monospace monospace !important;
+}

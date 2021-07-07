@@ -28,6 +28,7 @@ import MapEdit from "../Map/MapEdit";
 import { MakeDesc } from "../Map/PlanetMaker";
 import { Planet } from '../Map/PlanetScreen';
 import { Options } from '../Options/Options';
+import { Empire } from '../Map/EmpireScreen';
 
 export function MainScreen() {
     const [cookies, setCookie] = useCookies();
@@ -129,6 +130,9 @@ export function MainScreen() {
             </Route>
             <Route path="/options">
                 <Options />
+            </Route>
+            <Route path = "/empire">
+                <Empire />
             </Route>
         </Router>
     )

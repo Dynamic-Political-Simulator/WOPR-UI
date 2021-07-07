@@ -91,12 +91,12 @@ class IndustryEntrySend {
     }
 }
 
-class PlanetData {
+class EmpireData {
     name: string = "";
     population: number = 0;
-    officeAlignments: string[] = [];
     groupEntries: GroupEntrySend[] = [];
     industryEntries: IndustryEntrySend[] = [];
+    spaceIndustryEntries: IndustryEntrySend[] = [];
     species: PopEntry[] = [];
 }
 
@@ -106,7 +106,7 @@ enum STATE {
     Errored
 }
 
-export function Planet() {
+export function Empire() {
     const history = useHistory();
     const location = useLocation();
     const [edit, setEdit] = useState(false);
@@ -116,7 +116,7 @@ export function Planet() {
 
     const [, forceUpdate] = useReducer(x => x + 1, 0);
 
-    const [planetName, setPlanetName] = useState("Planet Name");
+    const [empireName, setEmpireName] = useState("Empire Name");
     const [population, setPopulation] = useState(420420420420);
     const [pops, setPops] = useState<PopEntry[]>([
         {
@@ -128,15 +128,11 @@ export function Planet() {
             amount: 30
         }
     ]);
-    const [alignments, setAlignments] = useState<string[]>([
-        "Conservative",
-        "Reformist",
-        "Ultrafederalist"
-    ].reverse());
     const [groups, setGroups] = useState<GroupEntry[]>([]);
     const [industryModifiers, setIndustryMods] = useState<IndustryEntry[]>([]);
-
+    const [spaceIndustryModifiers, setSpaceIndustryMods] = useState<IndustryEntry[]>([]);
     const [data, setData] = useState<string[]>();
+
     const [alignmentData, setAlignmentData] = useState<string[]>([
         "Conservative",
         "Reformist",
@@ -317,8 +313,8 @@ export function Planet() {
                 setData(response);
                 //@ts-ignore
                 let alignmento: string[] = response;
-                setAlignmentData(response);
-                console.table(alignmentData);
+                
+                
 
                 var requestInit: RequestInit = {
                     mode: "cors",
@@ -329,22 +325,24 @@ export function Planet() {
                     }
                 };
 
-                fetch("https://localhost:44394/api/map/get-planet?name=" + name, requestInit)
+                fetch("https://localhost:44394/api/map/get-empire?name=" + name, requestInit)
                     .then((response) => response.json())
                     .then((response) => {
                         try {
-                            let planet: PlanetData = response;
-                            setPopulation(planet.population);
-                            setPlanetName(planet.name);
+                            let empire: EmpireData = response;
+                            setPopulation(empire.population);
+                            setEmpireName(empire.name);
 
-                            setAlignments(planet.officeAlignments);
+                            
 
-                            setGroups(planet.groupEntries.map((x: GroupEntrySend) => GroupEntrySend.toLocal(x, alignmento[0])));
-                            setIndustryMods(planet.industryEntries.map((x: IndustryEntrySend) => IndustryEntrySend.toLocal(x)));
-                            setPops(planet.species);
+                            setGroups(empire.groupEntries.map((x: GroupEntrySend) => GroupEntrySend.toLocal(x, alignmento[0])));
+                            setIndustryMods(empire.industryEntries.map((x: IndustryEntrySend) => IndustryEntrySend.toLocal(x)));
+                            setSpaceIndustryMods(empire.spaceIndustryEntries.map((x: IndustryEntrySend) => IndustryEntrySend.toLocal(x)));
+                            setPops(empire.species);
+                            
                             setState(STATE.Loaded);
                         } catch {
-                            setState(STATE.Errored);
+                            //setState(STATE.Errored);
                         }
                     });
             });
@@ -361,14 +359,14 @@ export function Planet() {
     });
 
     function submitEdit() {
-        let planet = new PlanetData();
-        planet.population = population;
-        planet.name = planetName;
+        let empire = new EmpireData();
+        empire.population = population;
+        empire.name = empireName;
 
-        planet.officeAlignments = alignments;
+        
 
-        planet.groupEntries = groups.map(x => x.toSend());
-        planet.industryEntries = industryModifiers.map(x => x.toSend());
+        empire.groupEntries = groups.map(x => x.toSend());
+        empire.industryEntries = industryModifiers.map(x => x.toSend());
 
         var requestInit: RequestInit = {
             mode: "cors",
@@ -377,10 +375,10 @@ export function Planet() {
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify(planet)
+            body: JSON.stringify(empire)
         };
 
-        fetch("https://localhost:44394/api/map/edit-planet", requestInit)
+        fetch("https://localhost:44394/api/map/edit-empire", requestInit)
             .then((response) => response.json())
             .then((response) => {
                 var requestInit: RequestInit = {
@@ -393,25 +391,25 @@ export function Planet() {
                     body: name
                 };
 
-                fetch("https://localhost:44394/api/map/get-planet", requestInit)
+                fetch("https://localhost:44394/api/map/get-empire", requestInit)
                     .then((response) => response.json())
                     .then((response) => {
-                        let planet: PlanetData = response;
-                        setPopulation(planet.population);
-                        setPlanetName(planet.name);
+                        let empire: EmpireData = response;
+                        setPopulation(empire.population);
+                        setEmpireName(empire.name);
 
-                        setAlignments(planet.officeAlignments);
+                        
 
-                        setGroups(planet.groupEntries.map((x: GroupEntrySend) => GroupEntrySend.toLocal(x, alignmentData[0])));
-                        setIndustryMods(planet.industryEntries.map((x: IndustryEntrySend) => IndustryEntrySend.toLocal(x)));
-                        setPops(planet.species);
+                        setGroups(empire.groupEntries.map((x: GroupEntrySend) => GroupEntrySend.toLocal(x, alignmentData[0])));
+                        setIndustryMods(empire.industryEntries.map((x: IndustryEntrySend) => IndustryEntrySend.toLocal(x)));
+                        setPops(empire.species);
                     });
             });
     }
 
     if (state == STATE.Loading) {
         return (
-            <div className="planetScreen">
+            <div className="empireScreen">
                 <h1><b>{name}</b></h1>
                 <hr style={{
                     borderTop: "2px solid var(--colour)"
@@ -423,12 +421,12 @@ export function Planet() {
 
     if (state == STATE.Errored) {
         return (
-            <div className="planetScreen">
+            <div className="empireScreen">
                 <h1><b>{name}</b></h1>
                 <hr style={{
                     borderTop: "2px solid var(--colour)"
                 }} />
-                Invalid planet. If you are absolutely certain you entered it correctly, please tell staff.
+                Invalid Empire. If you are absolutely certain you entered it correctly, please tell staff.
             </div>
         )
     }
@@ -438,13 +436,13 @@ export function Planet() {
 
     if (!edit) {
         return (
-            <div className="planetScreen">
-                <h1><b>{planetName}</b></h1>
+            <div className="empireScreen">
+                <h1><b>{empireName}</b></h1>
                 <hr style={{
                     borderTop: "2px solid var(--colour)"
                 }} />
                 <b>Population:</b> <span>{intToString(population)}</span><br /><br />
-                <table className="planetTable">
+                <table className="empireTable">
                     <tbody>
                         <tr>
                             <th>
@@ -466,43 +464,7 @@ export function Planet() {
                         ))}
                     </tbody>
                 </table><br />
-                <table className="planetTable">
-                    <tbody>
-                        <tr>
-                            <th>
-                                Office
-                    </th>
-                            <th>
-                                Alignment
-                    </th>
-                        </tr>
-                        <tr>
-                            <td>
-                                Executive
-                    </td>
-                            <td>
-                                {alignments[0]}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                Legislative
-                    </td>
-                            <td>
-                                {alignments[1]}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                Party
-                    </td>
-                            <td>
-                                {alignments[2]}
-                            </td>
-                        </tr>
-                    </tbody>
-                </table><br />
-                <table className="planetTable">
+                <table className="empireTable">
                     <tbody>
                         <tr>
                             <th>
@@ -524,7 +486,7 @@ export function Planet() {
                     </tbody>
                 </table>
                 <br />
-                <table className="planetTable">
+                <table className="empireTable">
                     <tbody>
                         <tr>
                             <th>
@@ -564,13 +526,13 @@ export function Planet() {
         )
     } else {
         return (
-            <div className="planetScreen">
-                <h1><b>{planetName}</b> <span style={{ color: "red" }}>(Edit Mode)</span></h1>
+            <div className="empireScreen">
+                <h1><b>{empireName}</b> <span style={{ color: "red" }}>(Edit Mode)</span></h1>
                 <hr style={{
                     borderTop: "2px solid var(--colour)"
                 }} />
                 <b>Population:</b> <span>{population.toLocaleString()}</span><br /><br />
-                <table className="planetTable">
+                <table className="empireTable">
                     <tbody>
                         <tr>
                             <th>
@@ -592,76 +554,8 @@ export function Planet() {
                         ))}
                     </tbody>
                 </table><br />
-                <table className="planetTable">
-                    <tbody>
-                        <tr>
-                            <th>
-                                Office
-                    </th>
-                            <th>
-                                Alignment
-                    </th>
-                        </tr>
-                        <tr>
-                            <td>
-                                Executive
-                    </td>
-                            <td>
-                                <Input
-                                    type="select"
-                                    value={alignments[0]}
-                                    onChange={(e) => {
-                                        let b = alignments;
-                                        b[0] = e.target.value;
-                                        setAlignments(b);
-                                        forceUpdate(); // react sucks balls
-                                    }}
-                                >
-                                    {alignmentData?.map((a) => (<option>{a}</option>))}
-                                </Input>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                Legislative
-                    </td>
-                            <td>
-                                <Input
-                                    type="select"
-                                    value={alignments[1]}
-                                    onChange={(e) => {
-                                        let b = alignments;
-                                        b[1] = e.target.value;
-                                        setAlignments(b);
-                                        forceUpdate();
-                                    }}
-                                >
-                                    {alignmentData?.map((a) => (<option>{a}</option>))}
-                                </Input>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                Party
-                    </td>
-                            <td>
-                                <Input
-                                    type="select"
-                                    value={alignments[2]}
-                                    onChange={(e) => {
-                                        let b = alignments;
-                                        b[2] = e.target.value;
-                                        setAlignments(b);
-                                        forceUpdate();
-                                    }}
-                                >
-                                    {alignmentData?.map((a) => (<option>{a}</option>))}
-                                </Input>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table><br />
-                <table className="planetTable">
+                
+                <table className="empireTable">
                     <tbody>
                         <tr>
                             <th>
@@ -767,7 +661,7 @@ export function Planet() {
                 </table>
                 <br />
                 <br /><br />
-                <table className="planetTable">
+                <table className="empireTable">
                     <tbody>
                         <tr>
                             <th>

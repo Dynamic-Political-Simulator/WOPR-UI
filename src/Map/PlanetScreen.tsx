@@ -396,15 +396,19 @@ export function Planet() {
                 fetch("https://localhost:44394/api/map/get-planet", requestInit)
                     .then((response) => response.json())
                     .then((response) => {
-                        let planet: PlanetData = response;
-                        setPopulation(planet.population);
-                        setPlanetName(planet.name);
+                        try {
+                            let planet: PlanetData = response;
+                            setPopulation(planet.population);
+                            setPlanetName(planet.name);
 
-                        setAlignments(planet.officeAlignments);
+                            setAlignments(planet.officeAlignments);
 
-                        setGroups(planet.groupEntries.map((x: GroupEntrySend) => GroupEntrySend.toLocal(x, alignmentData[0])));
-                        setIndustryMods(planet.industryEntries.map((x: IndustryEntrySend) => IndustryEntrySend.toLocal(x)));
-                        setPops(planet.species);
+                            setGroups(planet.groupEntries.map((x: GroupEntrySend) => GroupEntrySend.toLocal(x, alignmentData[0])));
+                            setIndustryMods(planet.industryEntries.map((x: IndustryEntrySend) => IndustryEntrySend.toLocal(x)));
+                            setState(STATE.Loaded);
+                        } catch {
+                            setState(STATE.Errored);
+                        }
                     });
             });
     }
@@ -509,7 +513,7 @@ export function Planet() {
                                 Group
                     </th>
                             <th>
-                                Size
+                                Members
                     </th>
                         </tr>
                         {
@@ -518,7 +522,7 @@ export function Planet() {
                                     {g.Name}
                                 </td>
                                 <td>
-                                    {g.Size}
+                                    {intToString((parseFloat(g.Size) / 100) * population)} ({g.Size}%)
                                 </td>
                             </tr>))}
                     </tbody>
@@ -668,7 +672,7 @@ export function Planet() {
                                 Group
                     </th>
                             <th>
-                                Size
+                                Percentage of Population
                     </th>
                             <th>
                                 Alignment
@@ -702,7 +706,7 @@ export function Planet() {
                                             setGroups(b);
                                             forceUpdate(); // react sucks balls
                                         }}
-                                    />
+                                    />%
                                 </td>
                                 <td>
                                     <Input

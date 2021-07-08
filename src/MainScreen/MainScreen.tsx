@@ -6,7 +6,7 @@ import {
     Link,
     useHistory,
 } from "react-router-dom";
-import PopsimMenu from '../Popsim/PopsimMenu';
+import { PopsimMenu } from '../Popsim/PopsimMenu';
 import Switch from 'react-bootstrap/esm/Switch';
 import { CharacterIndex } from '../Characters/CharacterIndex';
 import { CreateCharacter } from '../Characters/CreateCharacter';
@@ -28,6 +28,14 @@ import MapEdit from "../Map/MapEdit";
 import { MakeDesc } from "../Map/PlanetMaker";
 import { Planet } from '../Map/PlanetScreen';
 import { Options } from '../Options/Options';
+import { PopsimAlignments } from '../Popsim/Alignments/PopsimAlignments';
+import { EditorSettings } from 'typescript';
+import { EditAlignment } from '../Popsim/Alignments/EditAlignment';
+import { CliqueIndex } from '../Popsim/Cliques/CliqueIndex';
+import { CreateClique } from '../Popsim/Cliques/CreateClique';
+import { CliqueDetail } from '../Popsim/Cliques/CliqueDetail';
+import { ManageClique } from '../Popsim/Cliques/ManageClique';
+import { PartyOverview } from '../Popsim/Party/PartyOverview';
 
 export function MainScreen() {
     const [cookies, setCookie] = useCookies();
@@ -129,6 +137,27 @@ export function MainScreen() {
             </Route>
             <Route path="/options">
                 <Options />
+            </Route>
+            <Route path="/alignments">
+                <PopsimAlignments />
+            </Route>
+            <Route path="/edit-alignment">
+                <EditAlignment />
+            </Route>
+            <Route path="/my-cliques">
+                <CliqueIndex />
+            </Route>
+            <Route path="/create-clique">
+                <CreateClique />
+            </Route>
+            <Route path="/clique">
+                <CliqueDetail />
+            </Route>
+            <Route path="/manage-clique">
+                <ManageClique />
+            </Route>
+            <Route path="/party-overview">
+                <PartyOverview />
             </Route>
         </Router>
     )

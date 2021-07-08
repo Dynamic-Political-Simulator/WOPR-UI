@@ -1,9 +1,12 @@
 import React from "react";
+import { Button, Container } from "reactstrap";
 
-function PopsimMenu() {
+export function PopsimMenu() {
     return(
-        <div className="bg-primary">shut</div>
+        <Container>
+            <Button>
+                
+            </Button>
+        </Container>
     )
 }
-
-export default PopsimMenu;

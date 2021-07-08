@@ -3,7 +3,7 @@ import { useEffect, useState } from "react"
 import { Button, Container, Input, InputGroup, InputGroupAddon, Jumbotron, Label, ListGroup, Pagination, PaginationItem, PaginationLink } from "reactstrap";
 import { PlayerCharacter, PlayerCharacterListing } from "./PlayerCharacterListing"
 
-interface CharacterSearchForm {
+export interface CharacterSearchForm {
     page: number;
     alive: boolean;
     search: string;

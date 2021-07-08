@@ -26,10 +26,10 @@
      units="px"
      width="1000px"
      inkscape:zoom="5.9010101"
-     inkscape:cx="26.012496"
+     inkscape:cx="26.181958"
      inkscape:cy="41.687778"
      inkscape:window-width="1920"
-     inkscape:window-height="1015"
+     inkscape:window-height="1011"
      inkscape:window-x="1920"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
@@ -41,11 +41,11 @@
      inkscape:groupmode="layer"
      id="layer1">
     <rect
-       style="fill:none;fill-rule:evenodd;stroke:#ffffff;stroke-width:0.77063104;stroke-miterlimit:4;stroke-dasharray:0.38531552,0.38531552;stroke-dashoffset:0;stroke-opacity:1"
+       style="fill:none;fill-rule:evenodd;stroke:#ffffff;stroke-width:1.32292;stroke-miterlimit:4;stroke-dasharray:0.66146, 0.66146;stroke-dashoffset:0;stroke-opacity:1"
        id="rect38"
-       width="25.687702"
-       height="25.687702"
-       x="0.38531551"
-       y="0.38531551" />
+       width="25.135416"
+       height="25.135414"
+       x="0.66145998"
+       y="0.66145998" />
   </g>
 </svg>

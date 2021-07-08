@@ -91,13 +91,21 @@ class IndustryEntrySend {
     }
 }
 
+class AlignmentPopularityEntry {
+    name: string = "";
+    popularity: number = 0;
+}
+
 class EmpireData {
     name: string = "";
     population: number = 0;
+    totalGdp: number = 0;
     groupEntries: GroupEntrySend[] = [];
     industryEntries: IndustryEntrySend[] = [];
     spaceIndustryEntries: IndustryEntrySend[] = [];
     species: PopEntry[] = [];
+    popularityEntries:AlignmentPopularityEntry[] = [];
+    parlamentEntries:AlignmentPopularityEntry[] = [];
 }
 
 enum STATE {
@@ -118,6 +126,7 @@ export function Empire() {
 
     const [empireName, setEmpireName] = useState("Empire Name");
     const [population, setPopulation] = useState(420420420420);
+    const [totalGdp, setTotalGdp] = useState(420420420420);
     const [pops, setPops] = useState<PopEntry[]>([
         {
             name: "Human",
@@ -140,11 +149,15 @@ export function Empire() {
         "Hardliner"
     ]);
 
+    const [alignmentPopularity, setAlignmentPopularity] = useState<AlignmentPopularityEntry[]>([]);
+    const [parlamentMakeup, setParlament] = useState<AlignmentPopularityEntry[]>([]);
+
     const name: string = queryString.parse(location.search).name as string;
 
     const industryGDPChart = useRef<HTMLCanvasElement>(null);
     const spaceIndustryGDPChart = useRef<HTMLCanvasElement>(null);
     const parlamentChart = useRef<HTMLCanvasElement>(null);
+    const popsimAlignChart = useRef<HTMLCanvasElement>(null);
 
     function beautifyOutputEntry(name: string): string {
         if (name === "pmcs") return "PMCs" // special case since it's an abbreviation
@@ -160,7 +173,7 @@ export function Empire() {
             { v: 1E6, s: "M" },
             { v: 1E9, s: "B" },
             { v: 1E12, s: "T" },
-            { v: 1E15, s: "P" },
+            { v: 1E15, s: "Q" },
             { v: 1E18, s: "E" }
         ];
         var i;
@@ -399,10 +412,10 @@ export function Empire() {
         }
     }
 
-    function doParlamentRender() {
+    function doPopsimRender() {
         if (state != STATE.Loaded) return;
-        if (industryGDPChart.current) {
-            const canvas = industryGDPChart.current;
+        if (popsimAlignChart.current) {
+            const canvas = popsimAlignChart.current;
             const context = canvas.getContext('2d');
 
             if (context) {
@@ -443,25 +456,22 @@ export function Empire() {
 
                     let startingPoint = 0;
 
-                    let industryTable = industryModifiers?.sort((a, b) => a.GDP - b.GDP).reverse().slice();
-                    let industryChartTable = industryTable.splice(0, colours.length - 1);
-                    if (industryTable.length > 0) {
-                        let others = new IndustryEntry();
-                        others.Name = "other";
-                        others.GDP = industryTable.map(x => x.GDP).reduce((a, b) => a + b)
-                        industryChartTable.push(others);
+                    let popularityTable = alignmentPopularity?.sort((a, b) => a.popularity - b.popularity).reverse().slice();
+                    let popularityChartTable = popularityTable.splice(0, colours.length - 1);
+                    if (popularityTable.length > 0) {
+                        let others = new AlignmentPopularityEntry();
+                        others.name = "Other";
+                        others.popularity = popularityTable.map(x => x.popularity).reduce((a, b) => a + b)
+                        popularityChartTable.push(others);
                     }
 
                     let total = 0;
-                    if (industryChartTable.length > 0) total = industryChartTable.map(x => x.GDP).reduce((a, b) => a + b);
-
-                    console.table(industryChartTable);
-                    console.table(industryModifiers);
+                    if (popularityChartTable.length > 0) total = popularityChartTable.map(x => x.popularity).reduce((a, b) => a + b);
 
                     const column = 8;
 
-                    for (let i = 0; i < industryChartTable.length; i++) {
-                        let percent = (industryChartTable[i].GDP / total) * 100;
+                    for (let i = 0; i < popularityChartTable.length; i++) {
+                        let percent = (popularityChartTable[i].popularity / total) * 100;
 
                         let endPoint = startingPoint + (2 / 100 * percent);
 
@@ -483,7 +493,106 @@ export function Empire() {
                         context.rect(offset, 0.1 * canvas.height * (i % column), 0.09 * canvas.height, 0.09 * canvas.height);
                         context.stroke();
                         context.fillStyle = "#00ff00";
-                        context.fillText(beautifyOutputEntry(industryChartTable[i].Name) + " (" + percent.toFixed(2) + "%)", offset + 0.1 * canvas.height, ((i % column + 1) * 0.1 * canvas.height - 0.01 * canvas.height));
+                        context.fillText(beautifyOutputEntry(popularityChartTable[i].name) + " (" + percent.toFixed(2) + "%)", offset + 0.1 * canvas.height, ((i % column + 1) * 0.1 * canvas.height - 0.01 * canvas.height));
+                    }
+
+                    const newClr = getComputedStyle(document.documentElement).getPropertyValue("--colour");
+                    setColoured(newClr);
+                    let fuck = new Image();
+                    fuck.src = canvas.toDataURL();
+                    fuck.onload = () => {
+                        colorImage(canvas, newClr);
+                        maskImage(canvas, fuck);
+                    }
+                });
+            }
+        }
+    }
+
+    function doParlamentRender() {
+        if (state != STATE.Loaded) return;
+        if (parlamentChart.current) {
+            const canvas = parlamentChart.current;
+            const context = canvas.getContext('2d');
+
+            if (context) {
+                context.clearRect(0, 0, canvas.width, canvas.height);
+
+                // 10 values max
+                let colours: CanvasPattern[] = [];
+
+                let files: string[] = [
+                    pattern1,
+                    pattern2,
+                    pattern3,
+                    pattern4,
+                    pattern5,
+                    pattern6,
+                    pattern7,
+                    pattern8,
+                    pattern9,
+                    pattern10,
+                    pattern11,
+                    pattern12,
+                    pattern13,
+                    pattern14,
+                    pattern15,
+                    pattern16
+                ];
+
+                files.forEach((x) => {
+                    let img = new Image();
+                    img.src = x;
+                    img.onload = () => colours.push(context.createPattern(img, "repeat")!);
+                });
+
+                waitFor(() => colours.length == files.length).then(() => {
+                    let yp = canvas.height / 2;
+                    let radius = canvas.height / 2;
+                    let xp = radius;
+
+                    let startingPoint = 0;
+
+                    console.table(parlamentMakeup);
+
+                    let parlamentTable = parlamentMakeup?.sort((a, b) => a.popularity - b.popularity).reverse().slice();
+                    let parlamentChartTable = parlamentTable.splice(0, colours.length - 1);
+                    if (parlamentTable.length > 0) {
+                        let others = new AlignmentPopularityEntry();
+                        others.name = "Other";
+                        others.popularity = parlamentTable.map(x => x.popularity).reduce((a, b) => a + b)
+                        parlamentChartTable.push(others);
+                    }
+
+                    let total = 0;
+                    if (parlamentChartTable.length > 0) total = parlamentChartTable.map(x => x.popularity).reduce((a, b) => a + b);
+
+                    const column = 8;
+
+                    for (let i = 0; i < parlamentChartTable.length; i++) {
+                        let percent = (parlamentChartTable[i].popularity / total) * 100;
+
+                        let endPoint = startingPoint + (2 / 100 * percent*0.5);
+
+                        context.beginPath();
+
+                        context.fillStyle = colours[i];
+                        context.strokeStyle = "#00ff00";
+                        context.moveTo(xp, yp);
+                        context.arc(xp, yp, radius, startingPoint * Math.PI, endPoint * Math.PI);
+                        context.fill();
+                        context.stroke();
+
+                        startingPoint = endPoint;
+
+
+                        let offset = 2.2 * radius + 1.5 * radius * Math.floor((i / column));
+                        context.rect(offset, 0.1 * canvas.height * (i % column), 0.09 * canvas.height, 0.09 * canvas.height);
+                        context.fill();
+                        context.rect(offset, 0.1 * canvas.height * (i % column), 0.09 * canvas.height, 0.09 * canvas.height);
+                        context.stroke();
+                        context.fillStyle = "#00ff00";
+                        context.fillText(beautifyOutputEntry(parlamentChartTable[i].name) + " (" + percent.toFixed(2) + "%)", offset + 0.1 * canvas.height, ((i % column + 1) * 0.1 * canvas.height - 0.01 * canvas.height));
                     }
 
                     const newClr = getComputedStyle(document.documentElement).getPropertyValue("--colour");
@@ -535,11 +644,13 @@ export function Empire() {
                             setPopulation(empire.population);
                             setEmpireName(empire.name);
 
-                            
-
+                            setTotalGdp(empire.totalGdp);
+                            setParlament(empire.parlamentEntries);
                             setGroups(empire.groupEntries.map((x: GroupEntrySend) => GroupEntrySend.toLocal(x, alignmento[0])));
                             setIndustryMods(empire.industryEntries.map((x: IndustryEntrySend) => IndustryEntrySend.toLocal(x)));
                             setSpaceIndustryMods(empire.spaceIndustryEntries.map((x: IndustryEntrySend) => IndustryEntrySend.toLocal(x)));
+                            setAlignmentPopularity(empire.popularityEntries);
+                            
                             setPops(empire.species);
                             
                             setState(STATE.Loaded);
@@ -552,23 +663,21 @@ export function Empire() {
 
     useEffect(() => {
         doIndustryRender();
+        doSpaceIndustryRender();
+        doPopsimRender();
+        doParlamentRender();
     }, [state]);
 
     useEffect(() => {
         if (coloured !== getComputedStyle(document.documentElement).getPropertyValue("--colour") && coloured !== "") {
             doIndustryRender();
-        }
-    });
-
-    useEffect(() => {
-        doSpaceIndustryRender();
-    }, [state]);
-
-    useEffect(() => {
-        if (coloured !== getComputedStyle(document.documentElement).getPropertyValue("--colour") && coloured !== "") {
+            doPopsimRender();
             doSpaceIndustryRender();
+            doParlamentRender();
         }
     });
+
+    
 
     function submitEdit() {
         let empire = new EmpireData();
@@ -609,9 +718,10 @@ export function Empire() {
                         let empire: EmpireData = response;
                         setPopulation(empire.population);
                         setEmpireName(empire.name);
-
-                        
-
+                        setTotalGdp(empire.totalGdp);
+                        setParlament(empire.parlamentEntries);
+                        setSpaceIndustryMods(empire.spaceIndustryEntries.map((x: IndustryEntrySend) => IndustryEntrySend.toLocal(x)));
+                        setAlignmentPopularity(empire.popularityEntries);
                         setGroups(empire.groupEntries.map((x: GroupEntrySend) => GroupEntrySend.toLocal(x, alignmentData[0])));
                         setIndustryMods(empire.industryEntries.map((x: IndustryEntrySend) => IndustryEntrySend.toLocal(x)));
                         setPops(empire.species);
@@ -656,56 +766,28 @@ export function Empire() {
                     borderTop: "2px solid var(--colour)"
                 }} />
                 <b>Population:</b> <span>{intToString(population)}</span><br /><br />
-                <div className="empireRow">
-                    <div className="empireColumn">
-                        <table className="empireTable">
-                            <tbody>
-                                <tr>
-                                    <th>
-                                        Species
+                <table className="empireTable">
+                    <tbody>
+                        <tr>
+                            <th>
+                                Species
                             </th>
-                                    <th>
-                                        Proportion
+                            <th>
+                                Proportion
                             </th>
-                                </tr>
-                                {pops?.map((spe) => (
-                                    <tr key={spe.name}>
-                                        <td>
-                                            {spe.name}
-                                        </td>
-                                        <td>
-                                            {spe.amount}%
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table><br />
-                    </div>
-                    <div className="empireColumn">
-                    <table className="empireTable">
-                            <tbody>
-                                <tr>
-                                    <th>
-                                        Species
-                            </th>
-                                    <th>
-                                        Proportion
-                            </th>
-                                </tr>
-                                {pops?.map((spe) => (
-                                    <tr key={spe.name}>
-                                        <td>
-                                            {spe.name}
-                                        </td>
-                                        <td>
-                                            {spe.amount}%
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table><br />
-                    </div>
-                </div>
+                        </tr>
+                        {pops?.map((spe) => (
+                            <tr key={spe.name}>
+                                <td>
+                                    {spe.name}
+                                </td>
+                                <td>
+                                    {spe.amount}%
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table><br />
                 
                 <table className="empireTable">
                     <tbody>
@@ -723,12 +805,28 @@ export function Empire() {
                                     {g.Name}
                                 </td>
                                 <td>
-                                    {g.Size}
+                                {intToString((parseFloat(g.Size) / 100) * population)} ({g.Size}%)
                                 </td>
                             </tr>))}
                     </tbody>
                 </table>
                 <br />
+                <div className="empireRow">
+                    <div className="empireColumn">
+                        <canvas
+                            height={Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0) * 0.35}
+                            width={Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0) * 0.7}
+                            ref={popsimAlignChart} />
+                    </div>
+                    <div className="empireColumn">
+                        <canvas
+                            height={Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0) * 0.35}
+                            width={Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0) * 0.7}
+                            ref={parlamentChart} />
+                    </div>
+                </div>
+                <br />
+                <b>Total GDP:</b> <span>{intToString(totalGdp)}</span><br /><br />
                 <table className="empireTable">
                     <tbody>
                         <tr>

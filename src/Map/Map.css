@@ -225,3 +225,14 @@
     border: 2px outset var(--colour) !important;
     font-family: monospace monospace !important;
 }
+
+.empireColumn {
+    float: left;
+    width: 50%;
+}
+
+.empireRow::after {
+    content: "";
+    display: table;
+    clear: both;
+}

@@ -143,6 +143,8 @@ export function Empire() {
     const name: string = queryString.parse(location.search).name as string;
 
     const industryGDPChart = useRef<HTMLCanvasElement>(null);
+    const spaceIndustryGDPChart = useRef<HTMLCanvasElement>(null);
+    const parlamentChart = useRef<HTMLCanvasElement>(null);
 
     function beautifyOutputEntry(name: string): string {
         if (name === "pmcs") return "PMCs" // special case since it's an abbreviation
@@ -198,6 +200,206 @@ export function Empire() {
     }
 
     function doIndustryRender() {
+        if (state != STATE.Loaded) return;
+        if (industryGDPChart.current) {
+            const canvas = industryGDPChart.current;
+            const context = canvas.getContext('2d');
+
+            if (context) {
+                context.clearRect(0, 0, canvas.width, canvas.height);
+
+                // 10 values max
+                let colours: CanvasPattern[] = [];
+
+                let files: string[] = [
+                    pattern1,
+                    pattern2,
+                    pattern3,
+                    pattern4,
+                    pattern5,
+                    pattern6,
+                    pattern7,
+                    pattern8,
+                    pattern9,
+                    pattern10,
+                    pattern11,
+                    pattern12,
+                    pattern13,
+                    pattern14,
+                    pattern15,
+                    pattern16
+                ];
+
+                files.forEach((x) => {
+                    let img = new Image();
+                    img.src = x;
+                    img.onload = () => colours.push(context.createPattern(img, "repeat")!);
+                });
+
+                waitFor(() => colours.length == files.length).then(() => {
+                    let yp = canvas.height / 2;
+                    let radius = canvas.height / 2;
+                    let xp = radius;
+
+                    let startingPoint = 0;
+
+                    let industryTable = industryModifiers?.sort((a, b) => a.GDP - b.GDP).reverse().slice();
+                    let industryChartTable = industryTable.splice(0, colours.length - 1);
+                    if (industryTable.length > 0) {
+                        let others = new IndustryEntry();
+                        others.Name = "other";
+                        others.GDP = industryTable.map(x => x.GDP).reduce((a, b) => a + b)
+                        industryChartTable.push(others);
+                    }
+
+                    let total = 0;
+                    if (industryChartTable.length > 0) total = industryChartTable.map(x => x.GDP).reduce((a, b) => a + b);
+
+                    console.table(industryChartTable);
+                    console.table(industryModifiers);
+
+                    const column = 8;
+
+                    for (let i = 0; i < industryChartTable.length; i++) {
+                        let percent = (industryChartTable[i].GDP / total) * 100;
+
+                        let endPoint = startingPoint + (2 / 100 * percent);
+
+                        context.beginPath();
+
+                        context.fillStyle = colours[i];
+                        context.strokeStyle = "#00ff00";
+                        context.moveTo(xp, yp);
+                        context.arc(xp, yp, radius, startingPoint * Math.PI, endPoint * Math.PI);
+                        context.fill();
+                        context.stroke();
+
+                        startingPoint = endPoint;
+
+
+                        let offset = 2.2 * radius + 1.5 * radius * Math.floor((i / column));
+                        context.rect(offset, 0.1 * canvas.height * (i % column), 0.09 * canvas.height, 0.09 * canvas.height);
+                        context.fill();
+                        context.rect(offset, 0.1 * canvas.height * (i % column), 0.09 * canvas.height, 0.09 * canvas.height);
+                        context.stroke();
+                        context.fillStyle = "#00ff00";
+                        context.fillText(beautifyOutputEntry(industryChartTable[i].Name) + " (" + percent.toFixed(2) + "%)", offset + 0.1 * canvas.height, ((i % column + 1) * 0.1 * canvas.height - 0.01 * canvas.height));
+                    }
+
+                    const newClr = getComputedStyle(document.documentElement).getPropertyValue("--colour");
+                    setColoured(newClr);
+                    let fuck = new Image();
+                    fuck.src = canvas.toDataURL();
+                    fuck.onload = () => {
+                        colorImage(canvas, newClr);
+                        maskImage(canvas, fuck);
+                    }
+                });
+            }
+        }
+    }
+
+    function doSpaceIndustryRender() {
+        if (state != STATE.Loaded) return;
+        if (spaceIndustryGDPChart.current) {
+            const canvas = spaceIndustryGDPChart.current;
+            const context = canvas.getContext('2d');
+
+            if (context) {
+                context.clearRect(0, 0, canvas.width, canvas.height);
+
+                // 10 values max
+                let colours: CanvasPattern[] = [];
+
+                let files: string[] = [
+                    pattern1,
+                    pattern2,
+                    pattern3,
+                    pattern4,
+                    pattern5,
+                    pattern6,
+                    pattern7,
+                    pattern8,
+                    pattern9,
+                    pattern10,
+                    pattern11,
+                    pattern12,
+                    pattern13,
+                    pattern14,
+                    pattern15,
+                    pattern16
+                ];
+
+                files.forEach((x) => {
+                    let img = new Image();
+                    img.src = x;
+                    img.onload = () => colours.push(context.createPattern(img, "repeat")!);
+                });
+
+                waitFor(() => colours.length == files.length).then(() => {
+                    let yp = canvas.height / 2;
+                    let radius = canvas.height / 2;
+                    let xp = radius;
+
+                    let startingPoint = 0;
+
+                    let spaceIndustryTable = spaceIndustryModifiers?.sort((a, b) => a.GDP - b.GDP).reverse().slice();
+                    let spaceIndustryChartTable = spaceIndustryTable.splice(0, colours.length - 1);
+                    if (spaceIndustryTable.length > 0) {
+                        let others = new IndustryEntry();
+                        others.Name = "other";
+                        others.GDP = spaceIndustryTable.map(x => x.GDP).reduce((a, b) => a + b)
+                        spaceIndustryChartTable.push(others);
+                    }
+
+                    let total = 0;
+                    if (spaceIndustryChartTable.length > 0) total = spaceIndustryChartTable.map(x => x.GDP).reduce((a, b) => a + b);
+
+                    console.table(spaceIndustryChartTable);
+                    console.table(spaceIndustryModifiers);
+
+                    const column = 8;
+
+                    for (let i = 0; i < spaceIndustryChartTable.length; i++) {
+                        let percent = (spaceIndustryChartTable[i].GDP / total) * 100;
+
+                        let endPoint = startingPoint + (2 / 100 * percent);
+
+                        context.beginPath();
+
+                        context.fillStyle = colours[i];
+                        context.strokeStyle = "#00ff00";
+                        context.moveTo(xp, yp);
+                        context.arc(xp, yp, radius, startingPoint * Math.PI, endPoint * Math.PI);
+                        context.fill();
+                        context.stroke();
+
+                        startingPoint = endPoint;
+
+
+                        let offset = 2.2 * radius + 1.5 * radius * Math.floor((i / column));
+                        context.rect(offset, 0.1 * canvas.height * (i % column), 0.09 * canvas.height, 0.09 * canvas.height);
+                        context.fill();
+                        context.rect(offset, 0.1 * canvas.height * (i % column), 0.09 * canvas.height, 0.09 * canvas.height);
+                        context.stroke();
+                        context.fillStyle = "#00ff00";
+                        context.fillText(beautifyOutputEntry(spaceIndustryChartTable[i].Name) + " (" + percent.toFixed(2) + "%)", offset + 0.1 * canvas.height, ((i % column + 1) * 0.1 * canvas.height - 0.01 * canvas.height));
+                    }
+
+                    const newClr = getComputedStyle(document.documentElement).getPropertyValue("--colour");
+                    setColoured(newClr);
+                    let fuck = new Image();
+                    fuck.src = canvas.toDataURL();
+                    fuck.onload = () => {
+                        colorImage(canvas, newClr);
+                        maskImage(canvas, fuck);
+                    }
+                });
+            }
+        }
+    }
+
+    function doParlamentRender() {
         if (state != STATE.Loaded) return;
         if (industryGDPChart.current) {
             const canvas = industryGDPChart.current;
@@ -358,6 +560,16 @@ export function Empire() {
         }
     });
 
+    useEffect(() => {
+        doSpaceIndustryRender();
+    }, [state]);
+
+    useEffect(() => {
+        if (coloured !== getComputedStyle(document.documentElement).getPropertyValue("--colour") && coloured !== "") {
+            doSpaceIndustryRender();
+        }
+    });
+
     function submitEdit() {
         let empire = new EmpireData();
         empire.population = population;
@@ -433,6 +645,8 @@ export function Empire() {
 
     let gdpSum = 0;
     if (industryModifiers.length > 0) gdpSum = industryModifiers.map(x => x.GDP).reduce((a, b) => a + b);
+    let spaceGdpSum = 0;
+    if (spaceIndustryModifiers.length > 0) spaceGdpSum = spaceIndustryModifiers.map(x => x.GDP).reduce((a,b)=> a+b);
 
     if (!edit) {
         return (
@@ -442,28 +656,57 @@ export function Empire() {
                     borderTop: "2px solid var(--colour)"
                 }} />
                 <b>Population:</b> <span>{intToString(population)}</span><br /><br />
-                <table className="empireTable">
-                    <tbody>
-                        <tr>
-                            <th>
-                                Species
-                    </th>
-                            <th>
-                                Proportion
-                    </th>
-                        </tr>
-                        {pops?.map((spe) => (
-                            <tr key={spe.name}>
-                                <td>
-                                    {spe.name}
-                                </td>
-                                <td>
-                                    {spe.amount}%
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table><br />
+                <div className="empireRow">
+                    <div className="empireColumn">
+                        <table className="empireTable">
+                            <tbody>
+                                <tr>
+                                    <th>
+                                        Species
+                            </th>
+                                    <th>
+                                        Proportion
+                            </th>
+                                </tr>
+                                {pops?.map((spe) => (
+                                    <tr key={spe.name}>
+                                        <td>
+                                            {spe.name}
+                                        </td>
+                                        <td>
+                                            {spe.amount}%
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table><br />
+                    </div>
+                    <div className="empireColumn">
+                    <table className="empireTable">
+                            <tbody>
+                                <tr>
+                                    <th>
+                                        Species
+                            </th>
+                                    <th>
+                                        Proportion
+                            </th>
+                                </tr>
+                                {pops?.map((spe) => (
+                                    <tr key={spe.name}>
+                                        <td>
+                                            {spe.name}
+                                        </td>
+                                        <td>
+                                            {spe.amount}%
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table><br />
+                    </div>
+                </div>
+                
                 <table className="empireTable">
                     <tbody>
                         <tr>
@@ -520,6 +763,41 @@ export function Empire() {
                     height={Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0) * 0.35}
                     width={Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0) * 0.7}
                     ref={industryGDPChart} />
+                <br /><br />
+                <table className="empireTable">
+                    <tbody>
+                        <tr>
+                            <th>
+                                National Industry
+                    </th>
+                            <th>
+                                GDP
+                    </th>
+                            <th>
+                                % of Total
+                    </th>
+                        </tr>
+                        {spaceIndustryModifiers?.sort((a, b) => a.GDP - b.GDP).map((spe) => (
+                            <tr key={spe.Name}>
+                                <td>
+                                    {beautifyOutputEntry(spe.Name)}
+                                </td>
+                                <td>
+                                    {intToString(spe.GDP)}
+                                </td>
+                                <td>
+                                    {((spe.GDP / spaceGdpSum) * 100).toFixed(2)}%
+                                </td>
+                            </tr>
+                        )).reverse().slice(0, !expanded ? 10 : undefined)}
+                    </tbody>
+                </table>
+                <Button onClick={() => setExpanded(!expanded)}>{!expanded ? "Expand" : "Collapse"}</Button>
+                <br /><br />
+                <canvas
+                    height={Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0) * 0.35}
+                    width={Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0) * 0.7}
+                    ref={spaceIndustryGDPChart} />
                 <br /><br />
                 <Button onClick={() => history.push("/map")}>Back</Button>&nbsp;<Button onClick={() => setEdit(true)}>Edit</Button>
             </div>

@@ -25,4 +25,4 @@ function ModifyGlobalGroup() {
     )
 }
 
-export default ModifyGroup;
+export default ModifyGlobalGroup;

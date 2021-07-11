@@ -36,6 +36,7 @@ import { CreateClique } from '../Popsim/Cliques/CreateClique';
 import { CliqueDetail } from '../Popsim/Cliques/CliqueDetail';
 import { ManageClique } from '../Popsim/Cliques/ManageClique';
 import { PartyOverview } from '../Popsim/Party/PartyOverview';
+import ModifyGlobalGroup from '../Popsim/GlobalEthicGroups/ModifyGlobalGroup';
 
 export function MainScreen() {
     const [cookies, setCookie] = useCookies();
@@ -158,6 +159,9 @@ export function MainScreen() {
             </Route>
             <Route path="/party-overview">
                 <PartyOverview />
+            </Route>
+            <Route path="/edit-global-group">
+                <ModifyGlobalGroup />
             </Route>
         </Router>
     )

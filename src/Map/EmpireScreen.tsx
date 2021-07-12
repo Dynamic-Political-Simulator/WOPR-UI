@@ -104,8 +104,8 @@ class EmpireData {
     industryEntries: IndustryEntrySend[] = [];
     spaceIndustryEntries: IndustryEntrySend[] = [];
     species: PopEntry[] = [];
-    popularityEntries:AlignmentPopularityEntry[] = [];
-    parlamentEntries:AlignmentPopularityEntry[] = [];
+    popularityEntries: AlignmentPopularityEntry[] = [];
+    parlamentEntries: AlignmentPopularityEntry[] = [];
 }
 
 enum STATE {
@@ -161,6 +161,7 @@ export function Empire() {
 
     function beautifyOutputEntry(name: string): string {
         if (name === "pmcs") return "PMCs" // special case since it's an abbreviation
+        if (name === "pure_rnd") return "Pure R&D";
         return name.split("_").map(x => x[0].toUpperCase() + x.substring(1)).join(" ");
     }
 
@@ -296,6 +297,9 @@ export function Empire() {
                         context.rect(offset, 0.1 * canvas.height * (i % column), 0.09 * canvas.height, 0.09 * canvas.height);
                         context.stroke();
                         context.fillStyle = "#00ff00";
+                        context.textAlign = "left";
+                        context.font = "12px monospace";
+                        context.textBaseline = "bottom";
                         context.fillText(beautifyOutputEntry(industryChartTable[i].Name) + " (" + percent.toFixed(2) + "%)", offset + 0.1 * canvas.height, ((i % column + 1) * 0.1 * canvas.height - 0.01 * canvas.height));
                     }
 
@@ -390,12 +394,15 @@ export function Empire() {
                         startingPoint = endPoint;
 
 
-                        let offset = 2.2 * radius + 1.5 * radius * Math.floor((i / column));
+                        let offset = 2.2 * radius + 2 * radius * Math.floor((i / column));
                         context.rect(offset, 0.1 * canvas.height * (i % column), 0.09 * canvas.height, 0.09 * canvas.height);
                         context.fill();
                         context.rect(offset, 0.1 * canvas.height * (i % column), 0.09 * canvas.height, 0.09 * canvas.height);
                         context.stroke();
                         context.fillStyle = "#00ff00";
+                        context.textAlign = "left";
+                        context.font = "12px monospace";
+                        context.textBaseline = "bottom";
                         context.fillText(beautifyOutputEntry(spaceIndustryChartTable[i].Name) + " (" + percent.toFixed(2) + "%)", offset + 0.1 * canvas.height, ((i % column + 1) * 0.1 * canvas.height - 0.01 * canvas.height));
                     }
 
@@ -493,6 +500,9 @@ export function Empire() {
                         context.rect(offset, 0.1 * canvas.height * (i % column), 0.09 * canvas.height, 0.09 * canvas.height);
                         context.stroke();
                         context.fillStyle = "#00ff00";
+                        context.textAlign = "left";
+                        context.font = "12px monospace";
+                        context.textBaseline = "bottom";
                         context.fillText(beautifyOutputEntry(popularityChartTable[i].name) + " (" + percent.toFixed(2) + "%)", offset + 0.1 * canvas.height, ((i % column + 1) * 0.1 * canvas.height - 0.01 * canvas.height));
                     }
 
@@ -547,15 +557,20 @@ export function Empire() {
                 });
 
                 waitFor(() => colours.length == files.length).then(() => {
-                    let yp = canvas.height / 2;
-                    let radius = canvas.height / 2;
+                    let yp = canvas.height / 2 / (0.5 / 0.35);
+                    let radius = canvas.height / 2 / (0.5 / 0.35);
                     let xp = radius;
 
                     let startingPoint = 0;
 
                     console.table(parlamentMakeup);
+                    const scale = 1; // for debug purposes, keep it at 1 unless you need to test how big quantities look on it
 
-                    let parlamentTable = parlamentMakeup?.sort((a, b) => a.popularity - b.popularity).reverse().slice();
+                    let parlamentTable = parlamentMakeup?.sort((a, b) => a.popularity - b.popularity).map(x => {
+                        x.popularity *= scale;
+                        x.popularity = Math.floor(x.popularity);
+                        return x;
+                    }).reverse().slice();
                     let parlamentChartTable = parlamentTable.splice(0, colours.length - 1);
                     if (parlamentTable.length > 0) {
                         let others = new AlignmentPopularityEntry();
@@ -567,12 +582,12 @@ export function Empire() {
                     let total = 0;
                     if (parlamentChartTable.length > 0) total = parlamentChartTable.map(x => x.popularity).reduce((a, b) => a + b);
 
-                    const column = 8;
+                    const column = 16;
 
                     for (let i = 0; i < parlamentChartTable.length; i++) {
                         let percent = (parlamentChartTable[i].popularity / total) * 100;
 
-                        let endPoint = startingPoint + (2 / 100 * percent*0.5);
+                        let endPoint = startingPoint + (2 / 100 * percent);
 
                         context.beginPath();
 
@@ -580,6 +595,7 @@ export function Empire() {
                         context.strokeStyle = "#00ff00";
                         context.moveTo(xp, yp);
                         context.arc(xp, yp, radius, startingPoint * Math.PI, endPoint * Math.PI);
+                        context.lineTo(xp, yp);
                         context.fill();
                         context.stroke();
 
@@ -587,13 +603,34 @@ export function Empire() {
 
 
                         let offset = 2.2 * radius + 1.5 * radius * Math.floor((i / column));
-                        context.rect(offset, 0.1 * canvas.height * (i % column), 0.09 * canvas.height, 0.09 * canvas.height);
+                        const nuHeight = canvas.height / (0.5 / 0.35);
+                        context.beginPath();
+                        context.rect(offset, 0.1 * nuHeight * (i % column), 0.09 * nuHeight, 0.09 * nuHeight);
                         context.fill();
-                        context.rect(offset, 0.1 * canvas.height * (i % column), 0.09 * canvas.height, 0.09 * canvas.height);
+                        context.beginPath();
+                        context.rect(offset, 0.1 * nuHeight * (i % column), 0.09 * nuHeight, 0.09 * nuHeight);
                         context.stroke();
                         context.fillStyle = "#00ff00";
-                        context.fillText(beautifyOutputEntry(parlamentChartTable[i].name) + " (" + percent.toFixed(2) + "%)", offset + 0.1 * canvas.height, ((i % column + 1) * 0.1 * canvas.height - 0.01 * canvas.height));
+                        context.textAlign = "left";
+                        context.font = "12px monospace";
+                        context.textBaseline = "bottom";
+                        context.fillText(beautifyOutputEntry(parlamentChartTable[i].name) + " - " + parlamentChartTable[i].popularity + " seats" + " (" + percent.toFixed(2) + "%)", offset + 0.1 * nuHeight, ((i % column + 1) * 0.1 * nuHeight - 0.01 * nuHeight));
                     }
+
+                    const raddiv = 3;
+                    context.beginPath();
+                    context.strokeStyle = "#00ff00";
+                    context.moveTo(xp, yp);
+                    context.arc(xp, yp, radius / raddiv, 0, 2 * Math.PI);
+                    context.stroke();
+                    context.globalCompositeOperation = 'destination-out';
+                    context.fill();
+                    context.globalCompositeOperation = 'source-over';
+
+                    context.textAlign = "center";
+                    context.font = "36px monospace";
+                    context.textBaseline = "middle";
+                    context.fillText(total.toString(), xp, yp + 4);
 
                     const newClr = getComputedStyle(document.documentElement).getPropertyValue("--colour");
                     setColoured(newClr);
@@ -624,8 +661,8 @@ export function Empire() {
                 setData(response);
                 //@ts-ignore
                 let alignmento: string[] = response;
-                
-                
+
+
 
                 var requestInit: RequestInit = {
                     mode: "cors",
@@ -650,9 +687,9 @@ export function Empire() {
                             setIndustryMods(empire.industryEntries.map((x: IndustryEntrySend) => IndustryEntrySend.toLocal(x)));
                             setSpaceIndustryMods(empire.spaceIndustryEntries.map((x: IndustryEntrySend) => IndustryEntrySend.toLocal(x)));
                             setAlignmentPopularity(empire.popularityEntries);
-                            
+
                             setPops(empire.species);
-                            
+
                             setState(STATE.Loaded);
                         } catch {
                             //setState(STATE.Errored);
@@ -677,14 +714,14 @@ export function Empire() {
         }
     });
 
-    
+
 
     function submitEdit() {
         let empire = new EmpireData();
         empire.population = population;
         empire.name = empireName;
 
-        
+
 
         empire.groupEntries = groups.map(x => x.toSend());
         empire.industryEntries = industryModifiers.map(x => x.toSend());
@@ -756,7 +793,7 @@ export function Empire() {
     let gdpSum = 0;
     if (industryModifiers.length > 0) gdpSum = industryModifiers.map(x => x.GDP).reduce((a, b) => a + b);
     let spaceGdpSum = 0;
-    if (spaceIndustryModifiers.length > 0) spaceGdpSum = spaceIndustryModifiers.map(x => x.GDP).reduce((a,b)=> a+b);
+    if (spaceIndustryModifiers.length > 0) spaceGdpSum = spaceIndustryModifiers.map(x => x.GDP).reduce((a, b) => a + b);
 
     if (!edit) {
         return (
@@ -788,7 +825,7 @@ export function Empire() {
                         ))}
                     </tbody>
                 </table><br />
-                
+
                 <table className="empireTable">
                     <tbody>
                         <tr>
@@ -805,7 +842,7 @@ export function Empire() {
                                     {g.Name}
                                 </td>
                                 <td>
-                                {intToString((parseFloat(g.Size) / 100) * population)} ({g.Size}%)
+                                    {intToString((parseFloat(g.Size) / 100) * population)} ({g.Size}%)
                                 </td>
                             </tr>))}
                     </tbody>
@@ -820,8 +857,8 @@ export function Empire() {
                     </div>
                     <div className="empireColumn">
                         <canvas
-                            height={Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0) * 0.35}
-                            width={Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0) * 0.7}
+                            height={Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0) * 0.5}
+                            width={Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0) * 0.4}
                             ref={parlamentChart} />
                     </div>
                 </div>
@@ -930,7 +967,7 @@ export function Empire() {
                         ))}
                     </tbody>
                 </table><br />
-                
+
                 <table className="empireTable">
                     <tbody>
                         <tr>

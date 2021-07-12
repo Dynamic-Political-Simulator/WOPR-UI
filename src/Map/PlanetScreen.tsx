@@ -294,6 +294,9 @@ export function Planet() {
                         context.rect(offset, 0.1 * canvas.height * (i % column), 0.09 * canvas.height, 0.09 * canvas.height);
                         context.stroke();
                         context.fillStyle = "#00ff00";
+                        context.textAlign = "left";
+                        context.font = "12px monospace";
+                        context.textBaseline = "bottom";
                         context.fillText(beautifyOutputEntry(industryChartTable[i].Name) + " (" + percent.toFixed(2) + "%)", offset + 0.1 * canvas.height, ((i % column + 1) * 0.1 * canvas.height - 0.01 * canvas.height));
                     }
 
@@ -391,6 +394,9 @@ export function Planet() {
                         context.rect(offset, 0.1 * canvas.height * (i % column), 0.09 * canvas.height, 0.09 * canvas.height);
                         context.stroke();
                         context.fillStyle = "#00ff00";
+                        context.textAlign = "left";
+                        context.font = "12px monospace";
+                        context.textBaseline = "bottom";
                         context.fillText(beautifyOutputEntry(popularityChartTable[i].name) + " (" + percent.toFixed(2) + "%)", offset + 0.1 * canvas.height, ((i % column + 1) * 0.1 * canvas.height - 0.01 * canvas.height));
                     }
 

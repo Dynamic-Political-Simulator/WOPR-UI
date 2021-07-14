@@ -819,7 +819,7 @@ export function Empire() {
                                     {spe.name}
                                 </td>
                                 <td>
-                                    {spe.amount}%
+                                    {spe.amount.toFixed(2)}%
                                 </td>
                             </tr>
                         ))}
@@ -842,7 +842,7 @@ export function Empire() {
                                     {g.Name}
                                 </td>
                                 <td>
-                                    {intToString((parseFloat(g.Size) / 100) * population)} ({g.Size}%)
+                                    {intToString((parseFloat(g.Size) / 100) * population)} ({parseInt(g.Size).toFixed(2)}%)
                                 </td>
                             </tr>))}
                     </tbody>

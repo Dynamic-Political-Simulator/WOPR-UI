@@ -80,7 +80,7 @@ class IndustryEntry {
 class IndustryEntrySend {
     name: string = "";
     gdp: number = 0;
-    modifier: number = 0;
+    modifier: number = 1;
 
     static toLocal(og: IndustryEntrySend): IndustryEntry {
         let res = new IndustryEntry();

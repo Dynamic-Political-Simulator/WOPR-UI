@@ -38,6 +38,7 @@ import { ManageClique } from '../Popsim/Cliques/ManageClique';
 import { PartyOverview } from '../Popsim/Party/PartyOverview';
 import ModifyGlobalGroup from '../Popsim/GlobalEthicGroups/ModifyGlobalGroup';
 import { Empire } from '../Map/EmpireScreen';
+import GameManager from '../SaveUploader/SaveManager';
 
 export function MainScreen() {
     const [cookies, setCookie] = useCookies();
@@ -166,6 +167,9 @@ export function MainScreen() {
             </Route>
             <Route path="/empire">
                 <Empire />
+            </Route>
+            <Route path="/game-manager">
+                <GameManager />
             </Route>
         </Router>
     )

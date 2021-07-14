@@ -115,7 +115,7 @@ function ModifyGlobalGroup() {
                 </Input>
                 <br />
                 <Label>Involvement Factor:</Label>
-                <Input type="number" disabled={groups.length === 0} value={groups.length === 0 ? "N/A" : selected?.partyInvolvementFactor} onChange={(e) => {
+                <Input type="text" disabled={groups.length === 0} value={groups.length === 0 ? "N/A" : selected?.partyInvolvementFactor} onChange={(e) => {
                     let x = selected;
                     x!.partyInvolvementFactor = parseInt(e.target.value);
                     setSelected(x);
@@ -123,7 +123,7 @@ function ModifyGlobalGroup() {
                 }}></Input>
                 <br />
                 <Label>Radicalisation:</Label>
-                <Input type="number" disabled={groups.length === 0} value={groups.length === 0 ? "N/A" : selected?.radicalisation} onChange={(e) => {
+                <Input type="text" disabled={groups.length === 0} value={groups.length === 0 ? "N/A" : selected?.radicalisation} onChange={(e) => {
                     let x = selected;
                     x!.radicalisation = parseInt(e.target.value);
                     setSelected(x);
@@ -131,7 +131,7 @@ function ModifyGlobalGroup() {
                 }}></Input>
                 <br />
                 <Label>Enlistment Modifier:</Label>
-                <Input type="number" disabled={groups.length === 0} value={groups.length === 0 ? "N/A" : selected?.popGroupEnlistment} onChange={(e) => {
+                <Input type="text" disabled={groups.length === 0} value={groups.length === 0 ? "N/A" : selected?.popGroupEnlistment} onChange={(e) => {
                     let x = selected;
                     x!.popGroupEnlistment = parseInt(e.target.value);
                     setSelected(x);

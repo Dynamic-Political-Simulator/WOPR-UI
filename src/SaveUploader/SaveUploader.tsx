@@ -1,11 +1,14 @@
 import { type } from "os";
 import React, { useState } from "react";
+import { useHistory } from "react-router";
 import { Input, Jumbotron, Label, Button } from "reactstrap";
 
 function SaveUploader() {
     const [savePath, setPath] = useState<Blob>();
 
     const [error, setError] = useState<string | undefined>(undefined);
+
+    const history = useHistory();
 
     function readFileDataAsBase64(path: Blob) {
         const file = path;
@@ -46,14 +49,14 @@ function SaveUploader() {
 
             fetch("https://localhost:44394/api/saves/upload-save", requestInit)
                 .catch(() => setError("Something went wrong, try again."))
-                .then(() => console.log("Success!"));
+                .then(() => history.push("/save-manager"));
         });
     }
 
     return (
         <div>
             <Jumbotron>
-                <h1>Ye Olde Save Uploader</h1>
+                <h1>Save Uploader</h1>
 
 
                 <Label>Save File: </Label>

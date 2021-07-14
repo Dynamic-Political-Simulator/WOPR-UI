@@ -33,7 +33,7 @@ export function CliqueIndex() {
             }
         };
 
-        fetch("https://localhost:44394/api/clique/get-overview", requestInit)
+        fetch(process.env.BASE_URL + "clique/get-overview", requestInit)
             .then((response) => response.json())
             .then((response) => setData(response))
             .catch(() => history.push("/"));

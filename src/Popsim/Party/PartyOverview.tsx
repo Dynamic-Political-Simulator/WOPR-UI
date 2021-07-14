@@ -66,7 +66,7 @@ export function PartyOverview(){
             }
         };
 
-        fetch("https://localhost:44394/api/popsim/overview", requestInit)
+        fetch(process.env.BASE_URL + "popsim/overview", requestInit)
             .then((response) => response.json())
             .then((response) => setData(response))
             .catch(() => history.push("/"));   

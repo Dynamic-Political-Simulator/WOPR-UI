@@ -655,7 +655,7 @@ export function Empire() {
             }
         };
 
-        fetch("https://localhost:44394/api/clique/get-alignments", requestInit)
+        fetch(process.env.BASE_URL + "clique/get-alignments", requestInit)
             .then((response) => response.json())
             .then((response) => {
                 setData(response);
@@ -673,7 +673,7 @@ export function Empire() {
                     }
                 };
 
-                fetch("https://localhost:44394/api/map/get-empire?name=" + name, requestInit)
+                fetch(process.env.BASE_URL + "map/get-empire?name=" + name, requestInit)
                     .then((response) => response.json())
                     .then((response) => {
                         try {
@@ -736,7 +736,7 @@ export function Empire() {
             body: JSON.stringify(empire)
         };
 
-        fetch("https://localhost:44394/api/map/edit-empire", requestInit)
+        fetch(process.env.BASE_URL + "map/edit-empire", requestInit)
             .then((response) => response.json())
             .then((response) => {
                 var requestInit: RequestInit = {
@@ -749,7 +749,7 @@ export function Empire() {
                     body: name
                 };
 
-                fetch("https://localhost:44394/api/map/get-empire", requestInit)
+                fetch(process.env.BASE_URL + "map/get-empire", requestInit)
                     .then((response) => response.json())
                     .then((response) => {
                         let empire: EmpireData = response;

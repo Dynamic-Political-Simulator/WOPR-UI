@@ -25,7 +25,7 @@ function GameManager() {
             }
         };
 
-        fetch("https://localhost:44394/api/saves/list-saves", requestInit)
+        fetch(process.env.BASE_URL + "saves/list-saves", requestInit)
             .then((response) => response.json())
             .then((response) => {
                 setSaves(response);
@@ -63,7 +63,7 @@ function GameManager() {
             }
         };
 
-        fetch("https://localhost:44394/api/saves/parse-save?name=" + name, requestInit)
+        fetch(process.env.BASE_URL + "saves/parse-save?name=" + name, requestInit)
             .catch(() => setError("Something went wrong, try again."))
             .then(() => setProcessing(false));
     }
@@ -87,7 +87,7 @@ function GameManager() {
                 body: JSON.stringify(body)
             };
 
-            fetch("https://localhost:44394/api/saves/upload-pop", requestInit)
+            fetch(process.env.BASE_URL + "saves/upload-pop", requestInit)
                 .catch(() => setError("Something went wrong, try again."))
                 .then(() => setProcessing(false));
         });
@@ -112,7 +112,7 @@ function GameManager() {
                 body: JSON.stringify(body)
             };
 
-            fetch("https://localhost:44394/api/saves/upload-empire", requestInit)
+            fetch(process.env.BASE_URL + "saves/upload-empire", requestInit)
                 .catch(() => setError("Something went wrong, try again."))
                 .then(() => setProcessing(false));
         });
@@ -129,7 +129,7 @@ function GameManager() {
             }
         };
 
-        fetch("https://localhost:44394/api/saves/parse-data", requestInit)
+        fetch(process.env.BASE_URL + "saves/parse-data", requestInit)
             .catch(() => setError("Something went wrong, try again."))
             .then(() => setProcessing(false));
     }
@@ -145,7 +145,7 @@ function GameManager() {
             }
         };
 
-        fetch("https://localhost:44394/api/saves/calculate", requestInit)
+        fetch(process.env.BASE_URL + "saves/calculate", requestInit)
             .catch(() => setError("Something went wrong, try again."))
             .then(() => setProcessing(false));
     }

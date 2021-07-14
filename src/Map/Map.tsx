@@ -17,7 +17,7 @@ function Map() {
             method: "GET"
         };
 
-        fetch("https://localhost:44394/api/map/get", requestInit)
+        fetch(process.env.BASE_URL + "map/get", requestInit)
             .then((response) => response.json())
             .then((response) => {
                 let entries = response as PlanetEntry[];

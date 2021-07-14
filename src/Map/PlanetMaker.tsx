@@ -24,7 +24,7 @@ export function MakeDesc() {
             body: JSON.stringify(body)
         };
 
-        fetch("https://localhost:44394/api/map/edit-planet-description", requestInit)
+        fetch(process.env.BASE_URL + "map/edit-planet-description", requestInit)
             .catch(() => setError("Something went wrong, try again."))
             .then(() => alert("done"))
     }

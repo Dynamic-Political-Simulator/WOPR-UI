@@ -32,7 +32,7 @@ function MapEdit() {
             method: "GET"
         };
 
-        fetch("https://localhost:44394/api/map/get", requestInit)
+        fetch(process.env.BASE_URL + "map/get", requestInit)
             .then((response) => response.json())
             .then((response) => {
                 let entries = response as PlanetEntry[];
@@ -157,7 +157,7 @@ function MapEdit() {
 
         setProcessing(true);
 
-        fetch("https://localhost:44394/api/map/add", requestInit)
+        fetch(process.env.BASE_URL + "map/add", requestInit)
             .then((response) => response.json())
             .then((response) => {
                 alert(response.body);

@@ -27,7 +27,7 @@ export function CreateClique() {
             }
         };
 
-        fetch("https://localhost:44394/api/alignment/search-alignment?search=" + searchTerm, requestInit)
+        fetch(process.env.BASE_URL + "alignment/search-alignment?search=" + searchTerm, requestInit)
             .then((response) => response.json())
             .then((response) => {
                 setSearchReturn(response);
@@ -50,7 +50,7 @@ export function CreateClique() {
             body: JSON.stringify(body)
         };
 
-        fetch("https://localhost:44394/api/clique/create-clique", requestInit)
+        fetch(process.env.BASE_URL + "clique/create-clique", requestInit)
             .catch(() => setError("Something went wrong, try again."))
             .then(() => history.push("/my-cliques"))
     }

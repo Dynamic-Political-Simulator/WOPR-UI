@@ -24,7 +24,7 @@ export function CreateCharacter() {
             }
         };
 
-        fetch("https://localhost:44394/api/character/get-species", requestInit)
+        fetch(process.env.BASE_URL + "character/get-species", requestInit)
             .then((response) => response.json())
             .then((response) => {
                 setData(response);
@@ -52,7 +52,7 @@ export function CreateCharacter() {
             body: JSON.stringify(body)
         };
 
-        fetch("https://localhost:44394/api/character/create-character", requestInit)
+        fetch(process.env.BASE_URL + "character/create-character", requestInit)
             .catch(() => setError("Something went wrong, try again."))
             .then(() => history.push("/my-characters"))
     }

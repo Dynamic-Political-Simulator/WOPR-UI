@@ -39,7 +39,7 @@ export function PopsimAlignments() {
             }
         };
 
-        fetch("https://localhost:44394/api/alignment/alignment-overview", requestInit)
+        fetch(process.env.BASE_URL + "alignment/alignment-overview", requestInit)
             .then((response) => response.json())
             .then((response) => setData(response));
     }, []);
@@ -63,7 +63,7 @@ export function PopsimAlignments() {
             }
         };
 
-        fetch("https://localhost:44394/api/alignment/delete-alignment?id=" + modalData?.id, requestInit)
+        fetch(process.env.BASE_URL + "alignment/delete-alignment?id=" + modalData?.id, requestInit)
             .then(() => history.go(0));
     }
 
@@ -77,7 +77,7 @@ export function PopsimAlignments() {
             }
         };
 
-        fetch("https://localhost:44394/api/popsim/create-alignment", requestInit)
+        fetch(process.env.BASE_URL + "popsim/create-alignment", requestInit)
             .then(() => history.go(0));
     }
 

@@ -37,7 +37,7 @@ export function CliqueDetail(){
             }
         };
 
-        fetch("https://localhost:44394/api/clique/get-clique?id=" + cliqueId, requestInit)
+        fetch(process.env.BASE_URL + "clique/get-clique?id=" + cliqueId, requestInit)
             .then((response) => response.json())
             .then((response) => setData(response));   
     }, []);

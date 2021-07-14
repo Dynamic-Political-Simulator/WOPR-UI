@@ -44,7 +44,7 @@ export function CharacterDetail() {
             }
         };
 
-        fetch("https://localhost:44394/api/character/get-character?id=" + characterId, requestInit)
+        fetch(process.env.BASE_URL + "character/get-character?id=" + characterId, requestInit)
             .then((response) => response.json())
             .then((response) => {
                 setData(response);
@@ -69,7 +69,7 @@ export function CharacterDetail() {
             }
         };
 
-        fetch("https://localhost:44394/api/admin-character/delete-character?id=" + characterId, requestInit)
+        fetch(process.env.BASE_URL + "admin-character/delete-character?id=" + characterId, requestInit)
             .then((response) => {
                 if (response.ok) {
                     history.push("character-search");

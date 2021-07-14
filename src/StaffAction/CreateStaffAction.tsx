@@ -31,7 +31,7 @@ export function CreateStaffAction() {
             }
         };
 
-        fetch("https://localhost:44394/api/user/search-profile?search=" + searchTerm, requestInit)
+        fetch(process.env.BASE_URL + "user/search-profile?search=" + searchTerm, requestInit)
             .then((response) => response.json())
             .then((response) => {
                 setSearchReturn(response);
@@ -66,7 +66,7 @@ export function CreateStaffAction() {
             body: JSON.stringify(body)
         };
 
-        fetch("https://localhost:44394/api/staff-action/create-staff-action", requestInit)
+        fetch(process.env.BASE_URL + "staff-action/create-staff-action", requestInit)
             .catch(() => setError("Something went wrong, try again."))
             .then(() => history.push("/my-staff-actions"));
     }

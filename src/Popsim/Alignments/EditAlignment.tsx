@@ -24,7 +24,7 @@ export function EditAlignment() {
             }
         };
 
-        fetch("https://localhost:44394/api/alignment/get-alignment?id=" + characterId, requestInit)
+        fetch(process.env.BASE_URL + "alignment/get-alignment?id=" + characterId, requestInit)
             .then((response) => response.json())
             .then((response) => setData(response));
     }, []);
@@ -40,7 +40,7 @@ export function EditAlignment() {
             body: JSON.stringify(data)
         };
 
-        fetch("https://localhost:44394/api/alignment/edit-alignment", requestInit)
+        fetch(process.env.BASE_URL + "alignment/edit-alignment", requestInit)
             .then((response) => {
                 if (response.ok){
                     history.push("/alignments");

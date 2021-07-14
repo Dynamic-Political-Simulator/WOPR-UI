@@ -34,7 +34,7 @@ export function CharacterSearch(){
             body: JSON.stringify(body)
         };
 
-        fetch("https://localhost:44394/api/character/search", requestInit)
+        fetch(process.env.BASE_URL + "character/search", requestInit)
             .then((response) => response.json())
             .then((response) => setData(response));
 
@@ -58,7 +58,7 @@ export function CharacterSearch(){
             body: JSON.stringify(body)
         };
 
-        fetch("https://localhost:44394/api/character/search", requestInit)
+        fetch(process.env.BASE_URL + "character/search", requestInit)
             .then((response) => response.json())
             .then((response) => setData(response));
     }

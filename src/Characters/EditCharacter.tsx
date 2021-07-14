@@ -28,7 +28,7 @@ export function EditCharacter() {
             }
         };
 
-        fetch("https://localhost:44394/api/character/get-character?id=" + characterId, requestInit)
+        fetch(process.env.BASE_URL + "character/get-character?id=" + characterId, requestInit)
             .then((response) => response.json())
             .then((response) => {
                 setData(response);
@@ -53,7 +53,7 @@ export function EditCharacter() {
             body: JSON.stringify(body)
         };
 
-        fetch("https://localhost:44394/api/character/edit-character", requestInit)
+        fetch(process.env.BASE_URL + "character/edit-character", requestInit)
             .catch(() => setError("Something went wrong, try again."))
             .then(() => history.push("/character?id=" + data?.characterId))
     }

@@ -19,7 +19,7 @@ export function CharacterIndex() {
             }
         };
 
-        fetch("https://localhost:44394/api/character/my-characters", requestInit)
+        fetch(process.env.BASE_URL + "character/my-characters", requestInit)
             .then((response) => response.json())
             .then((response) => {
                 console.log(response);

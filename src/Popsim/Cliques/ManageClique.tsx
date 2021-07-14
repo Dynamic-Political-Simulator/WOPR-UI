@@ -36,7 +36,7 @@ export function ManageClique(){
             }
         };
 
-        fetch("https://localhost:44394/api/clique/user-clique-officer?id=" + cliqueId, requestInit)
+        fetch(process.env.BASE_URL + "clique/user-clique-officer?id=" + cliqueId, requestInit)
             .catch(() => history.push("/"));
 
         var requestInit: RequestInit = {
@@ -48,7 +48,7 @@ export function ManageClique(){
             }
         };
     
-        fetch("https://localhost:44394/api/clique/get-clique?id=" + cliqueId, requestInit)
+        fetch(process.env.BASE_URL + "clique/get-clique?id=" + cliqueId, requestInit)
             .then((response) => response.json())
             .then((response) => setData(response));
     }, []);
@@ -80,7 +80,7 @@ export function ManageClique(){
             body: JSON.stringify(body)
         };
 
-        fetch("https://localhost:44394/api/clique/send-invites", requestInit)
+        fetch(process.env.BASE_URL + "clique/send-invites", requestInit)
             .catch(() => setError("Something went wrong, try again."))
             .then(() => history.push("/clique?id=" + cliqueId));
     }
@@ -101,7 +101,7 @@ export function ManageClique(){
             body: JSON.stringify(body)
         };
 
-        fetch("https://localhost:44394/api/clique/kick", requestInit)
+        fetch(process.env.BASE_URL + "clique/kick", requestInit)
             .finally(() => history.go(0));
     }
 
@@ -115,7 +115,7 @@ export function ManageClique(){
             }
         };
 
-        fetch("https://localhost:44394/api/character/search-for-clique?search=" + searchTerm + "&id=" + cliqueId, requestInit)
+        fetch(process.env.BASE_URL + "character/search-for-clique?search=" + searchTerm + "&id=" + cliqueId, requestInit)
             .then((response) => response.json())
             .then((response) => {
                 setSearchReturn(response);

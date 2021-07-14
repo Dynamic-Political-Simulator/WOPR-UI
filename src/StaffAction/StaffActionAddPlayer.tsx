@@ -40,7 +40,7 @@ export function StaffActionAddPlayer(){
             }
         };
 
-        fetch("https://localhost:44394/api/staff-action/get-staff-action?id=" + staffActionId, requestInit)
+        fetch(process.env.BASE_URL + "staff-action/get-staff-action?id=" + staffActionId, requestInit)
             .then((response) => response.json())
             .then((response) => {
                 setData(response);
@@ -59,7 +59,7 @@ export function StaffActionAddPlayer(){
             }
         };
 
-        fetch("https://localhost:44394/api/user/search-profile?search=" + searchTerm, requestInit)
+        fetch(process.env.BASE_URL + "user/search-profile?search=" + searchTerm, requestInit)
             .then((response) => response.json())
             .then((response) => {
                 setSearchReturn(response);
@@ -76,7 +76,7 @@ export function StaffActionAddPlayer(){
             }
         };
 
-        fetch("https://localhost:44394/api/user/search-staff?search=" + searchTermStaff, requestInit)
+        fetch(process.env.BASE_URL + "user/search-staff?search=" + searchTermStaff, requestInit)
             .then((response) => response.json())
             .then((response) => {
                 setSearchReturnStaff(response);
@@ -122,7 +122,7 @@ export function StaffActionAddPlayer(){
             body: JSON.stringify(body)
         };
 
-        fetch("https://localhost:44394/api/staff-action/add-players", requestInit)
+        fetch(process.env.BASE_URL + "staff-action/add-players", requestInit)
             .catch(() => setError("Something went wrong, try again."))
             .then(() => history.push("/staff-action?id=" + data?.staffActionId));
     }

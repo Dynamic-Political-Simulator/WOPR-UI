@@ -60,7 +60,7 @@ function ModifyGlobalGroup() {
             }
         };
 
-        fetch("https://localhost:44394/api/popsim/get-ggroups", requestInit)
+        fetch(process.env.BASE_URL + "popsim/get-ggroups", requestInit)
             .then((response) => response.json())
             .then((response) => {
                 setGroups(response);
@@ -80,7 +80,7 @@ function ModifyGlobalGroup() {
             body: JSON.stringify(selected)
         };
 
-        fetch("https://localhost:44394/api/popsim/set-group", requestInit)
+        fetch(process.env.BASE_URL + "popsim/set-group", requestInit)
             .then((response) => {
                 var requestInit: RequestInit = {
                     mode: "cors",
@@ -91,7 +91,7 @@ function ModifyGlobalGroup() {
                     }
                 };
 
-                fetch("https://localhost:44394/api/popsim/get-ggroups", requestInit)
+                fetch(process.env.BASE_URL + "popsim/get-ggroups", requestInit)
                     .then((response) => response.json())
                     .then((response) => {
                         setGroups(response);

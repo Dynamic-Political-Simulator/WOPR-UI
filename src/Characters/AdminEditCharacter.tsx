@@ -37,7 +37,7 @@ export function AdminEditCharacter(){
             }
         };
 
-        fetch("https://localhost:44394/api/admin-character/get-character?id=" + characterId, requestInit)
+        fetch(process.env.BASE_URL + "admin-character/get-character?id=" + characterId, requestInit)
             .then((response) => response.json())
             .then((response) => setData(response))
             .catch(() => setError("Access Denied."));
@@ -51,7 +51,7 @@ export function AdminEditCharacter(){
             }
         };
     
-        fetch("https://localhost:44394/api/character/get-species", requestInit)
+        fetch(process.env.BASE_URL + "character/get-species", requestInit)
             .then((response) => response.json())
             .then((response) => setSpeciesData(response));
 
@@ -68,7 +68,7 @@ export function AdminEditCharacter(){
             body: JSON.stringify(data)
         };
 
-        fetch("https://localhost:44394/api/admin-character/edit-character", requestInit)
+        fetch(process.env.BASE_URL + "admin-character/edit-character", requestInit)
             .then((response) => {
                 if (response.ok){
                     history.push("/character?id=" + data?.characterId);

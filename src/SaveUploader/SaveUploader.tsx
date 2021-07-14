@@ -47,7 +47,7 @@ function SaveUploader() {
                 body: JSON.stringify(body)
             };
 
-            fetch("https://localhost:44394/api/saves/upload-save", requestInit)
+            fetch(process.env.BASE_URL + "saves/upload-save", requestInit)
                 .catch(() => setError("Something went wrong, try again."))
                 .then(() => history.push("/save-manager"));
         });

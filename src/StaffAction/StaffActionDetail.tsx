@@ -55,7 +55,7 @@ export function StaffActionDetail() {
             }
         };
 
-        fetch("https://localhost:44394/api/staff-action/get-staff-action?id=" + staffActionId, requestInit)
+        fetch(process.env.BASE_URL + "staff-action/get-staff-action?id=" + staffActionId, requestInit)
             .then((response) => response.json())
             .then((response) => setData(response));
     }, []);
@@ -77,7 +77,7 @@ export function StaffActionDetail() {
             body: JSON.stringify(body)
         };
 
-        fetch("https://localhost:44394/api/staff-action/post", requestInit)
+        fetch(process.env.BASE_URL + "staff-action/post", requestInit)
             .then(() => history.go(0));
     }
 

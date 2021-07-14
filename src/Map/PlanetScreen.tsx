@@ -423,7 +423,7 @@ export function Planet() {
             }
         };
 
-        fetch("https://localhost:44394/api/clique/get-alignments", requestInit)
+        fetch(process.env.BASE_URL + "clique/get-alignments", requestInit)
             .then((response) => response.json())
             .then((response) => {
                 setData(response);
@@ -441,7 +441,7 @@ export function Planet() {
                     }
                 };
 
-                fetch("https://localhost:44394/api/map/get-planet?name=" + name, requestInit)
+                fetch(process.env.BASE_URL + "map/get-planet?name=" + name, requestInit)
                     .then((response) => response.json())
                     .then((response) => {
                         try {
@@ -502,7 +502,7 @@ export function Planet() {
             body: JSON.stringify(planet)
         };
 
-        fetch("https://localhost:44394/api/map/edit-planet", requestInit)
+        fetch(process.env.BASE_URL + "map/edit-planet", requestInit)
             .then((response) => {
                 setSaving(false);
 
@@ -515,7 +515,7 @@ export function Planet() {
                     }
                 };
 
-                fetch("https://localhost:44394/api/map/get-planet?name=" + name, requestInit)
+                fetch(process.env.BASE_URL + "map/get-planet?name=" + name, requestInit)
                     .then((response) => response.json())
                     .then((response) => {
                         try {

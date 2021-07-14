@@ -38,7 +38,6 @@ export function Terminal() {
     const history = useHistory();
 
     useEffect(() => {
-        checkAuth(cookies, setCookie);
         setTimeout(() => {
             document.addEventListener("click", () => {
                 let element = document.getElementById("inputter");

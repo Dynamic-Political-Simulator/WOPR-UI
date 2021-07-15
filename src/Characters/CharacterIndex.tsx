@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom';
 import { Button, Container, Jumbotron, ListGroup } from 'reactstrap';
-import {PlayerCharacterListing, PlayerCharacter} from './PlayerCharacterListing'
+import { PlayerCharacterListing, PlayerCharacter } from './PlayerCharacterListing'
 
 
 export function CharacterIndex() {
@@ -19,7 +19,7 @@ export function CharacterIndex() {
             }
         };
 
-        fetch(process.env.BASE_URL + "character/my-characters", requestInit)
+        fetch(process.env.REACT_APP_BASE_URL + "character/my-characters", requestInit)
             .then((response) => response.json())
             .then((response) => {
                 console.log(response);
@@ -31,7 +31,7 @@ export function CharacterIndex() {
         history.push("/create-character")
     }
 
-    return(
+    return (
         <Container>
             <Jumbotron>
                 <h1>Characters</h1>
@@ -43,8 +43,8 @@ export function CharacterIndex() {
                 <hr className="my-2" />
                 <ListGroup>
                     {data?.map((i) => (
-                        <PlayerCharacterListing 
-                            Character = {i}
+                        <PlayerCharacterListing
+                            Character={i}
                         />
                     ))}
                 </ListGroup>

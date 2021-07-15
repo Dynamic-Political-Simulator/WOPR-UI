@@ -33,54 +33,54 @@ export function CliqueIndex() {
             }
         };
 
-        fetch(process.env.BASE_URL + "clique/get-overview", requestInit)
+        fetch(process.env.REACT_APP_BASE_URL + "clique/get-overview", requestInit)
             .then((response) => response.json())
             .then((response) => setData(response))
             .catch(() => history.push("/"));
     }, []);
 
-    function handleCliqueClick(id: string){
+    function handleCliqueClick(id: string) {
         history.push("/clique?id=" + id);
     }
 
-    function handleInviteClick(id: string){
+    function handleInviteClick(id: string) {
         history.push("/clique-invites?id=" + id);
     }
 
-    function handleCreateClick(){
+    function handleCreateClick() {
         history.push("/create-clique");
     }
 
-    return(
+    return (
         <Container>
             <Jumbotron>
                 <Label>Your cliques</Label>
-                {data?.cliques.length == 0 ? 
-                <ListGroup>
-                    <ListGroupItem>Not a member of any Cliques.</ListGroupItem>
-                </ListGroup>
-                : 
-                <ListGroup>
-                    {data?.cliques.map((i) => <ListGroupItem key={i.id} onClick={() => handleCliqueClick(i.id)}>
-                        {i.name}
-                    </ListGroupItem>)}
-                </ListGroup>
+                {data?.cliques.length == 0 ?
+                    <ListGroup>
+                        <ListGroupItem>Not a member of any Cliques.</ListGroupItem>
+                    </ListGroup>
+                    :
+                    <ListGroup>
+                        {data?.cliques.map((i) => <ListGroupItem key={i.id} onClick={() => handleCliqueClick(i.id)}>
+                            {i.name}
+                        </ListGroupItem>)}
+                    </ListGroup>
                 }
-                
-                <hr className="my-2"/>
+
+                <hr className="my-2" />
                 <Label>Your invites</Label>
-                {data?.cliqueInvites.length == 0 ? 
-                <ListGroup>
-                    <ListGroupItem>No Clique invites.</ListGroupItem>
-                </ListGroup>
-                : 
-                <ListGroup>
-                    {data?.cliqueInvites.map((i) => <ListGroupItem key={i.id} onClick={() => handleInviteClick(i.id)}>
-                        {i.name}
-                    </ListGroupItem>)}
-                </ListGroup>
+                {data?.cliqueInvites.length == 0 ?
+                    <ListGroup>
+                        <ListGroupItem>No Clique invites.</ListGroupItem>
+                    </ListGroup>
+                    :
+                    <ListGroup>
+                        {data?.cliqueInvites.map((i) => <ListGroupItem key={i.id} onClick={() => handleInviteClick(i.id)}>
+                            {i.name}
+                        </ListGroupItem>)}
+                    </ListGroup>
                 }
-                <hr className="my-2"/>
+                <hr className="my-2" />
                 <Button onClick={handleCreateClick}>
                     Create Clique
                 </Button>

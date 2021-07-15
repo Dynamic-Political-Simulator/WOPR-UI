@@ -8,13 +8,13 @@ export interface AlignmentOverview {
     alignmentName: string
     federalismCentralism: number
     democracyAuthority: number
-	globalismIsolationism: number
-	militarismPacifism: number
-	securityFreedom: number
-	cooperationCompetition: number
-	secularismSpiritualism: number
-	progressivismTraditionalism: number
-	monoculturalismMulticulturalism: number
+    globalismIsolationism: number
+    militarismPacifism: number
+    securityFreedom: number
+    cooperationCompetition: number
+    secularismSpiritualism: number
+    progressivismTraditionalism: number
+    monoculturalismMulticulturalism: number
 }
 
 interface ModalDeleteData {
@@ -23,7 +23,7 @@ interface ModalDeleteData {
 }
 
 export function PopsimAlignments() {
-    const [data, setData] = useState<AlignmentOverview[]|undefined>(undefined);
+    const [data, setData] = useState<AlignmentOverview[] | undefined>(undefined);
     const [modal, setModal] = useState<boolean>(false);
     const [modalData, setModalData] = useState<ModalDeleteData>();
 
@@ -39,21 +39,21 @@ export function PopsimAlignments() {
             }
         };
 
-        fetch(process.env.BASE_URL + "alignment/alignment-overview", requestInit)
+        fetch(process.env.REACT_APP_BASE_URL + "alignment/alignment-overview", requestInit)
             .then((response) => response.json())
             .then((response) => setData(response));
     }, []);
 
-    function handleEditClick(id:string){
+    function handleEditClick(id: string) {
         history.push('edit-alignment?id=' + id);
     }
 
-    function handleDeleteClick(id:string, name: string){
-        setModalData({id: id, name: name})
+    function handleDeleteClick(id: string, name: string) {
+        setModalData({ id: id, name: name })
         setModal(true);
     }
 
-    function handleDeleteConfirmClick(){
+    function handleDeleteConfirmClick() {
         var requestInit: RequestInit = {
             mode: "cors",
             credentials: "include",
@@ -63,11 +63,11 @@ export function PopsimAlignments() {
             }
         };
 
-        fetch(process.env.BASE_URL + "alignment/delete-alignment?id=" + modalData?.id, requestInit)
+        fetch(process.env.REACT_APP_BASE_URL + "alignment/delete-alignment?id=" + modalData?.id, requestInit)
             .then(() => history.go(0));
     }
 
-    function handleCreateClick(){
+    function handleCreateClick() {
         var requestInit: RequestInit = {
             mode: "cors",
             credentials: "include",
@@ -77,7 +77,7 @@ export function PopsimAlignments() {
             }
         };
 
-        fetch(process.env.BASE_URL + "popsim/create-alignment", requestInit)
+        fetch(process.env.REACT_APP_BASE_URL + "popsim/create-alignment", requestInit)
             .then(() => history.go(0));
     }
 
@@ -86,7 +86,7 @@ export function PopsimAlignments() {
             <Jumbotron>
                 <h1>Alignments</h1>
                 <Button onClick={handleCreateClick}>Create Alignment</Button>
-                <hr className="my-2"/>
+                <hr className="my-2" />
 
                 <Table striped>
                     <thead>
@@ -116,24 +116,24 @@ export function PopsimAlignments() {
                                 <td>{a.secularismSpiritualism}</td>
                                 <td>{a.progressivismTraditionalism}</td>
                                 <td>{a.monoculturalismMulticulturalism}</td>
-                                {a.alignmentName != "Apolitical" ? <td><Button onClick={() => handleEditClick(a.alignmentId)}>Edit</Button></td> : null }
-                                {a.alignmentName != "Apolitical" ? <td><Button color="danger" onClick={() => handleDeleteClick(a.alignmentId, a.alignmentName)}>Delete</Button></td> : null }
+                                {a.alignmentName != "Apolitical" ? <td><Button onClick={() => handleEditClick(a.alignmentId)}>Edit</Button></td> : null}
+                                {a.alignmentName != "Apolitical" ? <td><Button color="danger" onClick={() => handleDeleteClick(a.alignmentId, a.alignmentName)}>Delete</Button></td> : null}
                             </tr>
                         ))}
                     </tbody>
                 </Table>
             </Jumbotron>
             <Modal isOpen={modal}>
-                    <ModalHeader>
-                        Are you sure you want to delete {modalData?.name}?
-                    </ModalHeader>
-                    <ModalBody>
-                        This action is permanent and cannot be reversed.
-                    </ModalBody>
-                    <ModalFooter>
-                        <Button color="danger" onClick={handleDeleteConfirmClick}>Delete</Button>{' '}
-                        <Button color="secondary" onClick={() => setModal(false)}>Cancel</Button>
-                    </ModalFooter>
+                <ModalHeader>
+                    Are you sure you want to delete {modalData?.name}?
+                </ModalHeader>
+                <ModalBody>
+                    This action is permanent and cannot be reversed.
+                </ModalBody>
+                <ModalFooter>
+                    <Button color="danger" onClick={handleDeleteConfirmClick}>Delete</Button>{' '}
+                    <Button color="secondary" onClick={() => setModal(false)}>Cancel</Button>
+                </ModalFooter>
             </Modal>
         </>
     )

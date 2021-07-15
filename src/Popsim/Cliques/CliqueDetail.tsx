@@ -18,7 +18,7 @@ export interface Clique {
     userIsOfficer: boolean
 }
 
-export function CliqueDetail(){
+export function CliqueDetail() {
     const [data, setData] = useState<Clique>();
 
     const location = useLocation();
@@ -37,41 +37,41 @@ export function CliqueDetail(){
             }
         };
 
-        fetch(process.env.BASE_URL + "clique/get-clique?id=" + cliqueId, requestInit)
+        fetch(process.env.REACT_APP_BASE_URL + "clique/get-clique?id=" + cliqueId, requestInit)
             .then((response) => response.json())
-            .then((response) => setData(response));   
+            .then((response) => setData(response));
     }, []);
 
-    function handleManageClick(){
+    function handleManageClick() {
         history.push("manage-clique?id=" + cliqueId);
     }
 
     return (
         <>
-        {data == undefined? <div>loading</div> : 
-        <Container>
-            <Jumbotron className="d-flex flex-column">
-                <h1>{data?.cliqueName}</h1>
-                <hr className="my-2"/>
-                <Label>Money: {data.money}</Label>
-                <Label>Officers:</Label>
-                <ListGroup>
-                    {data.officers.map((i) => <ListGroupItem key={i.characterId}>{i.characterName}</ListGroupItem>)}
-                </ListGroup>
-                <Label>Members:</Label>
-                <ListGroup>
-                    {data.members.map((i) => <ListGroupItem key={i.characterId}>{i.characterName}</ListGroupItem>)}
-                </ListGroup>
-                {data.userIsOfficer ? 
-                <>
-                    <hr className="my-2"/>
-                    <Button style={{width:'100px'}} onClick={handleManageClick}>Manage</Button>
-                </> 
-                : null}
-                
-            </Jumbotron>
-        </Container>
-        }
+            {data == undefined ? <div>loading</div> :
+                <Container>
+                    <Jumbotron className="d-flex flex-column">
+                        <h1>{data?.cliqueName}</h1>
+                        <hr className="my-2" />
+                        <Label>Money: {data.money}</Label>
+                        <Label>Officers:</Label>
+                        <ListGroup>
+                            {data.officers.map((i) => <ListGroupItem key={i.characterId}>{i.characterName}</ListGroupItem>)}
+                        </ListGroup>
+                        <Label>Members:</Label>
+                        <ListGroup>
+                            {data.members.map((i) => <ListGroupItem key={i.characterId}>{i.characterName}</ListGroupItem>)}
+                        </ListGroup>
+                        {data.userIsOfficer ?
+                            <>
+                                <hr className="my-2" />
+                                <Button style={{ width: '100px' }} onClick={handleManageClick}>Manage</Button>
+                            </>
+                            : null}
+
+                    </Jumbotron>
+                </Container>
+            }
         </>
     )
 }

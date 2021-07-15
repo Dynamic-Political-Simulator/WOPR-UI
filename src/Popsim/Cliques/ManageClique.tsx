@@ -5,12 +5,12 @@ import { useHistory, useLocation } from "react-router-dom";
 import { Clique } from "./CliqueDetail";
 import { Button, ButtonGroup, Container, Input, Jumbotron, Label, ListGroup, ListGroupItem } from "reactstrap";
 
-interface CharacterSearchReturn{
+interface CharacterSearchReturn {
     characterId: string;
     characterName: string;
 }
 
-export function ManageClique(){
+export function ManageClique() {
     const [data, setData] = useState<Clique>();
 
     const location = useLocation();
@@ -36,7 +36,7 @@ export function ManageClique(){
             }
         };
 
-        fetch(process.env.BASE_URL + "clique/user-clique-officer?id=" + cliqueId, requestInit)
+        fetch(process.env.REACT_APP_BASE_URL + "clique/user-clique-officer?id=" + cliqueId, requestInit)
             .catch(() => history.push("/"));
 
         var requestInit: RequestInit = {
@@ -47,14 +47,14 @@ export function ManageClique(){
                 "Content-Type": "application/json"
             }
         };
-    
-        fetch(process.env.BASE_URL + "clique/get-clique?id=" + cliqueId, requestInit)
+
+        fetch(process.env.REACT_APP_BASE_URL + "clique/get-clique?id=" + cliqueId, requestInit)
             .then((response) => response.json())
             .then((response) => setData(response));
     }, []);
 
     function addCharacterToSelectedCharacters(character: CharacterSearchReturn) {
-        if (!selectedCharacters.includes(character)){
+        if (!selectedCharacters.includes(character)) {
             setSelectedCharacters(prev => {
                 return [
                     ...prev,
@@ -64,7 +64,7 @@ export function ManageClique(){
         }
     }
 
-    function handleClick(){
+    function handleClick() {
         var body = {
             cliqueId: cliqueId,
             addedCharacterIds: selectedCharacters.map(c => c.characterId)
@@ -80,12 +80,12 @@ export function ManageClique(){
             body: JSON.stringify(body)
         };
 
-        fetch(process.env.BASE_URL + "clique/send-invites", requestInit)
+        fetch(process.env.REACT_APP_BASE_URL + "clique/send-invites", requestInit)
             .catch(() => setError("Something went wrong, try again."))
             .then(() => history.push("/clique?id=" + cliqueId));
     }
 
-    function handleKickClick(id: string){
+    function handleKickClick(id: string) {
         var body = {
             cliqueId: cliqueId,
             characterId: id
@@ -101,7 +101,7 @@ export function ManageClique(){
             body: JSON.stringify(body)
         };
 
-        fetch(process.env.BASE_URL + "clique/kick", requestInit)
+        fetch(process.env.REACT_APP_BASE_URL + "clique/kick", requestInit)
             .finally(() => history.go(0));
     }
 
@@ -115,55 +115,55 @@ export function ManageClique(){
             }
         };
 
-        fetch(process.env.BASE_URL + "character/search-for-clique?search=" + searchTerm + "&id=" + cliqueId, requestInit)
+        fetch(process.env.REACT_APP_BASE_URL + "character/search-for-clique?search=" + searchTerm + "&id=" + cliqueId, requestInit)
             .then((response) => response.json())
             .then((response) => {
                 setSearchReturn(response);
             });
     }, [searchTerm]);
 
-    return(
+    return (
         <>
-        {data == undefined ? <div>loading</div> : 
-        <Container>
-            <Jumbotron>
-                <h1>{data.cliqueName}</h1>
-                <hr className="my-2" />
+            {data == undefined ? <div>loading</div> :
+                <Container>
+                    <Jumbotron>
+                        <h1>{data.cliqueName}</h1>
+                        <hr className="my-2" />
 
-                <Label>Invite</Label>
-                <Input
-                    name="search"
-                    value={searchTerm}
-                    placeholder="Search characters..."
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                />
+                        <Label>Invite</Label>
+                        <Input
+                            name="search"
+                            value={searchTerm}
+                            placeholder="Search characters..."
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
 
-                <ButtonGroup className="mb-2">
-                    {selectedCharacters?.map((character) => (
-                        <Button key={character.characterId} disabled>{character.characterName}</Button>
-                    ))}
-                </ButtonGroup>
+                        <ButtonGroup className="mb-2">
+                            {selectedCharacters?.map((character) => (
+                                <Button key={character.characterId} disabled>{character.characterName}</Button>
+                            ))}
+                        </ButtonGroup>
 
-                <ListGroup>
-                    {searchReturn?.map((character) => (
-                        <ListGroupItem key={character.characterId} onClick={(e) => addCharacterToSelectedCharacters(character)}><Button>{character.characterName}</Button></ListGroupItem>
-                    ))}
-                </ListGroup>
+                        <ListGroup>
+                            {searchReturn?.map((character) => (
+                                <ListGroupItem key={character.characterId} onClick={(e) => addCharacterToSelectedCharacters(character)}><Button>{character.characterName}</Button></ListGroupItem>
+                            ))}
+                        </ListGroup>
 
-                <Button color="secondary" onClick={handleClick}>
-                    Invite
-                </Button>
+                        <Button color="secondary" onClick={handleClick}>
+                            Invite
+                        </Button>
 
-                <hr className="my-2"/>
+                        <hr className="my-2" />
 
-                <ListGroup>
-                    {data.members.map((character) => (
-                        <ListGroupItem key={character.characterId}><Button color="danger" onClick={() => handleKickClick(character.characterId)}>Kick: {character.characterName}</Button></ListGroupItem>
-                    ))}
-                </ListGroup>
-            </Jumbotron>
-        </Container>
-        }
+                        <ListGroup>
+                            {data.members.map((character) => (
+                                <ListGroupItem key={character.characterId}><Button color="danger" onClick={() => handleKickClick(character.characterId)}>Kick: {character.characterName}</Button></ListGroupItem>
+                            ))}
+                        </ListGroup>
+                    </Jumbotron>
+                </Container>
+            }
         </>
     )
 }

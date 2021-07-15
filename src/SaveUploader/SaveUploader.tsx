@@ -8,6 +8,8 @@ function SaveUploader() {
 
     const [error, setError] = useState<string | undefined>(undefined);
 
+    const [upload, setUpload] = useState(false);
+
     const history = useHistory();
 
     function readFileDataAsBase64(path: Blob) {
@@ -31,6 +33,7 @@ function SaveUploader() {
 
     function handleClick() {
         if (typeof savePath == undefined) return;
+        setUpload(true);
         let save = savePath as Blob;
         readFileDataAsBase64(save).then(result => {
             var body = {
@@ -47,9 +50,12 @@ function SaveUploader() {
                 body: JSON.stringify(body)
             };
 
-            fetch(process.env.BASE_URL + "saves/upload-save", requestInit)
-                .catch(() => setError("Something went wrong, try again."))
-                .then(() => history.push("/save-manager"));
+            fetch(process.env.REACT_APP_BASE_URL + "saves/upload-save", requestInit)
+                .catch(() => {
+                    setError("Something went wrong, try again.");
+                    setUpload(false);
+                })
+                .then(() => history.push("/game-manager"));
         });
     }
 
@@ -62,7 +68,7 @@ function SaveUploader() {
                 <Label>Save File: </Label>
                 <Input name="savePath" type="file" accept=".sav" onChange={(e) => { if (e.target.files !== null) setPath(e.target.files![0]) }} />
 
-                <Button color="secondary" onClick={handleClick}>
+                <Button color="secondary" onClick={handleClick} disabled={upload}>
                     Upload
                 </Button>
             </Jumbotron>

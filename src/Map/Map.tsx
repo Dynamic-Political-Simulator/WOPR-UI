@@ -17,7 +17,7 @@ function Map() {
             method: "GET"
         };
 
-        fetch(process.env.BASE_URL + "map/get", requestInit)
+        fetch(process.env.REACT_APP_BASE_URL + "map/get", requestInit)
             .then((response) => response.json())
             .then((response) => {
                 let entries = response as PlanetEntry[];

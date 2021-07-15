@@ -27,7 +27,7 @@ export function CreateClique() {
             }
         };
 
-        fetch(process.env.BASE_URL + "alignment/search-alignment?search=" + searchTerm, requestInit)
+        fetch(process.env.REACT_APP_BASE_URL + "alignment/search-alignment?search=" + searchTerm, requestInit)
             .then((response) => response.json())
             .then((response) => {
                 setSearchReturn(response);
@@ -50,13 +50,13 @@ export function CreateClique() {
             body: JSON.stringify(body)
         };
 
-        fetch(process.env.BASE_URL + "clique/create-clique", requestInit)
+        fetch(process.env.REACT_APP_BASE_URL + "clique/create-clique", requestInit)
             .catch(() => setError("Something went wrong, try again."))
             .then(() => history.push("/my-cliques"))
     }
 
     function addAlignmentToSelecteAlignments(alignment: AlignmentSearchReturn) {
-        if (!selectedAlignments.includes(alignment)){
+        if (!selectedAlignments.includes(alignment)) {
             setSelectedAlignments(prev => {
                 return [
                     ...prev,
@@ -99,7 +99,7 @@ export function CreateClique() {
                     ))}
                 </ListGroup>
 
-                {error == undefined? null : <Alert color="Danger">Something went wrong. Please try again.</Alert>}
+                {error == undefined ? null : <Alert color="Danger">Something went wrong. Please try again.</Alert>}
 
                 <Button color="secondary" onClick={handleClick}>
                     Create

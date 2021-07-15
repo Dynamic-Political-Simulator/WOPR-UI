@@ -55,7 +55,7 @@ function ClockSetter() {
             body: JSON.stringify({ newTime: res.toString() })
         };
 
-        fetch(process.env.BASE_URL + "clock/time", requestInit)
+        fetch(process.env.REACT_APP_BASE_URL + "clock/time", requestInit)
             .catch(() => setError("Something went wrong, try again."))
             .then(() => console.log("Success!"));
     }

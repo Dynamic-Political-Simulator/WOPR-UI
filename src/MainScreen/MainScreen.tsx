@@ -59,13 +59,13 @@ export function MainScreen() {
                 }
             };
 
-            fetch(process.env.BASE_URL + "user/is-admin", requestInit)
+            fetch(process.env.REACT_APP_BASE_URL + "user/is-admin", requestInit)
                 .then((response) => response.json())
                 .then((response) => {
                     setCookie("isAdmin", response);
                 })
                 .catch(() => {
-                    window.location.href = process.env.BASE_URL + "auth/auth";
+                    window.location.href = process.env.REACT_APP_BASE_URL + "auth/auth";
                 });
         }
 

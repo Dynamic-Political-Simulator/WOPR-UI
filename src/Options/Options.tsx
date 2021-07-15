@@ -125,6 +125,8 @@ export function Options() {
                 <span className="darkText">This is how text on a dark background looks like.</span>
                 <br />
                 <input type="color" id="bgPicker" onChange={() => setBG()} value={cookies["bg"]} />
+                <br />
+                <p style={{ color: "red" }} hidden={!(cookies["fg"] === "#000000" && cookies["bg"] === "#000000")}>You did this to yourself.</p>
             </div>
         </div>
     )

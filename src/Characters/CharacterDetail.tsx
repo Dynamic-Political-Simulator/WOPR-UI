@@ -13,7 +13,7 @@ interface PlayerCharacterDetail {
     yearOfBirth: number;
     yearOfDeath: number;
     causeOfDeath: string;
-    
+
     species: string;
     userOwnsCharacter: boolean;
 }
@@ -44,7 +44,7 @@ export function CharacterDetail() {
             }
         };
 
-        fetch(process.env.BASE_URL + "character/get-character?id=" + characterId, requestInit)
+        fetch(process.env.REACT_APP_BASE_URL + "character/get-character?id=" + characterId, requestInit)
             .then((response) => response.json())
             .then((response) => {
                 setData(response);
@@ -69,12 +69,12 @@ export function CharacterDetail() {
             }
         };
 
-        fetch(process.env.BASE_URL + "admin-character/delete-character?id=" + characterId, requestInit)
+        fetch(process.env.REACT_APP_BASE_URL + "admin-character/delete-character?id=" + characterId, requestInit)
             .then((response) => {
                 if (response.ok) {
                     history.push("character-search");
                 }
-                else{
+                else {
                     setError("Something went wrong.");
                 }
             });
@@ -84,50 +84,50 @@ export function CharacterDetail() {
         <Container>
             <Jumbotron>
                 <h1>{data?.characterName}</h1>
-                <hr className="my-2"/>
+                <hr className="my-2" />
 
                 <p>Species: {data?.species}</p>
 
-                {data?.causeOfDeath == null ? 
-                <p>{data?.yearOfBirth} - Present</p> : 
-                <>
-                    <p>{data?.yearOfBirth} - {data?.yearOfDeath}</p>
-                    <p>Cause of death: {data?.causeOfDeath}</p>
-                </>}
+                {data?.causeOfDeath == null ?
+                    <p>{data?.yearOfBirth} - Present</p> :
+                    <>
+                        <p>{data?.yearOfBirth} - {data?.yearOfDeath}</p>
+                        <p>Cause of death: {data?.causeOfDeath}</p>
+                    </>}
 
                 <p>Bio: {data?.characterBio}</p>
-                
-                {data?.userOwnsCharacter == true ? 
-                <Button color="secondary" onClick={handleClickEdit}>
-                    Edit
-                </Button> 
-                : null}
-                { cookies["isAdmin"] === "true" ?
-                <>
-                    <Button color="secondary" onClick={handleClickAdminEdit}>
-                        Admin Edit
+
+                {data?.userOwnsCharacter == true ?
+                    <Button color="secondary" onClick={handleClickEdit}>
+                        Edit
                     </Button>
-                    <Button color="danger" onClick={toggle}>
-                        Delete
-                    </Button> 
-                    <Modal isOpen={modal} toggle={toggle}>
-                        <ModalHeader toggle={toggle}>Are you sure you want to delete {data?.characterName}?</ModalHeader>
-                        <ModalBody>
-                            This action cannot be undone.
-                        </ModalBody>
-                        <ModalFooter>
-                            <Button color="danger" onClick={handleClickDelete}>Delete</Button>{' '}
-                            <Button color="secondary" onClick={toggle}>Cancel</Button>
-                        </ModalFooter>
-                    </Modal>
-                </>
-                : null}
-                {error != undefined ? 
+                    : null}
+                {cookies["isAdmin"] === "true" ?
+                    <>
+                        <Button color="secondary" onClick={handleClickAdminEdit}>
+                            Admin Edit
+                        </Button>
+                        <Button color="danger" onClick={toggle}>
+                            Delete
+                        </Button>
+                        <Modal isOpen={modal} toggle={toggle}>
+                            <ModalHeader toggle={toggle}>Are you sure you want to delete {data?.characterName}?</ModalHeader>
+                            <ModalBody>
+                                This action cannot be undone.
+                            </ModalBody>
+                            <ModalFooter>
+                                <Button color="danger" onClick={handleClickDelete}>Delete</Button>{' '}
+                                <Button color="secondary" onClick={toggle}>Cancel</Button>
+                            </ModalFooter>
+                        </Modal>
+                    </>
+                    : null}
+                {error != undefined ?
                     <Alert color="danger">
                         {error}
                     </Alert>
-                : null}
-                
+                    : null}
+
             </Jumbotron>
         </Container>
     )

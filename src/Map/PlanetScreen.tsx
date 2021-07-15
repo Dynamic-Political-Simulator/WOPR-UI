@@ -423,7 +423,7 @@ export function Planet() {
             }
         };
 
-        fetch(process.env.BASE_URL + "clique/get-alignments", requestInit)
+        fetch(process.env.REACT_APP_BASE_URL + "clique/get-alignments", requestInit)
             .then((response) => response.json())
             .then((response) => {
                 setData(response);
@@ -441,7 +441,7 @@ export function Planet() {
                     }
                 };
 
-                fetch(process.env.BASE_URL + "map/get-planet?name=" + name, requestInit)
+                fetch(process.env.REACT_APP_BASE_URL + "map/get-planet?name=" + name, requestInit)
                     .then((response) => response.json())
                     .then((response) => {
                         try {
@@ -502,7 +502,7 @@ export function Planet() {
             body: JSON.stringify(planet)
         };
 
-        fetch(process.env.BASE_URL + "map/edit-planet", requestInit)
+        fetch(process.env.REACT_APP_BASE_URL + "map/edit-planet", requestInit)
             .then((response) => {
                 setSaving(false);
 
@@ -515,7 +515,7 @@ export function Planet() {
                     }
                 };
 
-                fetch(process.env.BASE_URL + "map/get-planet?name=" + name, requestInit)
+                fetch(process.env.REACT_APP_BASE_URL + "map/get-planet?name=" + name, requestInit)
                     .then((response) => response.json())
                     .then((response) => {
                         try {
@@ -580,10 +580,10 @@ export function Planet() {
                         <tr>
                             <th>
                                 Species
-                    </th>
+                            </th>
                             <th>
                                 Proportion
-                    </th>
+                            </th>
                         </tr>
                         {pops?.map((spe) => (
                             <tr key={spe.name}>
@@ -602,15 +602,15 @@ export function Planet() {
                         <tr>
                             <th>
                                 Office
-                    </th>
+                            </th>
                             <th>
                                 Alignment
-                    </th>
+                            </th>
                         </tr>
                         <tr>
                             <td>
                                 Executive
-                    </td>
+                            </td>
                             <td>
                                 {alignments[0]}
                             </td>
@@ -618,7 +618,7 @@ export function Planet() {
                         <tr>
                             <td>
                                 Legislative
-                    </td>
+                            </td>
                             <td>
                                 {alignments[1]}
                             </td>
@@ -626,7 +626,7 @@ export function Planet() {
                         <tr>
                             <td>
                                 Party
-                    </td>
+                            </td>
                             <td>
                                 {alignments[2]}
                             </td>
@@ -638,10 +638,10 @@ export function Planet() {
                         <tr>
                             <th>
                                 Group
-                    </th>
+                            </th>
                             <th>
                                 Members
-                    </th>
+                            </th>
                         </tr>
                         {
                             groups.map((g) => (<tr>
@@ -665,13 +665,13 @@ export function Planet() {
                         <tr>
                             <th>
                                 Industry
-                    </th>
+                            </th>
                             <th>
                                 GDP
-                    </th>
+                            </th>
                             <th>
                                 % of Total
-                    </th>
+                            </th>
                         </tr>
                         {industryModifiers?.map((spe) => (
                             <tr key={spe.Name}>
@@ -711,10 +711,10 @@ export function Planet() {
                         <tr>
                             <th>
                                 Species
-                    </th>
+                            </th>
                             <th>
                                 Proportion
-                    </th>
+                            </th>
                         </tr>
                         {pops?.map((spe) => (
                             <tr key={spe.name}>
@@ -733,15 +733,15 @@ export function Planet() {
                         <tr>
                             <th>
                                 Office
-                    </th>
+                            </th>
                             <th>
                                 Alignment
-                    </th>
+                            </th>
                         </tr>
                         <tr>
                             <td>
                                 Executive
-                    </td>
+                            </td>
                             <td>
                                 <Input
                                     type="select"
@@ -760,7 +760,7 @@ export function Planet() {
                         <tr>
                             <td>
                                 Legislative
-                    </td>
+                            </td>
                             <td>
                                 <Input
                                     type="select"
@@ -779,7 +779,7 @@ export function Planet() {
                         <tr>
                             <td>
                                 Party
-                    </td>
+                            </td>
                             <td>
                                 <Input
                                     type="select"
@@ -802,16 +802,16 @@ export function Planet() {
                         <tr>
                             <th>
                                 Group
-                    </th>
+                            </th>
                             <th>
                                 Percentage of Population
-                    </th>
+                            </th>
                             <th>
                                 Alignment
-                    </th>
+                            </th>
                             <th>
                                 Modifier
-                    </th>
+                            </th>
                             <th></th>
                         </tr>
                         {
@@ -909,10 +909,10 @@ export function Planet() {
                         <tr>
                             <th>
                                 Industry
-                    </th>
+                            </th>
                             <th>
                                 Modifier
-                    </th>
+                            </th>
                         </tr>
                         {
                             industryModifiers.map((m) => (<tr>

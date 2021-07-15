@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom';
 import { Button, Container, Input, Jumbotron, Label, ListGroup } from 'reactstrap';
-import {PlayerCharacterListing, PlayerCharacter, Species} from './PlayerCharacterListing'
+import { PlayerCharacterListing, PlayerCharacter, Species } from './PlayerCharacterListing'
 
 export function CreateCharacter() {
     const [name, setName] = useState<string>();
@@ -24,15 +24,15 @@ export function CreateCharacter() {
             }
         };
 
-        fetch(process.env.BASE_URL + "character/get-species", requestInit)
+        fetch(process.env.REACT_APP_BASE_URL + "character/get-species", requestInit)
             .then((response) => response.json())
             .then((response) => {
                 setData(response);
                 //@ts-ignore
                 setSpecies(response[0]);
             });
-        
-       
+
+
     }, []);
 
     function handleClick() {
@@ -52,12 +52,12 @@ export function CreateCharacter() {
             body: JSON.stringify(body)
         };
 
-        fetch(process.env.BASE_URL + "character/create-character", requestInit)
+        fetch(process.env.REACT_APP_BASE_URL + "character/create-character", requestInit)
             .catch(() => setError("Something went wrong, try again."))
             .then(() => history.push("/my-characters"))
     }
 
-    return(
+    return (
         <Container>
             <Jumbotron>
                 <h1>Characters</h1>
@@ -72,16 +72,16 @@ export function CreateCharacter() {
                 />
 
                 <Label>Species</Label>
-                    <Input
-                        type="select"
-                        name="species"
-                        value={species}
-                        onChange={(e) => setSpecies(e.target.value)}
-                    >
-                        {data?.map((species) => (
-                            <option>{species}</option>
-                        ))}
-                    </Input>
+                <Input
+                    type="select"
+                    name="species"
+                    value={species}
+                    onChange={(e) => setSpecies(e.target.value)}
+                >
+                    {data?.map((species) => (
+                        <option>{species}</option>
+                    ))}
+                </Input>
 
                 <Label>Bio</Label>
                 <Input

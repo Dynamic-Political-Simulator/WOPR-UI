@@ -77,7 +77,7 @@ export function PopsimAlignments() {
             }
         };
 
-        fetch(process.env.REACT_APP_BASE_URL + "popsim/create-alignment", requestInit)
+        fetch(process.env.REACT_APP_BASE_URL + "alignment/create-alignment", requestInit)
             .then(() => history.go(0));
     }
 

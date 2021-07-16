@@ -150,6 +150,22 @@ function GameManager() {
             .then(() => setProcessing(false));
     }
 
+    function runAssemblyCalc() {
+        setProcessing(true);
+        var requestInit: RequestInit = {
+            mode: "cors",
+            credentials: "include",
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        };
+
+        fetch(process.env.REACT_APP_BASE_URL + "saves/calculate-assembly", requestInit)
+            .catch(() => setError("Something went wrong, try again."))
+            .then(() => setProcessing(false));
+    }
+
     if (loading) {
         return (
             <div>
@@ -212,6 +228,9 @@ function GameManager() {
                     <p>4:</p>
                     <Button disabled={processing} onClick={runCalc}>
                         Run Calculations
+                    </Button>
+                    <Button disabled={processing} onClick={runAssemblyCalc}>
+                        Calculate Assembly
                     </Button>
                 </Jumbotron>
             </div>

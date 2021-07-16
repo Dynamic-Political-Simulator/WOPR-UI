@@ -48,6 +48,13 @@ function ModifyGlobalGroup() {
     const [selected, setSelected] = useState<Group>();
     const [setting, setSet] = useState(false);
 
+    const [alignmentData, setAlignmentData] = useState<string[]>([
+        "Conservative",
+        "Reformist",
+        "Ultrafederalist",
+        "Hardliner"
+    ]);
+
     const [, forceUpdate] = useReducer(x => x + 1, 0);
 
     useEffect(() => {
@@ -60,11 +67,17 @@ function ModifyGlobalGroup() {
             }
         };
 
-        fetch(process.env.REACT_APP_BASE_URL + "popsim/get-ggroups", requestInit)
+        fetch(process.env.REACT_APP_BASE_URL + "clique/get-alignments", requestInit)
             .then((response) => response.json())
             .then((response) => {
-                setGroups(response);
-                setSelected(response[0]);
+                //@ts-ignore
+                setAlignmentData(response);
+                fetch(process.env.REACT_APP_BASE_URL + "popsim/get-ggroups", requestInit)
+                    .then((response) => response.json())
+                    .then((responsee) => {
+                        setGroups(responsee);
+                        setSelected(responsee[0]);
+                    });
             });
     }, [])
 

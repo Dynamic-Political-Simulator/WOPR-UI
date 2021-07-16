@@ -36,9 +36,9 @@ class GroupEntry {
         let res = new GroupEntrySend();
         res.name = this.Name;
         this.Modifier?.forEach((v, k, t) => {
-            res.modifier![k] = parseInt(v);
+            res.modifier![k] = parseFloat(v);
         });
-        res.size = parseInt(this.Size);
+        res.size = parseFloat(this.Size);
         return res;
     }
 }
@@ -72,7 +72,7 @@ class IndustryEntry {
         let res = new IndustryEntrySend();
         res.name = this.Name;
         res.gdp = this.GDP;
-        res.modifier = parseInt(this.Modifier);
+        res.modifier = parseFloat(this.Modifier);
         return res;
     }
 }
@@ -858,7 +858,7 @@ export function Planet() {
                                 <td>
                                     {<Input
                                         type="text"
-                                        value={g.CurrMod != undefined ? g.Modifier?.has(g.CurrMod) ? g.Modifier?.get(g.CurrMod) : 0 : "undefined"}
+                                        value={g.CurrMod != undefined ? g.Modifier?.has(g.CurrMod) ? g.Modifier?.get(g.CurrMod) : 1 : "undefined"}
                                         disabled={g.CurrMod == undefined}
                                         onChange={(e) => {
                                             let b = groups;

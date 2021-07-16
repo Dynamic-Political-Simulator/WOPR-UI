@@ -36,9 +36,9 @@ class GroupEntry {
         let res = new GroupEntrySend();
         res.name = this.Name;
         this.Modifier?.forEach((v, k, t) => {
-            res.modifier![k] = parseInt(v);
+            res.modifier![k] = parseFloat(v);
         });
-        res.size = parseInt(this.Size);
+        res.size = parseFloat(this.Size);
         return res;
     }
 }
@@ -72,7 +72,7 @@ class IndustryEntry {
         let res = new IndustryEntrySend();
         res.name = this.Name;
         res.gdp = this.GDP;
-        res.modifier = parseInt(this.Modifier);
+        res.modifier = parseFloat(this.Modifier);
         return res;
     }
 }
@@ -571,7 +571,7 @@ export function Empire() {
                         x.popularity = Math.floor(x.popularity);
                         return x;
                     }).reverse().slice();
-                    let parlamentChartTable = parlamentTable.splice(0, colours.length - 1);
+                    let parlamentChartTable = parlamentTable.splice(0, colours.length - 2);
                     if (parlamentTable.length > 0) {
                         let others = new AlignmentPopularityEntry();
                         others.name = "Other";
@@ -581,6 +581,14 @@ export function Empire() {
 
                     let total = 0;
                     if (parlamentChartTable.length > 0) total = parlamentChartTable.map(x => x.popularity).reduce((a, b) => a + b);
+
+                    if (total < 6000) {
+                        let unavailable = new AlignmentPopularityEntry();
+                        unavailable.name = "Vacant";
+                        unavailable.popularity = 6000 - total;
+                        total += 6000 - total;
+                        parlamentChartTable.push(unavailable);
+                    }
 
                     const column = 16;
 
@@ -661,6 +669,7 @@ export function Empire() {
                 setData(response);
                 //@ts-ignore
                 let alignmento: string[] = response;
+                setAlignmentData(alignmento);
 
 
 
@@ -1028,7 +1037,7 @@ export function Empire() {
                                 <td>
                                     {<Input
                                         type="text"
-                                        value={g.CurrMod != undefined ? g.Modifier?.has(g.CurrMod) ? g.Modifier?.get(g.CurrMod) : 0 : "undefined"}
+                                        value={g.CurrMod != undefined ? g.Modifier?.has(g.CurrMod) ? g.Modifier?.get(g.CurrMod) : 1 : "undefined"}
                                         disabled={g.CurrMod == undefined}
                                         onChange={(e) => {
                                             let b = groups;

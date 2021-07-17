@@ -20,6 +20,7 @@ import pattern13 from './Patterns/13.png';
 import pattern14 from './Patterns/14.png';
 import pattern15 from './Patterns/15.png';
 import pattern16 from './Patterns/16.png';
+import { useCookies } from 'react-cookie';
 
 class PopEntry {
     name: string = "";
@@ -117,6 +118,7 @@ enum STATE {
 export function Empire() {
     const history = useHistory();
     const location = useLocation();
+    const [cookies, setCookie] = useCookies();
     const [edit, setEdit] = useState(false);
     const [state, setState] = useState(STATE.Loading);
     const [expanded, setExpanded] = useState(false);
@@ -943,7 +945,7 @@ export function Empire() {
                     width={Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0) * 0.7}
                     ref={spaceIndustryGDPChart} />
                 <br /><br />
-                <Button onClick={() => history.push("/map")}>Back</Button>&nbsp;<Button onClick={() => setEdit(true)}>Edit</Button>
+                <Button onClick={() => history.push("/map")}>Back</Button>&nbsp;<Button onClick={() => setEdit(true)} hidden={cookies["isAdmin"] === "false"}>Edit</Button>
             </div>
         )
     } else {

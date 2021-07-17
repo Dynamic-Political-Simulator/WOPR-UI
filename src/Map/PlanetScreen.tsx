@@ -20,6 +20,7 @@ import pattern13 from './Patterns/13.png';
 import pattern14 from './Patterns/14.png';
 import pattern15 from './Patterns/15.png';
 import pattern16 from './Patterns/16.png';
+import { useCookies } from 'react-cookie';
 
 class PopEntry {
     name: string = "";
@@ -96,6 +97,30 @@ class AlignmentPopularityEntry {
     popularity: number = 0;
 }
 
+class AlignModEdit {
+    name: string = "";
+    mod: string = "";
+
+    static toSend(og: AlignModEdit) {
+        let res = new AlignModSend();
+        res.name = og.name;
+        res.mod = parseFloat(og.mod);
+        return res;
+    }
+}
+
+class AlignModSend {
+    name: string = "";
+    mod: number = 0;
+
+    static toEdit(og: AlignModSend) {
+        let res = new AlignModEdit();
+        res.name = og.name;
+        res.mod = og.mod.toString();
+        return res;
+    }
+}
+
 class PlanetData {
     name: string = "";
     population: number = 0;
@@ -104,6 +129,7 @@ class PlanetData {
     industryEntries: IndustryEntrySend[] = [];
     species: PopEntry[] = [];
     popularityEntries: AlignmentPopularityEntry[] = [];
+    alignmentModifiers: AlignModSend[] = [];
 }
 
 enum STATE {
@@ -115,6 +141,7 @@ enum STATE {
 export function Planet() {
     const history = useHistory();
     const location = useLocation();
+    const [cookies, setCookie] = useCookies();
     const [edit, setEdit] = useState(false);
     const [state, setState] = useState(STATE.Loading);
     const [expanded, setExpanded] = useState(false);
@@ -151,6 +178,7 @@ export function Planet() {
         "Hardliner"
     ]);
     const [alignmentPopularity, setAlignmentPopularity] = useState<AlignmentPopularityEntry[]>([]);
+    const [alignmentModifiers, setAlignmentMods] = useState<AlignModEdit[]>([]);
 
     const name: string = queryString.parse(location.search).name as string;
 
@@ -455,6 +483,7 @@ export function Planet() {
                             setIndustryMods(planet.industryEntries.map((x: IndustryEntrySend) => IndustryEntrySend.toLocal(x)).sort((a, b) => a.GDP - b.GDP).reverse());
                             setPops(planet.species);
                             setAlignmentPopularity(planet.popularityEntries);
+                            setAlignmentMods(planet.alignmentModifiers.map(x => AlignModSend.toEdit(x)));
                             setState(STATE.Loaded);
                         } catch {
                             setState(STATE.Errored);
@@ -491,6 +520,7 @@ export function Planet() {
 
         planet.groupEntries = groups.map(x => x.toSend());
         planet.industryEntries = industryModifiers.map(x => x.toSend());
+        planet.alignmentModifiers = alignmentModifiers.map(x => AlignModEdit.toSend(x));
 
         var requestInit: RequestInit = {
             mode: "cors",
@@ -529,15 +559,24 @@ export function Planet() {
                             setIndustryMods(planet.industryEntries.map((x: IndustryEntrySend) => IndustryEntrySend.toLocal(x)));
                             setPops(planet.species);
                             setAlignmentPopularity(planet.popularityEntries);
+                            setAlignmentMods(planet.alignmentModifiers.map(x => AlignModSend.toEdit(x)));
                             setState(STATE.Loaded);
-                            forceUpdate();
                             doIndustryRender();
                             doPopsimRender();
+                            forceUpdate();
                         } catch {
                             setState(STATE.Errored);
                         }
                     });
             });
+    }
+
+    function makeNewAlignEntry(align: string) {
+        let x = new AlignModEdit();
+        x.name = align;
+        x.mod = "0";
+        alignmentModifiers.push(x);
+        return x.mod;
     }
 
     if (state == STATE.Loading) {
@@ -695,7 +734,7 @@ export function Planet() {
                     width={Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0) * 0.7}
                     ref={industryGDPChart} />
                 <br /><br />
-                <Button onClick={() => history.push("/map")}>Back</Button>&nbsp;<Button onClick={() => setEdit(true)}>Edit</Button>
+                <Button onClick={() => history.push("/map")}>Back</Button>&nbsp;<Button onClick={() => setEdit(true)} hidden={cookies["isAdmin"] === "false"}>Edit</Button>
             </div>
         )
     } else {
@@ -903,6 +942,33 @@ export function Planet() {
                     </tbody>
                 </table>
                 <br />
+                <table className="planetTable">
+                    <tbody>
+                        <tr>
+                            <th>
+                                Alignment
+                            </th>
+                            <th>
+                                Modifier
+                            </th>
+                        </tr>
+                        {alignmentData.map((align) =>
+                            <tr>
+                                <td>{align}</td>
+                                <td><Input type="text"
+                                    value={alignmentModifiers.find(x => x.name == align) !== undefined ? alignmentModifiers.find(x => x.name == align)?.mod : makeNewAlignEntry(align)}
+                                    onChange={(e) => {
+                                        let a = alignmentModifiers;
+                                        let x = alignmentModifiers.findIndex(x => x.name == align)!;
+                                        a[x].mod = e.target.value;
+                                        setAlignmentMods(a);
+                                        forceUpdate();
+                                    }}
+                                /></td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
                 <br /><br />
                 <table className="planetTable">
                     <tbody>

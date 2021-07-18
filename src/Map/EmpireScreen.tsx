@@ -97,6 +97,30 @@ class AlignmentPopularityEntry {
     popularity: number = 0;
 }
 
+class AlignModEdit {
+    name: string = "";
+    mod: string = "";
+
+    static toSend(og: AlignModEdit) {
+        let res = new AlignModSend();
+        res.name = og.name;
+        res.mod = parseFloat(og.mod);
+        return res;
+    }
+}
+
+class AlignModSend {
+    name: string = "";
+    mod: number = 0;
+
+    static toEdit(og: AlignModSend) {
+        let res = new AlignModEdit();
+        res.name = og.name;
+        res.mod = og.mod.toString();
+        return res;
+    }
+}
+
 class EmpireData {
     name: string = "";
     population: number = 0;
@@ -107,6 +131,7 @@ class EmpireData {
     species: PopEntry[] = [];
     popularityEntries: AlignmentPopularityEntry[] = [];
     parlamentEntries: AlignmentPopularityEntry[] = [];
+    alignmentModifiers: AlignModSend[] = [];
 }
 
 enum STATE {
@@ -153,6 +178,7 @@ export function Empire() {
 
     const [alignmentPopularity, setAlignmentPopularity] = useState<AlignmentPopularityEntry[]>([]);
     const [parlamentMakeup, setParlament] = useState<AlignmentPopularityEntry[]>([]);
+    const [alignmentModifiers, setAlignmentMods] = useState<AlignModEdit[]>([]);
 
     const name: string = queryString.parse(location.search).name as string;
 
@@ -698,6 +724,7 @@ export function Empire() {
                             setIndustryMods(empire.industryEntries.map((x: IndustryEntrySend) => IndustryEntrySend.toLocal(x)));
                             setSpaceIndustryMods(empire.spaceIndustryEntries.map((x: IndustryEntrySend) => IndustryEntrySend.toLocal(x)));
                             setAlignmentPopularity(empire.popularityEntries);
+                            setAlignmentMods(empire.alignmentModifiers.map(x => AlignModSend.toEdit(x)));
 
                             setPops(empire.species);
 
@@ -736,6 +763,7 @@ export function Empire() {
 
         empire.groupEntries = groups.map(x => x.toSend());
         empire.industryEntries = industryModifiers.map(x => x.toSend());
+        empire.alignmentModifiers = alignmentModifiers.map(x => AlignModEdit.toSend(x));
 
         var requestInit: RequestInit = {
             mode: "cors",
@@ -769,12 +797,21 @@ export function Empire() {
                         setTotalGdp(empire.totalGdp);
                         setParlament(empire.parlamentEntries);
                         setSpaceIndustryMods(empire.spaceIndustryEntries.map((x: IndustryEntrySend) => IndustryEntrySend.toLocal(x)));
+                        setAlignmentMods(empire.alignmentModifiers.map(x => AlignModSend.toEdit(x)));
                         setAlignmentPopularity(empire.popularityEntries);
                         setGroups(empire.groupEntries.map((x: GroupEntrySend) => GroupEntrySend.toLocal(x, alignmentData[0])));
                         setIndustryMods(empire.industryEntries.map((x: IndustryEntrySend) => IndustryEntrySend.toLocal(x)));
                         setPops(empire.species);
                     });
             });
+    }
+
+    function makeNewAlignEntry(align: string) {
+        let x = new AlignModEdit();
+        x.name = align;
+        x.mod = "0";
+        alignmentModifiers.push(x);
+        return x.mod;
     }
 
     if (state == STATE.Loading) {
@@ -1084,6 +1121,33 @@ export function Empire() {
                     </tbody>
                 </table>
                 <br />
+                <table className="planetTable">
+                    <tbody>
+                        <tr>
+                            <th>
+                                Alignment
+                            </th>
+                            <th>
+                                Modifier
+                            </th>
+                        </tr>
+                        {alignmentData.map((align) =>
+                            <tr>
+                                <td>{align}</td>
+                                <td><Input type="text"
+                                    value={alignmentModifiers.find(x => x.name == align) !== undefined ? alignmentModifiers.find(x => x.name == align)?.mod : makeNewAlignEntry(align)}
+                                    onChange={(e) => {
+                                        let a = alignmentModifiers;
+                                        let x = alignmentModifiers.findIndex(x => x.name == align)!;
+                                        a[x].mod = e.target.value;
+                                        setAlignmentMods(a);
+                                        forceUpdate();
+                                    }}
+                                /></td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
                 <br /><br />
                 <table className="empireTable">
                     <tbody>

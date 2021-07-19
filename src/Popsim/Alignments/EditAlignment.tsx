@@ -64,6 +64,18 @@ export function EditAlignment() {
                             }}
                         />
 
+                        <Label>Establishment</Label>
+                        <Input
+                            name="establishment"
+                            type="number"
+                            value={data.establishment}
+                            onChange={(e) => {
+                                let newData = Object.assign({}, data);
+                                newData.establishment = e.target.valueAsNumber;
+                                setData(newData);
+                            }}
+                        />
+
                         <Label>Federalism - Centralism</Label>
                         <Input
                             name="federalism"

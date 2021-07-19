@@ -6,6 +6,7 @@ import { Button, Container, Jumbotron, Modal, ModalBody, ModalFooter, ModalHeade
 export interface AlignmentOverview {
     alignmentId: string
     alignmentName: string
+    establishment: number
     federalismCentralism: number
     democracyAuthority: number
     globalismIsolationism: number
@@ -92,6 +93,7 @@ export function PopsimAlignments() {
                     <thead>
                         <tr>
                             <th>Alignment</th>
+                            <th>Establishment</th>
                             <th>Federalism - Centralism</th>
                             <th>Democracy - Authority</th>
                             <th>Globalism - Isolationism</th>
@@ -107,6 +109,7 @@ export function PopsimAlignments() {
                         {data?.map((a) => (
                             <tr key={a.alignmentId}>
                                 <th scope="row">{a.alignmentName}</th>
+                                <td>{a.establishment * 100}%</td>
                                 <td>{a.federalismCentralism}</td>
                                 <td>{a.democracyAuthority}</td>
                                 <td>{a.globalismIsolationism}</td>

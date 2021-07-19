@@ -168,3 +168,7 @@ input[type=checkbox]:checked {
     background-color: #000;
     border-bottom: 1px solid var(--colour);
 }
+
+.table {
+    color: var(--colour);
+}

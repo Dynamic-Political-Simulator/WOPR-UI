@@ -39,6 +39,8 @@ import { PartyOverview } from '../Popsim/Party/PartyOverview';
 import ModifyGlobalGroup from '../Popsim/GlobalEthicGroups/ModifyGlobalGroup';
 import { Empire } from '../Map/EmpireScreen';
 import GameManager from '../SaveUploader/SaveManager';
+import { GovernmentPopularity } from '../Popsim/Government/GovernmentPopularity';
+import ModifyGovePop from '../Popsim/Government/ModifyGovePop';
 
 export function MainScreen() {
     const [cookies, setCookie] = useCookies();
@@ -59,14 +61,14 @@ export function MainScreen() {
                 }
             };
 
-            fetch(process.env.REACT_APP_BASE_URL + "user/is-admin", requestInit)
-                .then((response) => response.json())
-                .then((response) => {
-                    setCookie("isAdmin", response);
-                })
-                .catch(() => {
-                    window.location.href = process.env.REACT_APP_BASE_URL + "auth/auth";
-                });
+            // fetch(process.env.REACT_APP_BASE_URL + "user/is-admin", requestInit)
+            //     .then((response) => response.json())
+            //     .then((response) => {
+            //         setCookie("isAdmin", response);
+            //     })
+            //     .catch(() => {
+            //         window.location.href = process.env.REACT_APP_BASE_URL + "auth/auth";
+            //     });
         }
 
         if (presetName === undefined || fgColour === undefined || bgColour === undefined) {
@@ -170,6 +172,12 @@ export function MainScreen() {
             </Route>
             <Route path="/game-manager">
                 <GameManager />
+            </Route>
+            <Route path="/popularity">
+                <GovernmentPopularity />
+            </Route>
+            <Route path="/edit-popularity">
+                <ModifyGovePop />
             </Route>
         </Router>
     )

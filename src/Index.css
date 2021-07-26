@@ -172,3 +172,11 @@ input[type=checkbox]:checked {
 .table {
     color: var(--colour);
 }
+
+.partyTable {
+    width: 100%;
+}
+
+.partyTable tbody:first-child {
+    border-right: 1px solid var(--colour);
+}

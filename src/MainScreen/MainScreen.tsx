@@ -61,14 +61,14 @@ export function MainScreen() {
                 }
             };
 
-            // fetch(process.env.REACT_APP_BASE_URL + "user/is-admin", requestInit)
-            //     .then((response) => response.json())
-            //     .then((response) => {
-            //         setCookie("isAdmin", response);
-            //     })
-            //     .catch(() => {
-            //         window.location.href = process.env.REACT_APP_BASE_URL + "auth/auth";
-            //     });
+            fetch(process.env.REACT_APP_BASE_URL + "user/is-admin", requestInit)
+                .then((response) => response.json())
+                .then((response) => {
+                    setCookie("isAdmin", response);
+                })
+                .catch(() => {
+                    window.location.href = process.env.REACT_APP_BASE_URL + "auth/auth";
+                });
         }
 
         if (presetName === undefined || fgColour === undefined || bgColour === undefined) {
@@ -161,9 +161,6 @@ export function MainScreen() {
             <Route path="/manage-clique">
                 <ManageClique />
             </Route>
-            <Route path="/party-overview">
-                <PartyOverview />
-            </Route>
             <Route path="/edit-global-group">
                 <ModifyGlobalGroup />
             </Route>
@@ -178,6 +175,9 @@ export function MainScreen() {
             </Route>
             <Route path="/edit-popularity">
                 <ModifyGovePop />
+            </Route>
+            <Route path="/party">
+                <PartyOverview />
             </Route>
         </Router>
     )

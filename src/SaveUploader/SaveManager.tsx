@@ -166,6 +166,22 @@ function GameManager() {
             .then(() => setProcessing(false));
     }
 
+    function runPartyCalc() {
+        setProcessing(true);
+        var requestInit: RequestInit = {
+            mode: "cors",
+            credentials: "include",
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        };
+
+        fetch(process.env.REACT_APP_BASE_URL + "saves/calculate-party", requestInit)
+            .catch(() => setError("Something went wrong, try again."))
+            .then(() => setProcessing(false));
+    }
+
     if (loading) {
         return (
             <div>
@@ -231,6 +247,9 @@ function GameManager() {
                     </Button>
                     <Button disabled={processing} onClick={runAssemblyCalc}>
                         Calculate Assembly
+                    </Button>
+                    <Button disabled={processing} onClick={runPartyCalc}>
+                        Calculate Party
                     </Button>
                 </Jumbotron>
             </div>

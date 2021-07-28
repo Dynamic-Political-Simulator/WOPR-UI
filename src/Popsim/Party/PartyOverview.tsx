@@ -102,6 +102,14 @@ export function PartyOverview() {
             .catch(() => history.push("/"));
     }
 
+    function generateList(): JSX.Element[] {
+        let res: JSX.Element[] = [];
+        for (let tmp in data!.perGroupEnlistment!) {
+            res.push((<li>{tmp} - {(data!.perGroupEnlistment![tmp] * 100).toFixed(2)}%</li>));
+        }
+        return res;
+    }
+
     if (edit) {
         return (
             <div className="planetScreen">
@@ -137,13 +145,7 @@ export function PartyOverview() {
                         Members: {intToString(data.overallPartyEnlistment)} ({(data.percentageOfEmpire * 100).toFixed(2)}%)<br />
                         Enlistment per Group:
                         <ul>
-                            {() => {
-                                let res: JSX.Element[] = [];
-                                for (let tmp in data.perGroupEnlistment!) {
-                                    res.push((<li>{tmp} - {data.perGroupEnlistment![tmp] * 100}%</li>));
-                                }
-                                return res;
-                            }}
+                            {generateList()}
                         </ul>
                         <table className="partyTable">
                             <tbody className="partyTable">

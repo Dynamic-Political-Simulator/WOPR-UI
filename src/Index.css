@@ -177,6 +177,10 @@ input[type=checkbox]:checked {
     width: 100%;
 }
 
-.partyTable tbody:first-child {
+.partyTable td:first-child {
     border-right: 1px solid var(--colour);
+}
+
+.partyTable td {
+    padding: 10px;
 }

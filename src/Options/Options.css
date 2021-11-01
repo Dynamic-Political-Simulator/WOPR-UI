@@ -1,0 +1,85 @@
+.options {
+	height: 100vh;
+	width: 100vw;
+	font: monospace monospace;
+}
+
+.inside {
+	position: absolute;
+	width: 40%;
+	height: 50%;
+	left: 30%;
+	top: 25%;
+	border: 5px solid var(--colour);
+	padding: 5px;
+}
+
+.optTitle {
+	position: relative;
+	font-size: 36pt;
+	color: var(--colour);
+	text-align: center;
+}
+
+.optExit {
+	position: absolute;
+	left: 89%;
+	width: 15%;
+	height: 15%;
+	font-size: 24pt;
+	background-color: transparent;
+	border: none;
+	color: var(--colour);
+	top: 0%;
+}
+
+.optExit:hover {
+	color: var(--darkColour);
+}
+
+.presetChooser {
+	display: flex;
+	justify-content: center;
+	width: 100%;
+}
+
+.presetDisp {
+	color: var(--colour);
+	margin-left: 5pt;
+	margin-right: 5pt;
+	width: 25%;
+	text-align: center;
+	border-left: 3px solid var(--colour);
+	border-right: 3px solid var(--colour);
+	font-size: 18pt;
+}
+
+.presetNav {
+	background-color: transparent;
+	border: none;
+	color: var(--colour);
+	font-style: bold;
+	font-size: 18pt;
+}
+
+.presetNav:hover {
+	color: var(--darkColour);
+}
+
+.foregroundText {
+	color: var(--colour);
+}
+
+.backgroundText {
+	color: var(--darkColour);
+}
+
+.brightText {
+	color: #000;
+	background-color: var(--colour);
+}
+
+.darkText {
+	color: #000;
+	background-color: var(--darkColour);
+}

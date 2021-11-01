@@ -1,0 +1,186 @@
+:root {
+    --colour: lime;
+    --darkColour: green;
+}
+
+.jumbotron {
+    color: var(--colour);
+    background-color: #000;
+    font-family: monospace, monospace; 
+}
+
+.form-control {
+    width: 100%;
+    background-color: transparent;
+    color: var(--colour);
+    border: 1px solid var(--colour);
+    border-radius: 0;
+}
+
+.form-control:focus {
+    background-color: transparent;
+    color: var(--colour);
+    border: 1px solid var(--colour);
+}
+
+.form-control:disabled {
+    background-color: transparent;
+    color: var(--darkColour);
+    border: 1px solid var(--darkColour);
+}
+
+.form-control-range {
+    outline: none; /* Remove outline */
+    border: none;
+    background-color: black;
+}
+
+.form-control-range:disabled {
+    outline: none; /* Remove outline */
+    border: none;
+    background-color: black;
+}
+
+.form-control-range::-moz-range-thumb {
+    -webkit-appearance: none; /* Override default look */
+    appearance: none;
+    cursor: pointer;
+    background-color: var(--colour);
+    border: 2px solid black;
+    border-radius: 0;
+}
+
+.form-control-range::-moz-range-thumb:hover {
+    background-color: var(--darkColour);
+}
+
+.form-control-range:disabled::-moz-range-thumb:hover {
+    background-color: var(--colour);
+}
+
+.form-control-range:disabled::-moz-range-thumb {
+    cursor: default;
+}
+
+.form-control-range::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Override default look */
+    cursor: pointer;
+    background-color: var(--colour);
+    border: 2px solid black;
+    border-radius: 0;
+}
+
+.form-control-range::-moz-range-progress {
+    background-color: var(--darkColour);
+}
+
+.btn {
+    background-color: black;
+    color: var(--colour);
+    border: 1px solid var(--colour);
+    border-radius: 0;
+}
+
+.btn:hover {
+    background-color: var(--darkColour);
+    color: black;
+    border: 1px solid var(--colour);
+    border-radius: 0;
+}
+
+.btn:focus {
+    background-color: black;
+    color: var(--colour);
+    border: 1px solid var(--colour);
+    outline: 1px solid var(--darkColour) !important;
+    border-radius: 0;
+}
+
+.btn:active {
+    background-color: var(--colour) !important;
+    color: black !important;
+    border: 1px solid var(--colour) !important;
+    border-radius: 0 !important;
+}
+
+.btn:disabled {
+    background-color: black;
+    color: var(--darkColour);
+    border: 1px solid var(--darkColour);
+    border-radius: 0;
+}
+
+input[type=checkbox] {
+    background-color: #000;
+    border-radius: 2px;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 1em;
+    height: 1em;
+    cursor: pointer;
+    position: relative;
+    border: 1px var(--colour) solid;
+    margin-right: .5em;
+    top: .1em;
+}
+
+input[type=checkbox]:checked {
+    background-color: var(--darkColour);
+    background: var(--darkColour) url("data:image/gif;base64,R0lGODlhCwAKAIABAP////3cnSH5BAEKAAEALAAAAAALAAoAAAIUjH+AC73WHIsw0UCjglraO20PNhYAOw==") 3px 3px no-repeat;
+}
+
+.jumbotron hr {
+    border-top: 2px solid var(--colour);
+}
+
+.jumbotron table {
+    width: 100%;
+    table-layout: fixed;
+    word-wrap: break-word;
+}
+
+.jumbotron th {
+    border-right: 2px dotted var(--colour);
+}
+
+.jumbotron td {
+    border-right: 2px dotted var(--colour);
+}
+
+.jumbotron th:last-child {
+    border-right: none;
+}
+
+.jumbotron td:last-child {
+    border-right: none;
+}
+
+.jumbotron tr {
+    border-bottom: 2px dotted var(--colour);
+}
+
+.jumbotron tr:last-child {
+    border-bottom: none;
+}
+
+.list-group-item {
+    background-color: #000;
+    border-bottom: 1px solid var(--colour);
+}
+
+.table {
+    color: var(--colour);
+}
+
+.partyTable {
+    width: 100%;
+}
+
+.partyTable td:first-child {
+    border-right: 1px solid var(--colour);
+}
+
+.partyTable td {
+    padding: 10px;
+}

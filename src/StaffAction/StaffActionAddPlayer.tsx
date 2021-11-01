@@ -6,7 +6,7 @@ import queryString from 'query-string'
 import { StaffActionDetailForm } from "./StaffActionDetail";
 import { useCookies } from "react-cookie";
 
-export function StaffActionAddPlayer(){
+export function StaffActionAddPlayer() {
     const [data, setData] = useState<StaffActionDetailForm>();
 
     const [cookies, setCookie] = useCookies();
@@ -40,7 +40,7 @@ export function StaffActionAddPlayer(){
             }
         };
 
-        fetch("https://localhost:44394/api/staff-action/get-staff-action?id=" + staffActionId, requestInit)
+        fetch(process.env.REACT_APP_BASE_URL + "staff-action/get-staff-action?id=" + staffActionId, requestInit)
             .then((response) => response.json())
             .then((response) => {
                 setData(response);
@@ -59,7 +59,7 @@ export function StaffActionAddPlayer(){
             }
         };
 
-        fetch("https://localhost:44394/api/user/search-profile?search=" + searchTerm, requestInit)
+        fetch(process.env.REACT_APP_BASE_URL + "user/search-profile?search=" + searchTerm, requestInit)
             .then((response) => response.json())
             .then((response) => {
                 setSearchReturn(response);
@@ -76,7 +76,7 @@ export function StaffActionAddPlayer(){
             }
         };
 
-        fetch("https://localhost:44394/api/user/search-staff?search=" + searchTermStaff, requestInit)
+        fetch(process.env.REACT_APP_BASE_URL + "user/search-staff?search=" + searchTermStaff, requestInit)
             .then((response) => response.json())
             .then((response) => {
                 setSearchReturnStaff(response);
@@ -84,7 +84,7 @@ export function StaffActionAddPlayer(){
     }, [searchTermStaff]);
 
     function addPlayerToSelectedPlayers(player: PlayerSearchReturn) {
-        if (!selectedPlayers.includes(player)){
+        if (!selectedPlayers.includes(player)) {
             setSelectedPlayers(prev => {
                 return [
                     ...prev,
@@ -95,7 +95,7 @@ export function StaffActionAddPlayer(){
     }
 
     function addStaffToSelectedStaff(player: PlayerSearchReturn) {
-        if (!selectedStaff.includes(player)){
+        if (!selectedStaff.includes(player)) {
             setSelectedStaff(prev => {
                 return [
                     ...prev,
@@ -105,7 +105,7 @@ export function StaffActionAddPlayer(){
         }
     }
 
-    function handleClick(){
+    function handleClick() {
         var body = {
             staffActionId: data?.staffActionId,
             addedPlayerIds: selectedPlayers.map(p => p.discordUserId),
@@ -122,12 +122,12 @@ export function StaffActionAddPlayer(){
             body: JSON.stringify(body)
         };
 
-        fetch("https://localhost:44394/api/staff-action/add-players", requestInit)
+        fetch(process.env.REACT_APP_BASE_URL + "staff-action/add-players", requestInit)
             .catch(() => setError("Something went wrong, try again."))
             .then(() => history.push("/staff-action?id=" + data?.staffActionId));
     }
-    
-    return(
+
+    return (
         <Container>
             <Jumbotron>
                 <h1>{data?.title}</h1>
@@ -152,30 +152,30 @@ export function StaffActionAddPlayer(){
                         <ListGroupItem key={player.discordUserId} onClick={(e) => addPlayerToSelectedPlayers(player)}><Button>{player.discordUserName}</Button></ListGroupItem>
                     ))}
                 </ListGroup>
-                
-                {isAdmin ? 
-                <>
-                    <Label>Add staff to Staff Action</Label>
-                    <Input
-                        name="searchStaff"
-                        value={searchTermStaff}
-                        placeholder="Search staff..."
-                        onChange={(e) => setSearchTermStaff(e.target.value)}
-                    />
 
-                    <ListGroup>
-                        {searchReturnStaff?.map((staff) => (
-                            <ListGroupItem key={staff.discordUserId} onClick={(e) => addStaffToSelectedStaff(staff)}><Button>{staff.discordUserName}</Button></ListGroupItem>
-                        ))}
-                    </ListGroup>
+                {isAdmin ?
+                    <>
+                        <Label>Add staff to Staff Action</Label>
+                        <Input
+                            name="searchStaff"
+                            value={searchTermStaff}
+                            placeholder="Search staff..."
+                            onChange={(e) => setSearchTermStaff(e.target.value)}
+                        />
 
-                    <ButtonGroup className="mb-2">
-                        {selectedStaff?.map((staff) => (
-                            <Button key={staff.discordUserId} disabled>{staff.discordUserName}</Button>
-                        ))}
-                    </ButtonGroup> 
-                </> 
-                : null}
+                        <ListGroup>
+                            {searchReturnStaff?.map((staff) => (
+                                <ListGroupItem key={staff.discordUserId} onClick={(e) => addStaffToSelectedStaff(staff)}><Button>{staff.discordUserName}</Button></ListGroupItem>
+                            ))}
+                        </ListGroup>
+
+                        <ButtonGroup className="mb-2">
+                            {selectedStaff?.map((staff) => (
+                                <Button key={staff.discordUserId} disabled>{staff.discordUserName}</Button>
+                            ))}
+                        </ButtonGroup>
+                    </>
+                    : null}
 
                 <hr className="my-2" />
 

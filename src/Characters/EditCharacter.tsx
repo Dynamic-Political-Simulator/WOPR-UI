@@ -28,7 +28,7 @@ export function EditCharacter() {
             }
         };
 
-        fetch("https://localhost:44394/api/character/get-character?id=" + characterId, requestInit)
+        fetch(process.env.REACT_APP_BASE_URL + "character/get-character?id=" + characterId, requestInit)
             .then((response) => response.json())
             .then((response) => {
                 setData(response);
@@ -53,7 +53,7 @@ export function EditCharacter() {
             body: JSON.stringify(body)
         };
 
-        fetch("https://localhost:44394/api/character/edit-character", requestInit)
+        fetch(process.env.REACT_APP_BASE_URL + "character/edit-character", requestInit)
             .catch(() => setError("Something went wrong, try again."))
             .then(() => history.push("/character?id=" + data?.characterId))
     }
@@ -62,18 +62,18 @@ export function EditCharacter() {
         <Container>
             <Jumbotron>
                 <h1>Edit: {data?.characterName}</h1>
-                <hr className="my-2"/>
+                <hr className="my-2" />
 
                 <p>Species: {data?.species.speciesName}</p>
 
                 {error === undefined ? null : <Alert color="danger">{error}</Alert>}
 
-                {data?.causeOfDeath == null ? 
-                <p>{data?.yearOfBirth} - Present</p> : 
-                <>
-                    <p>{data?.yearOfBirth} - {data?.yearOfDeath}</p>
-                    <p>Cause of death: {data?.causeOfDeath}</p>
-                </>}
+                {data?.causeOfDeath == null ?
+                    <p>{data?.yearOfBirth} - Present</p> :
+                    <>
+                        <p>{data?.yearOfBirth} - {data?.yearOfDeath}</p>
+                        <p>Cause of death: {data?.causeOfDeath}</p>
+                    </>}
 
                 <Label>Bio</Label>
                 <Input

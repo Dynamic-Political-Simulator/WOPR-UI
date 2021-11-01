@@ -55,7 +55,7 @@ export function StaffActionDetail() {
             }
         };
 
-        fetch("https://localhost:44394/api/staff-action/get-staff-action?id=" + staffActionId, requestInit)
+        fetch(process.env.REACT_APP_BASE_URL + "staff-action/get-staff-action?id=" + staffActionId, requestInit)
             .then((response) => response.json())
             .then((response) => setData(response));
     }, []);
@@ -77,7 +77,7 @@ export function StaffActionDetail() {
             body: JSON.stringify(body)
         };
 
-        fetch("https://localhost:44394/api/staff-action/post", requestInit)
+        fetch(process.env.REACT_APP_BASE_URL + "staff-action/post", requestInit)
             .then(() => history.go(0));
     }
 
@@ -105,13 +105,13 @@ export function StaffActionDetail() {
                     ))}
                     <Button onClick={handleAddClick}>+</Button>
                 </ButtonGroup>
-                
-                <hr className="my-2"/>
+
+                <hr className="my-2" />
 
                 {data?.staffActionPosts.map((i) => (
                     <Alert key={i.postId} color="dark">
                         <b>{i.author.userName} : {new Date(i.timePosted).toLocaleString('en-GB')}</b>
-                        <br/>
+                        <br />
                         {i.content}
                     </Alert>
                 ))}
@@ -125,7 +125,7 @@ export function StaffActionDetail() {
                 <Button onClick={handleClick}>
                     Post
                 </Button>
-                
+
             </Jumbotron>
         </Container>
     )
@@ -137,7 +137,7 @@ interface props {
 
 function StaffActionPost(props: props) {
 
-    return(
+    return (
         <p>p</p>
     )
 }

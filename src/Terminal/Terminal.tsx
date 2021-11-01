@@ -38,10 +38,10 @@ export function Terminal() {
     const history = useHistory();
 
     useEffect(() => {
-        checkAuth(cookies, setCookie);
         setTimeout(() => {
             document.addEventListener("click", () => {
-                let element = document.getElementById("inputter")!;
+                let element = document.getElementById("inputter");
+                if (element == null) return;
                 element.focus();
             }); // a clinically insane thing to do, I agree
             setRows(rows => [...rows, "System ready"]);

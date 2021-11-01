@@ -1,0 +1,238 @@
+#galacticMap {
+    height: 100vh;
+    width: 100vw;
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: #00000F;
+}
+
+.leaflet-control-zoom-in, .leaflet-control-zoom-out {
+    background-color: #000000AA !important;
+    color: var(--colour) !important;
+    border: 2px outset var(--colour) !important;
+    text-shadow: 0 0 2px var(--colour) !important;
+    box-shadow: 0 0 2px var(--colour) !important;
+}
+
+.leaflet-control-zoom-in.leaflet-disabled, .leaflet-control-zoom-out.leaflet-disabled {
+    background-color: #000000AA !important;
+    color: var(--darkColour) !important;
+    border: 2px outset var(--darkColour) !important;
+    text-shadow: 0 0 2px var(--darkColour) !important;
+    box-shadow: 0 0 2px var(--darkColour) !important;
+}
+
+.leaflet-control-attribution {
+    background-color: #000000AA !important;
+    color: var(--colour) !important;
+}
+
+.leaflet-control-attribution a {
+    color: var(--darkColour) !important;
+}
+
+.leaflet-popup-content-wrapper {
+    border-radius: 0 !important;
+    background-color: #00000099 !important;
+    color: var(--colour) !important;
+    border: 2px dotted var(--colour) !important;
+    border-collapse: collapse !important;
+}
+
+.leaflet-popup-content-wrapper a {
+    color: var(--darkColour) !important;
+}
+
+.leaflet-popup-close-button {
+    color: var(--darkColour) !important;
+}
+
+.leaflet-popup-tip {
+    background-color: #00000099 !important;
+    border: 2px dotted var(--colour) !important;
+    border-top: none !important;
+    border-collapse: collapse !important;
+}
+
+.leaflet-tooltip-left {
+    border-radius: 0 !important;
+    background-color: #000 !important;
+    color: var(--colour) !important;
+    border: 1px dotted var(--colour) !important;
+    border-collapse: collapse !important;
+}
+
+
+.leaflet-tooltip-left:before {
+    border-left-color: #000 !important;
+}
+
+#mapEditForm {
+    position: absolute;
+    z-index: 10000;
+    height: 15vh;
+    width: 15vw;
+    top: 85vh;
+    left: 85vw;
+    background-color: #00000F;
+    color: white;
+}
+
+#overlay {
+    position: absolute;
+    z-index: 10000;
+    background-color: #00000033;
+    height: 100vh;
+    width: 100vw;
+}
+
+#contentBoxMap {
+    position: absolute;
+    height: 66%;
+    width: 66%;
+    top: 17%;
+    left: 17%;
+}
+
+#okButtonMap {
+    position: absolute;
+    top: 90%;
+    left: 47%;
+}
+
+#putContentHere {
+    height: 90%
+}
+
+/* Planet Screen Stuff */
+
+.planetScreen {
+    font-family: monospace, monospace; 
+    font-size: large;
+    color: var(--colour);
+    margin: 1%;
+}
+
+.planetTable input {
+    width: 100%;
+    background-color: transparent;
+    color: var(--colour);
+    border: none;
+}
+
+.planetTable input:focus {
+    background-color: transparent;
+    color: var(--colour);
+    border: none;
+}
+
+.planetTable select {
+    width: 100%;
+    background-color: transparent;
+    color: var(--colour);
+    border: 2px outset var(--colour);
+}
+
+.planetTable select:focus {
+    background-color: transparent;
+    color: var(--colour);
+    border: 2px outset var(--colour);
+}
+
+.planetTable {
+    width: 40%;
+    table-layout: fixed;
+    word-wrap: break-word;
+}
+
+.planetTable th {
+    border-right: 2px dotted var(--colour);
+}
+
+.planetTable td {
+    border-right: 2px dotted var(--colour);
+}
+
+.planetTable th:last-child {
+    border-right: none;
+}
+
+.planetTable td:last-child {
+    border-right: none;
+}
+
+.planetTable tr {
+    border-bottom: 2px dotted var(--colour);
+}
+
+.planetTable tr:last-child {
+    border-bottom: none;
+}
+
+.planetScreen .btn {
+    background-color: #00000000 !important;
+    color: var(--colour) !important;
+    border: 2px outset var(--colour) !important;
+    font-family: monospace monospace !important;
+}
+
+/*Empire Screen Stuff */
+.empireScreen {
+    font-family: monospace, monospace; 
+    font-size: large;
+    color: var(--colour);
+    margin: 1%;
+}
+
+.empireTable input {
+    width: 100%;
+}
+
+.empireTable {
+    width: 35%;
+    table-layout: fixed;
+    word-wrap: break-word;
+}
+
+.empireTable th {
+    border-right: 2px dotted var(--colour);
+}
+
+.empireTable td {
+    border-right: 2px dotted var(--colour);
+}
+
+.empireTable th:last-child {
+    border-right: none;
+}
+
+.empireTable td:last-child {
+    border-right: none;
+}
+
+.empireTable tr {
+    border-bottom: 2px dotted var(--colour);
+}
+
+.empireTable tr:last-child {
+    border-bottom: none;
+}
+
+.empireScreen .btn {
+    background-color: #00000000 !important;
+    color: var(--colour) !important;
+    border: 2px outset var(--colour) !important;
+    font-family: monospace monospace !important;
+}
+
+.empireColumn {
+    float: left;
+    width: 50%;
+}
+
+.empireRow::after {
+    content: "";
+    display: table;
+    clear: both;
+}

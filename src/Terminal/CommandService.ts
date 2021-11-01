@@ -11,7 +11,7 @@ export async function TerminalCommand(command: string) {
         body: JSON.stringify({ InputString: command }),
     };
 
-    return fetch("https://localhost:44394/api/terminal/command", requestInit)
+    return fetch(process.env.REACT_APP_BASE_URL + "terminal/command", requestInit)
         //.then(responeHandler)
         .then((responseString) => {
             return responseString;

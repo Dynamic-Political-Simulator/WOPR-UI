@@ -46,7 +46,7 @@ export function Clock() {
             }
         };
 
-        fetch("https://localhost:44394/api/clock/time", requestInit)
+        fetch(process.env.REACT_APP_BASE_URL + "clock/time", requestInit)
             .then((response) => response.json())
             .then((response) => setData(response));
     }, []);
